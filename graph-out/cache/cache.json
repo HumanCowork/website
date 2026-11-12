@@ -1,0 +1,310 @@
+{
+  "eslint.config.mjs": {
+    "hash": "870f1adccecf3051",
+    "nodes": [
+      {
+        "id": "eslint.config_file",
+        "label": "eslint.config.mjs",
+        "type": "file",
+        "sourceFile": "eslint.config.mjs"
+      }
+    ],
+    "edges": []
+  },
+  "next-env.d.ts": {
+    "hash": "0f70629890b72a0a",
+    "nodes": [
+      {
+        "id": "next-env.d_file",
+        "label": "next-env.d.ts",
+        "type": "file",
+        "sourceFile": "next-env.d.ts"
+      }
+    ],
+    "edges": [
+      {
+        "source": "next-env.d_file",
+        "target": ".next_dev_types_routes.d_file",
+        "relation": "imports",
+        "confidence": "EXTRACTED"
+      },
+      {
+        "source": "next-env.d_file",
+        "target": ".next_dev_types_root-params.d_file",
+        "relation": "imports",
+        "confidence": "EXTRACTED"
+      }
+    ]
+  },
+  "next.config.ts": {
+    "hash": "17145a9822ec351b",
+    "nodes": [
+      {
+        "id": "next.config_file",
+        "label": "next.config.ts",
+        "type": "file",
+        "sourceFile": "next.config.ts"
+      }
+    ],
+    "edges": []
+  },
+  "package-lock.json": {
+    "hash": "e96267fcaa7b7b13",
+    "nodes": [
+      {
+        "id": "package-lock_file",
+        "label": "package-lock.json",
+        "type": "file",
+        "sourceFile": "package-lock.json"
+      },
+      {
+        "id": "package-lock_name",
+        "label": "name",
+        "type": "field",
+        "sourceFile": "package-lock.json"
+      },
+      {
+        "id": "package-lock_version",
+        "label": "version",
+        "type": "field",
+        "sourceFile": "package-lock.json"
+      },
+      {
+        "id": "package-lock_lockfileVersion",
+        "label": "lockfileVersion",
+        "type": "field",
+        "sourceFile": "package-lock.json"
+      },
+      {
+        "id": "package-lock_requires",
+        "label": "requires",
+        "type": "field",
+        "sourceFile": "package-lock.json"
+      },
+      {
+        "id": "package-lock_packages",
+        "label": "packages",
+        "type": "field",
+        "sourceFile": "package-lock.json"
+      }
+    ],
+    "edges": [
+      {
+        "source": "package-lock_file",
+        "target": "package-lock_name",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      },
+      {
+        "source": "package-lock_file",
+        "target": "package-lock_version",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      },
+      {
+        "source": "package-lock_file",
+        "target": "package-lock_lockfileVersion",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      },
+      {
+        "source": "package-lock_file",
+        "target": "package-lock_requires",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      },
+      {
+        "source": "package-lock_file",
+        "target": "package-lock_packages",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      }
+    ]
+  },
+  "package.json": {
+    "hash": "8f354c2a680ec1a1",
+    "nodes": [
+      {
+        "id": "package_file",
+        "label": "package.json",
+        "type": "file",
+        "sourceFile": "package.json"
+      },
+      {
+        "id": "package_name",
+        "label": "name",
+        "type": "field",
+        "sourceFile": "package.json"
+      },
+      {
+        "id": "package_version",
+        "label": "version",
+        "type": "field",
+        "sourceFile": "package.json"
+      },
+      {
+        "id": "package_private",
+        "label": "private",
+        "type": "field",
+        "sourceFile": "package.json"
+      },
+      {
+        "id": "package_scripts",
+        "label": "scripts",
+        "type": "field",
+        "sourceFile": "package.json"
+      },
+      {
+        "id": "package_dependencies",
+        "label": "dependencies",
+        "type": "field",
+        "sourceFile": "package.json"
+      },
+      {
+        "id": "package_devDependencies",
+        "label": "devDependencies",
+        "type": "field",
+        "sourceFile": "package.json"
+      }
+    ],
+    "edges": [
+      {
+        "source": "package_file",
+        "target": "package_name",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      },
+      {
+        "source": "package_file",
+        "target": "package_version",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      },
+      {
+        "source": "package_file",
+        "target": "package_private",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      },
+      {
+        "source": "package_file",
+        "target": "package_scripts",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      },
+      {
+        "source": "package_file",
+        "target": "package_dependencies",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      },
+      {
+        "source": "package_file",
+        "target": "package_devDependencies",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      }
+    ]
+  },
+  "src/app/layout.tsx": {
+    "hash": "ac0a51f726d23d25",
+    "nodes": [
+      {
+        "id": "src_app_layout_file",
+        "label": "src/app/layout.tsx",
+        "type": "file",
+        "sourceFile": "src/app/layout.tsx"
+      },
+      {
+        "id": "src_app_layout_RootLayout",
+        "label": "RootLayout",
+        "type": "function",
+        "sourceFile": "src/app/layout.tsx",
+        "sourceLocation": "L20"
+      }
+    ],
+    "edges": [
+      {
+        "source": "src_app_layout_file",
+        "target": "src_app_layout_RootLayout",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      }
+    ]
+  },
+  "src/app/page.tsx": {
+    "hash": "f47a17b211bcdcd4",
+    "nodes": [
+      {
+        "id": "src_app_page_file",
+        "label": "src/app/page.tsx",
+        "type": "file",
+        "sourceFile": "src/app/page.tsx"
+      },
+      {
+        "id": "src_app_page_Home",
+        "label": "Home",
+        "type": "function",
+        "sourceFile": "src/app/page.tsx",
+        "sourceLocation": "L1"
+      }
+    ],
+    "edges": [
+      {
+        "source": "src_app_page_file",
+        "target": "src_app_page_Home",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      }
+    ]
+  },
+  "tsconfig.json": {
+    "hash": "5c51df4c59f4510d",
+    "nodes": [
+      {
+        "id": "tsconfig_file",
+        "label": "tsconfig.json",
+        "type": "file",
+        "sourceFile": "tsconfig.json"
+      },
+      {
+        "id": "tsconfig_compilerOptions",
+        "label": "compilerOptions",
+        "type": "field",
+        "sourceFile": "tsconfig.json"
+      },
+      {
+        "id": "tsconfig_include",
+        "label": "include",
+        "type": "field",
+        "sourceFile": "tsconfig.json"
+      },
+      {
+        "id": "tsconfig_exclude",
+        "label": "exclude",
+        "type": "field",
+        "sourceFile": "tsconfig.json"
+      }
+    ],
+    "edges": [
+      {
+        "source": "tsconfig_file",
+        "target": "tsconfig_compilerOptions",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      },
+      {
+        "source": "tsconfig_file",
+        "target": "tsconfig_include",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      },
+      {
+        "source": "tsconfig_file",
+        "target": "tsconfig_exclude",
+        "relation": "contains",
+        "confidence": "EXTRACTED"
+      }
+    ]
+  }
+}
