@@ -1,0 +1,67 @@
+/*
+ * The band: one flat surface. No card, no panel, no border, no shadow, no radius.
+ *
+ * The corner-and-throw idiom belongs to the curtain because the curtain lifts
+ * over the hero and something is behind its corners. A band that merely follows
+ * has nothing behind its corners: a radius there would be invisible and a shadow
+ * would only be decoration, which is exactly what a proof section should not be.
+ *
+ * This file owns the surface and its label. The moving rows are their own
+ * component, in PartnersMarquee.css.
+ *
+ * Every dimension below is a --partners-* token from globals.css. Nothing is
+ * stated twice and nothing is picked here.
+ */
+
+.partners-band {
+  position: relative;
+  z-index: 20; /* over the hero's fixed layer, under the navbar */
+  padding-block: var(--partners-padding-block);
+  background: var(--partners-band);
+}
+
+/*
+ * Centres the label and nothing else. The vertical padding belongs to the band,
+ * and the space between label and rows belongs to the marquee, so there is one
+ * owner for each gap.
+ */
+.partners-inner {
+  max-width: var(--partners-max-width);
+  margin-inline: auto;
+  padding-inline: var(--partners-padding-inline);
+}
+
+.partners-label {
+  margin: 0;
+  font-size: var(--partners-label-size);
+  font-weight: 600;
+  letter-spacing: var(--partners-label-tracking);
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--muted-foreground);
+}
+
+/*
+ * The band is the last thing on the page, and on a phone it is a snap target too.
+ *
+ * Why it has to be one: the curtain is the only other element with a snap point,
+ * and it is about five viewports tall. Its aligned range ends where it stops
+ * covering the screen, 296px above the maximum scroll on a 390x844 phone -- which
+ * is exactly this band's height. So any scroll that brought the band into view sat
+ * outside every snap position, and the scroller pulled back to the last valid one,
+ * pushing the band off the bottom. That was the magnet.
+ *
+ * `end` and not `start`: aligning the band's top to the top of the screen needs
+ * more scroll than the document has, so that position is unreachable. Aligning its
+ * bottom to the bottom of the screen is exactly the maximum scroll, which makes it
+ * both reachable and the nearest thing to hold on to when the band arrives.
+ *
+ * Desktop declares none of this: its snap is off, so this is phone-only. Verify
+ * with the beacon's snap probe, which reports every snap target, its offset, and
+ * whether it is reachable.
+ */
+@media (max-width: 767px) {
+  .partners-band {
+    scroll-snap-align: end;
+  }
+}

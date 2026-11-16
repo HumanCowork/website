@@ -1,0 +1,171 @@
+/*
+ * Two rows of partner marks sliding past each other in opposite directions.
+ *
+ * The whole effect is one keyframe and no JavaScript. Each row's track carries
+ * its list twice and travels `translateX(-50%)`: at that point the duplicate sits
+ * exactly where the original started, so the loop restarts with nothing to see.
+ * The reverse row reuses the same keyframe with `animation-direction: reverse`,
+ * which starts on the duplicate instead of the original -- visually identical, so
+ * it is just as seamless, and there is still only one animation to maintain.
+ *
+ * Every dimension is a --partners-* token from globals.css.
+ */
+
+.partners-marquee {
+  display: flex;
+  flex-direction: column;
+  gap: var(--partners-row-gap);
+  margin-block-start: var(--partners-label-gap);
+}
+
+/*
+ * The viewport of each row. `overflow: hidden` is what turns a track that is
+ * wider than the screen into a window, and the mask is what keeps marks from
+ * colliding with the window's edge: without it they appear and vanish on a hard
+ * line, which is the single detail that makes a copied marquee read as broken.
+ *
+ * In a mask only the alpha channel matters, so those two stops are opacities, not
+ * colours -- the band's actual tone comes from the token above.
+ */
+.partners-row {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    rgb(0 0 0 / 0),
+    rgb(0 0 0 / 1) var(--partners-fade),
+    rgb(0 0 0 / 1) calc(100% - var(--partners-fade)),
+    rgb(0 0 0 / 0)
+  );
+  mask-image: linear-gradient(
+    90deg,
+    rgb(0 0 0 / 0),
+    rgb(0 0 0 / 1) var(--partners-fade),
+    rgb(0 0 0 / 1) calc(100% - var(--partners-fade)),
+    rgb(0 0 0 / 0)
+  );
+}
+
+/*
+ * `width: max-content` is load-bearing. Without it the flex track would shrink to
+ * its container and the list would compress instead of extending past the window,
+ * which breaks the seam.
+ */
+.partners-track {
+  display: flex;
+  width: max-content;
+  animation: partners-scroll var(--partners-marquee-duration) linear infinite;
+}
+
+.partners-row[data-direction="right"] .partners-track {
+  animation-direction: reverse;
+}
+
+@keyframes partners-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/*
+ * One copy of the list. The trailing padding must equal the gap, so that the
+ * space between the last mark and the duplicate's first mark is the same as every
+ * other space, and half the track is exactly one copy. Get this wrong and the
+ * loop lands short, which shows up as a stutter once per cycle.
+ */
+.partners-group {
+  display: flex;
+  align-items: center;
+  gap: var(--partners-column-gap);
+  margin: 0;
+  padding: 0;
+  padding-inline-end: var(--partners-column-gap);
+  list-style: none;
+}
+
+.partners-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Never let a long wordmark squeeze its neighbours. */
+  flex: none;
+}
+
+/*
+ * Every mark gets the same height and keeps its own width. That is the whole
+ * trick: equal heights make eight different companies read as one group, and the
+ * natural widths keep each wordmark legible instead of squeezed into a column.
+ *
+ * `object-fit: contain` with the width cap is the safety valve, and it earns its
+ * place in the still-grid branch below, where a mark can meet a narrow column. A
+ * distorted logo is worse than a small one.
+ */
+.partners-mark {
+  display: block;
+  height: var(--partners-logo-height);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  opacity: var(--partners-mark-opacity);
+}
+
+/*
+ * Reduced motion: not a slower marquee, but no marquee. Someone who asked the
+ * system for less motion is not asking for the same movement in slow motion, so
+ * the two rows become two still grids -- the list is unchanged, and only the
+ * transport goes away.
+ *
+ * The duplicate copy is dropped rather than hidden from view, so the eight
+ * companies are not laid out twice, and the animation is removed at the source
+ * instead of being paused, so nothing is left running off-screen.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .partners-row {
+    overflow: visible;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .partners-track {
+    /*
+     * Block, not flex. A flex item sizes to its content, so the two rows would
+     * settle at different widths (992px and 972px measured) and their columns
+     * would not line up. As a block the group fills the row and is capped by the
+     * band's own max-width, so both grids are identical.
+     */
+    display: block;
+    animation: none;
+    width: auto;
+  }
+
+  .partners-group[aria-hidden="true"] {
+    display: none;
+  }
+
+  .partners-group:not([aria-hidden="true"]) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    row-gap: var(--partners-row-gap);
+    max-width: var(--partners-max-width);
+    margin-inline: auto;
+    /* Overrides the loop's trailing spacer, which only the moving track needs. */
+    padding-inline: var(--partners-padding-inline);
+  }
+}
+
+/*
+ * Three columns, not four, and that is not a taste call. Four columns inside the
+ * band's 992px leave 200px each once the 48px gaps are paid, and the widest mark
+ * in the set (Wavetrail, 6.375 to 1) needs 204px at the 32px optical height. The
+ * cell would clip it, object-fit would shrink it whole, and that one mark would
+ * end up visibly smaller than the fifteen beside it -- the exact failure equal
+ * heights exist to prevent. Three columns leave 282px and every mark fits.
+ */
+@media (prefers-reduced-motion: reduce) and (min-width: 768px) {
+  .partners-group:not([aria-hidden="true"]) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
