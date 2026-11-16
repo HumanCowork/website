@@ -15,8 +15,8 @@
  *    the grid's row height on their own, and a card whose copy runs long simply
  *    makes its whole row taller. A fixed height would clip that copy or leave a
  *    hole where it was not needed.
- * 3. Nothing here relies on colour alone: every mark, title and label is text,
- *    and the tinted square only decorates a name that is already written out.
+ * 3. Nothing here relies on colour alone: every title and label is text, and the
+ *    mark only decorates a name that is already written out beside it.
  *
  * Every length comes from a token in `globals.css`; no numbers live here.
  */
@@ -59,10 +59,10 @@
 }
 
 /*
- * A card is a column, not a row: mark, name, what it does, what the community
- * did, and the label. The gap between children is smaller than the band's own
- * padding, so the air inside a card always reads as thinner than the air
- * between cards.
+ * A card is a column, not a row: portrait, then the mark with the project name,
+ * then what it does, what the community did, and the referent. The gap between
+ * children is smaller than the band's own padding, so the air inside a card
+ * always reads as thinner than the air between cards.
  */
 .community-card {
   display: flex;
@@ -75,23 +75,87 @@
 }
 
 /*
- * The wordmark, in CSS and from the initials. A tinted square with the case's
- * initials in the brand celeste, sized in em so it tracks the type it sits with.
- * There is no image behind this and none is loaded.
+ * The portrait frame. Full card width and a fixed 4:3 ratio, so the real
+ * photograph can drop in later without moving a single thing around it: the
+ * frame owns the shape, the image only fills it. The placeholder is the
+ * referent's initials over a tinted surface, drawn in CSS -- no file, no stock
+ * photo, no invented face. It is a finished surface, not a broken image.
  */
-.community-mark {
-  display: inline-flex;
+.community-portrait {
+  position: relative;
+  display: flex;
   align-items: center;
   justify-content: center;
-  inline-size: var(--community-mark-size);
-  block-size: var(--community-mark-size);
-  border-radius: var(--community-mark-radius);
-  background: var(--community-mark-background);
-  color: var(--community-mark-colour);
-  font-size: var(--community-mark-font-size);
+  aspect-ratio: var(--community-portrait-aspect);
+  inline-size: 100%;
+  overflow: hidden;
+  border-radius: var(--community-portrait-radius);
+  background: var(--community-portrait-background);
+}
+
+/* The source photo is cropped to fill the frame: never stretched, never distorted. */
+.community-portrait-image {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* The placeholder initials: large and pale, sized in the frame, never the subject. */
+.community-portrait-initials {
+  font-size: var(--community-portrait-initials-size);
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   line-height: 1;
+  color: var(--community-portrait-initials-colour);
+}
+
+/*
+ * The referent: name and role as plain text under the frame. Small and muted --
+ * a caption, not a heading -- and always present, whether or not a photo exists.
+ */
+.community-referent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--community-referent-gap);
+  margin: 0;
+}
+
+.community-referent-name {
+  font-size: var(--community-referent-name-size);
+  font-weight: 600;
+  color: var(--community-referent-name-colour);
+}
+
+.community-referent-role {
+  font-size: var(--community-referent-role-size);
+  color: var(--community-referent-role-colour);
+}
+
+/*
+ * The mark and the project name, on one line at the top of the card's text: the
+ * mark small on the left, the name as the real text. `align-items: center` keeps
+ * the mark optically centred on the name's cap height, and the small gap keeps
+ * them reading as one unit rather than as two separate things.
+ */
+.community-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--community-card-logo-gap);
+}
+
+/*
+ * The mark itself. Fixed height, width follows the artwork's own aspect ratio --
+ * so a wordmark and a symbol are both drawn at the same optical weight -- and
+ * never upscaled past its intrinsic height. `object-fit: contain` makes that
+ * safe whatever the file is.
+ */
+.community-card-logo {
+  block-size: var(--community-card-logo-height);
+  inline-size: auto;
+  max-inline-size: var(--community-card-logo-max-width);
+  object-fit: contain;
 }
 
 .community-card-title {
@@ -130,19 +194,11 @@
 }
 
 /*
- * The "in the community since" label. Muted and small -- a contextual label, not
- * a headline -- and pushed to the foot of the card so the labels line up across a
- * row whatever the copy above them does.
+ * The outbound link. Muted and small like the referent caption -- a label, not a
+ * headline.
  */
-.community-card-meta {
-  font-size: var(--community-card-meta-size);
-  color: var(--community-card-meta-colour);
-  margin: 0;
-  margin-block-start: auto;
-}
-
 .community-card-link {
-  font-size: var(--community-card-meta-size);
+  font-size: var(--community-card-link-size);
   font-weight: 600;
   color: var(--community-card-link-colour);
   text-decoration: none;

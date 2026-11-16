@@ -33,77 +33,145 @@
  *   4. `url` is empty until the real case, and the member's permission, exist.
  *      The card renders its link only when there is something to link to: no
  *      `href="#"` placeholder, ever.
+ *
+ * The marks themselves are fictional brand marks from fakelogo.com -- the same
+ * source as the partners band's, and the same warning applies: they are
+ * convincing on purpose and must be swapped for the member's own approved mark,
+ * with written permission, before publishing. None of them borrows a real
+ * company's name or mark.
+ *
+ * ON FILE WEIGHT, and it is the partners band's lesson paid for once already.
+ * A mark here is drawn small -- a 28px-tall slot beside the project name -- so
+ * downloading the source PNGs as served would be the "1920px image in a 255px
+ * slot" mistake again, sixteen times the pixels. The source files are 80px tall
+ * and 251-726px wide; each has been downscaled to 56px tall, exactly 2x the
+ * display box for crisp rendering on a 2x screen, and no wider than its own
+ * artwork needs. Pick a file whose intrinsic size matches the slot: 7-8KB each
+ * now, against 8-15KB from the source. The `logoWidth`/`logoHeight` below are the
+ * downscaled numbers, so they must be rewritten whenever a mark is replaced.
  */
 
 export type CommunityCase = {
   /** Working name of the project. Replaced once the real cases are cleared. */
   name: string;
   /**
-   * The mark, built from the name's initials in a tinted square. Typographic on
-   * purpose: a real logo needs the member's written approval to be published,
-   * and an invented one risks colliding with a real company's mark.
+   * The mark, rendered small beside the project name. Repository path relative
+   * to public/, PNG with transparency. Decorative here -- the project name is
+   * already real text right next to it -- so it is drawn `alt=""` and
+   * `aria-hidden`: never a second announcement of the same name.
    */
-  initials: string;
+  logo: string;
+  /**
+   * Intrinsic pixel size of the file, so the browser reserves the right box
+   * and never reflows once the mark arrives.
+   */
+  logoWidth: number;
+  logoHeight: number;
   /** One short line on what the project does. */
   summary: string;
   /** What the community did for it. The reason the case is on this page. */
   contribution: string;
-  /** The "in the community since" label, muted under the rest of the card. */
-  since: string;
+  /**
+   * The person behind the project: their name and their role, shown as plain
+   * text under the media frame. Both are placeholder copy until the real member
+   * is named with their written permission.
+   */
+  referent: {
+    name: string;
+    role: string;
+  };
+  /**
+   * The referent's portrait, shown in the frame above the project name. Empty
+   * for now: the placeholder below is what renders until the real, authorised
+   * photograph exists. The placeholder is a disclosure for the code, never for
+   * the page -- nothing here explains itself to the reader (see L4 of
+   * odd/tasks/community-cases.md).
+   */
+  photo: string;
   /** The outbound link, once there is one. Empty means no link is rendered. */
   url: string;
 };
 
 export const COMMUNITY_HEADING = "Proyectos que empezaron acá";
 
+/*
+ * The widest a mark is ever drawn: the tallest a mark goes (28px, the top of
+ * --community-card-logo-height) times the widest aspect in the set (Lumen, at
+ * 321x56, is 5.73 to 1), so 160px.
+ *
+ * This is a `sizes` hint, not a style: it lives here, not in the CSS, because it
+ * only tells the browser how large a file to fetch. Without it, next/image
+ * assumes a mark may span the viewport and offers a srcset running to 1920px.
+ * It has to move with --community-card-logo-height.
+ */
+export const COMMUNITY_MARK_SLOT_WIDTH = "160px";
+
 
 export const COMMUNITY_CASES: CommunityCase[] = [
   {
     name: "Nutria",
-    initials: "NU",
+    logo: "/images/community/nutria.png",
+    logoWidth: 276,
+    logoHeight: 56,
     summary: "Trazabilidad de alimentos para restaurantes y proveedores.",
     contribution: "La comunidad ayudó a validar el modelo y abrió las primeras cocinas.",
-    since: "En la comunidad desde 2023",
+    referent: { name: "Camila Ferrer", role: "Fundadora" },
+    photo: "",
     url: "",
   },
   {
     name: "Balseiro",
-    initials: "BA",
+    logo: "/images/community/balseiro.png",
+    logoWidth: 282,
+    logoHeight: 56,
     summary: "Software de gestión para estudios contables pequeños.",
     contribution: "Dos personas del espacio revisaron el producto antes de lanzarlo.",
-    since: "En la comunidad desde 2023",
+    referent: { name: "Martín Ibarra", role: "Socio fundador" },
+    photo: "",
     url: "",
   },
   {
     name: "Orbita",
-    initials: "OR",
+    logo: "/images/community/orbita.png",
+    logoWidth: 251,
+    logoHeight: 56,
     summary: "Monitoreo satelital de cultivos con imágenes abiertas.",
     contribution: "El equipo encontró acá su primer cliente del sector agro.",
-    since: "En la comunidad desde 2024",
+    referent: { name: "Sofía Aguirre", role: "Cofundadora" },
+    photo: "",
     url: "",
   },
   {
     name: "Cantera",
-    initials: "CA",
+    logo: "/images/community/cantera.png",
+    logoWidth: 270,
+    logoHeight: 56,
     summary: "Materiales de construcción con trazabilidad de origen.",
     contribution: "Salió de una conversación en el espacio y creció en la comunidad.",
-    since: "En la comunidad desde 2024",
+    referent: { name: "Diego Salas", role: "Fundador" },
+    photo: "",
     url: "",
   },
   {
     name: "Lumen",
-    initials: "LU",
+    logo: "/images/community/lumen.png",
+    logoWidth: 321,
+    logoHeight: 56,
     summary: "Iluminación eficiente para locales comerciales.",
     contribution: "Otros miembros del espacio acompañaron la puesta en marcha.",
-    since: "En la comunidad desde 2025",
+    referent: { name: "Lucía Benítez", role: "Fundadora" },
+    photo: "",
     url: "",
   },
   {
     name: "Tregua",
-    initials: "TR",
+    logo: "/images/community/tregua.png",
+    logoWidth: 291,
+    logoHeight: 56,
     summary: "Reservas y turnos para centros de salud.",
     contribution: "El grupo le dio criterio técnico en la primera etapa del producto.",
-    since: "En la comunidad desde 2025",
+    referent: { name: "Tomás Vidal", role: "Fundador" },
+    photo: "",
     url: "",
   },
 ];

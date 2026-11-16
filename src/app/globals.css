@@ -437,23 +437,45 @@
   --community-heading-gap: 3rem;
   --community-heading-gap-mobile: 2rem;
   /*
-   * The wordmark, built in CSS from the case's initials. Typographic on purpose:
-   * a real logo needs the member's written approval to publish, and an invented
-   * one risks colliding with a real company's mark.
+   * The mark beside the project name. A fictional brand mark from fakelogo.com
+   * -- the same source and the same swap-before-publishing warning as the
+   * partners band's -- drawn small and decorative: the project name is the real
+   * text, the image repeats nothing the reader cannot already read.
+   *
+   * The height is fixed and the width follows the file, so a symbol and a
+   * wordmark land at the same optical weight, and the max-width is the widest
+   * aspect in the set (Lumen, 321x56) so nothing is ever clipped. The file itself
+   * is downscaled to 2x this height, not shipped at its source size: a 28px slot
+   * does not need the pixels a 726px-wide source carries.
    */
-  --community-mark-size: 3rem;
-  --community-mark-radius: 0.75rem;
-  --community-mark-background: var(--primary-subtle);
-  --community-mark-colour: var(--brand-celeste);
-  --community-mark-font-size: 1rem;
+  --community-card-logo-height: 1.75rem; /* 28px */
+  --community-card-logo-max-width: 10rem; /* 160px: 28px * 5.73, the widest aspect */
+  --community-card-logo-gap: 0.625rem; /* air between the mark and the name */
   --community-card-title-size: 1.25rem; /* 20px: the bottom of the 20-24px range */
   /* The page's own body voice (text-lg, 18px), not a smaller size: a sibling
      section once shrank this and read as a foreign type treatment on the page. */
   --community-card-body-size: 1.125rem;
   --community-card-body-colour: var(--muted-foreground);
-  --community-card-meta-size: 0.875rem; /* 14px, muted: a label, not a headline */
-  --community-card-meta-colour: var(--muted-foreground);
+  --community-card-link-size: 0.875rem; /* 14px, muted: a label, not a headline */
   --community-card-link-colour: var(--brand-celeste);
+  /*
+   * The portrait frame for the person behind the project. The frame owns the
+   * shape (a fixed 4:3 at full card width) so a real photograph drops in later
+   * without touching the layout. Until it exists, the placeholder is the
+   * referent's initials over a tinted surface -- drawn in CSS, no file, no
+   * stock photo, no invented face, no borrowed logo.
+   */
+  --community-portrait-aspect: 4 / 3;
+  --community-portrait-radius: 0.75rem;
+  --community-portrait-background: var(--primary-subtle);
+  --community-portrait-initials-size: clamp(2rem, 5vw, 2.75rem);
+  --community-portrait-initials-colour: var(--brand-celeste);
+  /* The referent's name and role, as a small muted caption under the frame. */
+  --community-referent-gap: 0.125rem;
+  --community-referent-name-size: 0.9375rem; /* 15px */
+  --community-referent-name-colour: var(--heading);
+  --community-referent-role-size: 0.875rem; /* 14px */
+  --community-referent-role-colour: var(--muted-foreground);
 
   --about-grid-gap: 1.25rem;
   --about-subcolumn-gap: 1.25rem;
