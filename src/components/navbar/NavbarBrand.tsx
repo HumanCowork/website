@@ -5,22 +5,33 @@ export function NavbarBrand() {
   return (
     <Link
       href="/"
-      className="flex items-center gap-3 group transition-opacity hover:opacity-90"
+      className="ml-(--navbar-logo-optical-pull) flex items-center gap-3 group transition-opacity hover:opacity-90"
       aria-label="Human Cowork - Inicio"
     >
-      <div className="relative w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0">
+      {/*
+        The box is sized by --navbar-logo-size; the `sizes` hint must mirror that
+        number. Point it too low and the browser downloads a variant smaller than
+        the box, which is then upscaled and looks soft.
+      */}
+      <div className="relative size-(--navbar-logo-size) flex-shrink-0">
         <Image
           src="/images/logo.png"
           alt="Human Cowork Logo"
           fill
           priority
-          sizes="(max-width: 640px) 36px, 40px"
+          sizes="32px"
           className="object-contain"
         />
       </div>
-      <span className="font-semibold text-sm sm:text-base tracking-tight text-[#0f172a]">
-        Human Cowork
-      </span>
+      <div className="relative h-4 sm:h-4.5 w-28 sm:w-32 flex-shrink-0">
+        <Image
+          src="/images/wordmark.webp"
+          alt="Human Cowork"
+          fill
+          priority
+          className="object-contain object-left"
+        />
+      </div>
     </Link>
   );
 }

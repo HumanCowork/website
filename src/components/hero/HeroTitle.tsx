@@ -1,9 +1,17 @@
+import Image from "next/image";
+
 export function HeroTitle() {
   return (
-    <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-extrabold tracking-tighter leading-tight text-primary text-center w-full">
-      <span className="block">El punto de encuentro</span>
-      <span className="block">para emprendedores</span>
-      <span className="block">del desarrollo en Córdoba.</span>
-    </h1>
+    <div className="flex justify-center items-center w-full py-2">
+      <div className="hero-logo-shadow relative w-80 sm:w-96 md:w-(--hero-logo-size-md) lg:w-(--hero-logo-size-lg) xl:w-(--hero-logo-size-xl) aspect-square">
+        <Image
+          src="/images/logo-hero.webp"
+          alt="Human Cowork Logo"
+          fill
+          priority
+          className="object-contain"
+        />
+      </div>
+    </div>
   );
 }

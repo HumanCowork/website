@@ -1,0 +1,25 @@
+/*
+ * Hero effects.
+ *
+ * The hero's logo and subtitle each carry a drop shadow so they stay legible
+ * over the moving background. Drop shadow is a `filter`, and a filter value
+ * cannot travel through a utility class, so the two live here and read their
+ * value from the tokens in globals.css. Same pattern as FeaturesCurtain.css.
+ */
+
+.hero-logo-shadow {
+  filter: drop-shadow(var(--hero-logo-shadow));
+}
+
+.hero-subtitle-shadow {
+  filter: drop-shadow(var(--hero-subtitle-shadow));
+}
+
+/*
+ * Text shadow, not `filter`. On the outlined button a filter would trace the
+ * transparent box and its white border as well as the letters; `text-shadow`
+ * only touches the glyphs, which is what was asked for.
+ */
+.hero-outline-label-shadow {
+  text-shadow: var(--hero-outline-label-shadow);
+}

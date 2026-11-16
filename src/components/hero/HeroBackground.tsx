@@ -1,24 +1,32 @@
 "use client";
 
+import { TiltedTiles } from "@/components/ui/tilted-tiles";
+import { COMMUNITY_IMAGES } from "@/lib/communityImages";
+
 export function HeroBackground() {
   return (
     <div
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
     >
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="w-full h-full object-cover"
-      >
-        <source src="/videos/hero-bg.webm" type="video/webm" />
-        <source src="/videos/hero-bg.mp4" type="video/mp4" />
-      </video>
-      {/* Velo blanco calibrado al 50% con ligero filtro de contraste */}
-      <div className="absolute inset-0 bg-white/50" />
+      <TiltedTiles
+        images={COMMUNITY_IMAGES}
+        columns={13}
+        tilesPerColumn={6}
+        rowGap={5}
+        columnGap={5}
+        perspective={750}
+        rotateX={17}
+        rotateY={4}
+        rotateZ={-23}
+        stagger={24}
+        fadeTop={0}
+        saturation={1.4500000000000002}
+        duration={60}
+        parallax={true}
+        parallaxStrength={1.5}
+        className="w-full h-full"
+      />
     </div>
   );
 }

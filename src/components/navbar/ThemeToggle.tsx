@@ -2,6 +2,14 @@
 
 import { useEffect, useState } from "react";
 
+/*
+ * NOT MOUNTED, on purpose. The site is being built in one mode only, so nothing
+ * follows the visitor's system preference and no component has a second look to
+ * check. The dark palette still lives in globals.css, inert: without the `.dark`
+ * class this component is the only thing that ever added, none of it applies.
+ * Re-mount it when the palette is mirrored — and mirror it then, not per
+ * component.
+ */
 export function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -32,7 +40,7 @@ export function ThemeToggle() {
   };
 
   if (!mounted) {
-    return <div className="w-8 h-8" />;
+    return <div className="size-(--navbar-control-size)" />;
   }
 
   return (
@@ -40,7 +48,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-      className="w-8 h-8 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-950 hover:bg-slate-100 transition-colors"
+      className="size-(--navbar-control-size) rounded-full flex items-center justify-center text-slate-600 hover:text-slate-950 hover:bg-slate-100 transition-colors"
     >
       {isDark ? (
         <svg
