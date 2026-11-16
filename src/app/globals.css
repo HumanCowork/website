@@ -4,15 +4,336 @@
   --background: #ffffff;
   --foreground: #0f172a;
   --heading: #0f172a;
-  --primary: #1271b7;
+  /*
+   * The brand celeste. One declaration on purpose: every celeste surface points
+   * here — the buttons, the curtain's flat backdrop for phones, the rotating word
+   * in the curtain title, and the label of the white button. When this value
+   * changes, all of them change together.
+   */
+  --brand-celeste: #0f70b7;
+  --primary: var(--brand-celeste);
   --primary-hover: #0e5b94;
-  --primary-subtle: #f0f7fc;
+  --primary-subtle: rgb(15 112 183 / 0.06);
   --primary-foreground: #ffffff;
   --muted: #f8fafc;
   --muted-foreground: #475569;
   --border: #e2e8f0;
   --card: #ffffff;
   --shadow-floating: -14px 18px 38px -8px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --shadow-action: 0 6px 18px -2px rgba(2, 12, 32, 0.28); /* lift under buttons */
+  /*
+   * The outlined hero button is transparent, so its depth has to come from the
+   * shadow alone. `--shadow-action` is tuned for a white surface and disappears
+   * against the brand blue, so this variant is darker, drops further and keeps a
+   * positive spread instead of shrinking.
+   */
+  --shadow-action-outline: 0 10px 26px -4px rgba(1, 8, 22, 0.55);
+
+  /*
+   * The inverted call to action: white surface, celeste label. Both values are
+   * theme-independent on purpose — that button always sits on the curtain blue
+   * (the hero media on top, the #3171c4 curtain below), never on the page
+   * surface, so it must not follow the theme the way the page tokens do. Its
+   * hover cannot borrow `--primary-subtle` either: that token turns translucent
+   * in the dark theme and the backdrop would show through.
+   */
+  --cta-inverted-text: var(--brand-celeste); /* the brand celeste on a white surface */
+  --cta-inverted-hover: #eaf3fb;
+  --navbar-max-width: 62vw;
+  --navbar-max-width-sm: 94vw;
+  --navbar-max-width-wide: 58vw;
+  --navbar-shadow: 10px 10px 24px -4px rgba(0, 0, 0, 0.35);
+
+  /*
+   * Navbar geometry. The bar's height is emergent — block padding plus its
+   * tallest child — so it is tuned through these numbers and never through a
+   * fixed height or a magic padding picked inside a component. Shrinking any one
+   * of them alone does nothing: the tallest child sets the floor.
+   */
+  --navbar-padding-block: 0.75rem; /* vertical padding of the pill */
+  --navbar-padding-inline: 1.25rem; /* horizontal inset, phones */
+  --navbar-padding-inline-wide: 1.75rem; /* horizontal inset, sm and up */
+  --navbar-logo-size: 1.75rem; /* square logo box */
+
+  /*
+   * Optical correction, and the one inset that is deliberately NOT symmetric.
+   * The logo is a circle inscribed in a square, so the only point of it sitting on
+   * the padding line is the tangent at mid-height; everywhere else the ink falls
+   * inside — about 3px of the box on average, up to 8px near the caps. Resting the
+   * mark on the same padding line as the straight-edged button therefore reads as
+   * a wider left gap, so the mark is pulled out by roughly that average. Set it to
+   * 0 to go back to geometrically equal insets.
+   */
+  --navbar-logo-optical-pull: -3px;
+  --navbar-control-size: 1.75rem; /* theme toggle hit box */
+
+  /*
+   * Curtain two-phase reveal (consumed by FeaturesCurtain.css).
+   * Phase 1: the curtain rises with its title centred and still, as before.
+   * Phase 2: only once the curtain fully covers the viewport, extra scroll slides
+   * that title out to the left and brings a second text in from the right.
+   */
+  --curtain-exit-run: 300vh; /* How long the pinned run lasts. The hold scales with it. */
+  --curtain-hold: 0.7; /* Share of that run where nothing moves, so the title can be read. */
+  /*
+   * The same courtesy at the other end: extra distance after the run is over, so
+   * the About stays on screen and gets read before the partners band arrives.
+   *
+   * It is a separate element rather than a longer run on purpose. `--curtain-hold`
+   * can be a share of the run because the opening choreography is keyed to that
+   * run anyway; the About's arrival is too. Every `animation-range` out there is
+   * `--curtain-exit-run` times a share, so lengthening the run to buy a wait would
+   * drag the title's exit and the About's entrance along with it. An element after
+   * the run adds the wait without touching one tuned value: the run keeps its
+   * height, every share keeps its meaning, and the stage simply sticks for longer.
+   */
+  --curtain-tail-hold: 80vh; /* Pin still held: the About waits, nothing moves. */
+  --curtain-tail-gap: 8rem; /* No pin to hold (phones): just air before the band. */
+  --curtain-exit-end: 0.88; /* Where the title finishes leaving (share of the run). */
+  --curtain-enter-start: 0.85; /* Where the second text starts arriving in (share of the run). */
+  --curtain-exit-distance: 60vw; /* How far left the title travels as it leaves. */
+  --curtain-enter-distance: 45vw; /* How far right the incoming text starts. */
+  --curtain-exit-duration: 1ms; /* Required by Firefox for scroll-driven animations. */
+
+  /*
+   * Curtain surface and text.
+   */
+  --curtain-backdrop: var(--brand-celeste); /* Flat backdrop for phones; the desktop shader keeps its own palette. */
+  --curtain-radius: 2.5rem; /* Top corners that lift the curtain over the hero. */
+  --curtain-max-width: 94vw;
+  --curtain-edge-shadow: 0 -25px 60px rgba(0, 0, 0, 0.35);
+  --curtain-title-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --curtain-subtitle-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+
+  /*
+   * The call to action under the subtitle. It is held invisible at the start and
+   * arrives on scroll on its own, so it never shares an entrance with the title.
+   * `--curtain-cta-end` must stay below `--curtain-hold`: the button has to be
+   * fully in and readable well before the title begins to leave.
+   */
+  --curtain-cta-start: 0.35; /* Share of the run where it starts fading in. */
+  --curtain-cta-end: 0.55; /* Share where it is fully in. */
+  --curtain-cta-rise: 1.25rem; /* How far up it travels as it fades in. */
+  --curtain-cta-gap: 2rem; /* Space between the subtitle and the button. */
+  /*
+   * The same space on a phone, and tighter.
+   *
+   * The button is out of flow: it is positioned against the title block, not laid
+   * out after it, so the mobile column gap never reaches it and this token is the
+   * only lever. Paired with the margin reset in FeaturesCurtain.css, the air
+   * between subtitle and button goes from 56px to 12px -- and that is what stops
+   * the button from landing on top of the About below it, which it was doing by
+   * 24px before.
+   *
+   * Worth knowing before touching the desktop value: `space-y-6 sm:space-y-8` on
+   * the title block also puts a 24px (32px from `sm` up) `margin-top` on this
+   * absolutely positioned child, and it adds itself to the offset. On a desktop the
+   * real air is therefore 64px, not the 32px this token names. Resetting that
+   * margin is only done on phones, because on a desktop it is part of an offset
+   * that was already tuned.
+   */
+  --curtain-cta-gap-mobile: 0.75rem;
+
+  /*
+   * The rotating word in the curtain title: a white highlight block with the brand
+   * celeste on the letters, matching the inverted call to action above it. Both
+   * are theme-independent on purpose — the curtain backdrop is a flat brand blue
+   * in either theme, so this word must not follow the page surface.
+   */
+  --curtain-rotating-highlight: #ffffff;
+  --curtain-rotating-text: var(--brand-celeste);
+  /*
+   * Bottom room inside the sliding mask. It is 0 because it was measured, not
+   * assumed: at the largest title size (96px font, 120px line box) the line box
+   * already leaves 24.5px below the baseline and the deepest ink of a descender
+   * (`p` in "emprendedores") only reaches 20px. So nothing is clipped and the
+   * white block stays tight and centred. Re-measure if the font or the leading
+   * changes.
+   */
+  --curtain-rotating-mask-padding: 0;
+  /*
+   * The white block in the curtain title. The component paints it on its outer
+   * span with 0.1em of padding around a full line box (1.25em), which reads far
+   * taller than the letters: 139px of white for 90px of ink at the current size.
+   * These two tokens size it to the ink instead, and the top air — the only part
+   * of the line box with slack — is what gets clipped.
+   */
+  --curtain-rotating-highlight-height: 1.04em;
+  --curtain-rotating-highlight-pad-block: 0;
+
+  /*
+   * About section: two columns of photo grids, the right one pushed down so the
+   * pair reads as a spread instead of a table. The photographs are 600x600 squares
+   * (see src/lib/communityImages.ts), so the portrait and landscape frames crop
+   * them with object-cover. Every value below is tunable here, in one place.
+   */
+  --about-max-width: 100%;
+  --about-padding-block: 6rem;
+  --about-padding-block-sm: 4rem;
+  --about-column-gap: 2.5rem;
+  --about-column-offset: 4.5rem;
+  /*
+   * How far the left column drops. The phase-two panel is exactly one screen tall
+   * and clips, so this is the value to tune if the left block's photographs start
+   * being cut off at the bottom. Owner's scale so far: 50vh → 25vh → 10vh, each time
+   * still too much.
+   */
+  --about-left-offset: 10vh;
+  /*
+   * Space between the left column's text and its photographs. Expressed in vh to
+   * match the offset above, so both read on the same scale.
+   */
+  --about-left-text-gap: 10vh;
+  /*
+   * How far the right column's photographs sit below its own top edge. Same scale as
+   * the two above; the owner asked for 10%.
+   */
+  --about-right-photos-offset: 10vh;
+  /*
+   * How much the whole right column comes back up from its base offset. The owner
+   * asked for it in steps: 5%, then another 2% on top — 7% in total.
+   */
+  --about-right-column-lift: 7vh;
+  /*
+   * Gap between the About blocks once the section stops being two columns. One
+   * value for the whole reading sequence on a phone: story, its photos, the other
+   * text, its photos.
+   */
+  --about-mobile-gap: 2.5rem;
+  /*
+   * Space between the curtain's title and the About once a phone stacks them.
+   */
+  --curtain-mobile-gap: 4rem;
+  /*
+   * Air above and below the stage on a phone. Inside a full screen the content is
+   * centred and needs no breathing room; once the stage stops pinning, the title
+   * sits at its very top edge and the absolutely-positioned call to action hangs
+   * below its bottom edge.
+   */
+  --curtain-mobile-padding-block: 3rem;
+  /*
+   * The curtain title on a phone. At the desktop size it forces one word per line
+   * on a screen that narrow.
+   */
+  --curtain-title-size-mobile: 1.875rem;
+
+  /*
+   * Partners band. The page's third surface, and the quiet one: the curtain
+   * already owns the loud colour, so this band only has to signal a change of
+   * role -- from our own voice to someone else's. Cool-tinted rather than warm,
+   * because the brand is a blue and a warm ivory beside it reads as a mistake.
+   */
+  --partners-band: #eef2f7;
+  --partners-max-width: 62rem;
+  --partners-padding-block: clamp(3.5rem, 8vw, 5.5rem); /* 56 -> 88px */
+  --partners-padding-inline: 1.5rem;
+  --partners-label-size: 0.6875rem; /* 11px: a contextual label, not a headline */
+  --partners-label-tracking: 0.18em;
+  --partners-label-gap: 2.5rem;
+  /* The box every mark sits in, so the row keeps its height once real logos land. */
+  /*
+   * Bigger marks, so fewer of them share the screen at once. At 32px about seven
+   * sat in view together; at 40px about five do. A wall you can take in at a
+   * glance is not a list that continues.
+   */
+  --partners-logo-height: clamp(1.75rem, 4.5vw, 2.5rem); /* 28 -> 40px optical height */
+  /* The air between marks, and the only thing separating them: they are one tone. */
+  --partners-column-gap: clamp(2rem, 5vw, 3.75rem); /* 32 -> 60px */
+  --partners-row-gap: clamp(1.75rem, 4vw, 2.5rem); /* 28 -> 40px */
+  /*
+   * One tone for every mark. The files are already monochrome, dark on
+   * transparent, so this only tunes how loudly they sit on the band rather than
+   * doing the monochrome work itself.
+   */
+  --partners-mark-opacity: 0.72;
+  /*
+   * The marquee. Two rows slide past each other in opposite directions, and the
+   * loop is seamless because the track carries the row twice and travels half
+   * its own width, where the duplicate sits exactly over the original.
+   *
+   * Why 38s: the duration cannot be measured from content width in CSS, so it is
+   * tuned by hand -- and a duration copied from a tutorial is the usual bug here,
+   * because a row of six short marks and a row of eight wide ones need different
+   * times to move at the same speed. Both rows hold 3246px and 3240px of marks
+   * (a 0.2% difference, so one value serves both), which at the 40px display
+   * height is a 2103px copy: 38s puts it at 55px per second on a desktop and 37px
+   * on a phone. Re-derive it as `copy width / 55` if the count, the optical height
+   * or the gap ever changes.
+   */
+  --partners-marquee-duration: 38s;
+  /* How far each edge dissolves, so marks enter and leave instead of clipping. */
+  --partners-fade: 8%;
+  --about-grid-gap: 1.25rem;
+  --about-subcolumn-gap: 1.25rem;
+  --about-subcolumn-offset: 3rem;
+  --about-photo-radius: 1.25rem;
+  --about-photo-shadow: 0 18px 44px -18px rgba(15, 23, 42, 0.35);
+  /*
+   * Text colours on the curtain's celeste backdrop. Deliberately absolute rather
+   * than theme tokens: the section always sits on brand blue, the same reason
+   * --cta-inverted-* exist.
+   */
+  --about-heading-color: #ffffff;
+  --about-body-color: rgb(255 255 255 / 0.85);
+  --about-text-gap: 1.25rem;
+  --about-heading-size: 3rem;
+  --about-body-size: 1.0625rem;
+  --about-body-leading: 1.7;
+  --about-aspect-portrait: 3 / 4;
+  --about-aspect-square: 1 / 1;
+  --about-aspect-landscape: 4 / 3;
+
+  /*
+   * Hero content. The logo box is a fixed square that steps up through the
+   * breakpoints; the two shadows keep the white logo and the subtitle legible
+   * over the hero media.
+   */
+  --hero-max-width: 94vw;
+  --hero-max-width-wide: 90vw;
+  --hero-logo-size-md: 28rem;
+  --hero-logo-size-lg: 32rem;
+  --hero-logo-size-xl: 36rem;
+  --hero-logo-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --hero-subtitle-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+  /*
+   * Text shadow for the label of the outlined hero button only. It is a
+   * `text-shadow`, not a box shadow: it darkens the glyphs themselves so the
+   * white words read over the hero media, without drawing anything around the
+   * transparent button. The celeste button beside it deliberately has no label
+   * shadow — its surface already carries contrast.
+   */
+  --hero-outline-label-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+/*
+ * The curtain's arrival on a phone ends at a stop: it catches the viewport and
+ * covers it, so a strong swipe cannot carry the title past the reader.
+ *
+ * Why proximity and not mandatory, per the spec and the field guides: the curtain
+ * is taller than the viewport and holds a sticky stage. mandatory would fight a
+ * reader scrolling inside it (MDN: "Never use mandatory if the content inside one
+ * of your child elements will overflow the parent container") and stutters
+ * against pinning. proximity is the documented choice for exactly this shape.
+ *
+ * It lives on html because that is the root scroller: scroll-snap-type on the root
+ * element applies to the viewport, while it is explicitly NOT propagated from
+ * body. It also keeps the root scroller on iOS, so the address bar still collapses.
+ * The stop itself is declared by the curtain, which is the thing that arrives.
+ */
+@media (max-width: 767px) {
+  html {
+    scroll-snap-type: y proximity;
+  }
+}
+
+/*
+ * Snapping moves content the visitor did not ask to move. WCAG C39 / SC 2.3.3:
+ * honour the preference and drop to an ordinary scrolling page, not a worse one.
+ */
+@media (max-width: 767px) and (prefers-reduced-motion: reduce) {
+  html {
+    scroll-snap-type: none;
+  }
 }
 
 .dark {
@@ -28,6 +349,7 @@
   --border: #1e293b;
   --card: #0f172a;
   --shadow-floating: -14px 18px 38px -8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --navbar-max-width: 62vw;
 }
 
 @theme inline {
@@ -43,10 +365,32 @@
   --color-border: var(--border);
   --color-card: var(--card);
   --shadow-floating: var(--shadow-floating);
+  --shadow-action: var(--shadow-action);
+  --shadow-action-outline: var(--shadow-action-outline);
+
+  /*
+   * Type scale roles. `--font-sans` is the body/UI voice;
+   * `--font-display` is the heading voice. Both point at the variables
+   * next/font generates in layout.tsx, so this file is the only place that
+   * binds a role to a typeface.
+   */
+  --font-sans: var(--font-outfit);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-outfit);
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-sans);
   font-feature-settings: "rlig" 1, "calt" 1;
 }

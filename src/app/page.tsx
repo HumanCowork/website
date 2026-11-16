@@ -1,10 +1,13 @@
 import { Navbar } from "@/components/navbar/Navbar";
 import { Hero } from "@/components/hero/Hero";
 import { FeaturesCurtain } from "@/components/features/FeaturesCurtain";
+import { PartnersSection } from "@/components/partners/PartnersSection";
+import { DiagnosticsBeacon } from "@/components/DiagnosticsBeacon";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-white text-slate-900">
+    <div className="relative min-h-screen bg-transparent text-slate-900">
+      <DiagnosticsBeacon />
       <Navbar />
       {/* Contenedor del Hero con altura de pista para el efecto cortina */}
       <div className="relative h-screen w-full">
@@ -12,8 +15,10 @@ export default function Home() {
           <Hero />
         </div>
       </div>
-      {/* Cortina blanca que sube por encima del Hero */}
+      {/* Cortina que sube por encima del Hero */}
       <FeaturesCurtain />
+      {/* Banda de partners: superficie propia, fuera de la cortina */}
+      <PartnersSection />
     </div>
   );
 }
