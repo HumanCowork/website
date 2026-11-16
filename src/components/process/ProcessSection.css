@@ -304,9 +304,10 @@
  * From there the fade must run to the very end of the travel. Compressing it into
  * the first half (reaching full at 50%) measures well and reads badly: the item
  * materialises instead of arriving, which is the opposite of the effect this is
- * meant to produce. Measured with the fade spread over the whole travel and the
- * crossing dimmed: 0.05 at 10%, 0.08 at 16%, 0.1 at 20%, then a gradual climb to
- * full as the item settles.
+ * meant to produce. So the fade runs the whole travel and the crossing carries only
+ * a few hundredths of full opacity (--process-arrive-dim): at that level the item
+ * is not something the eye catches, it is simply not there yet -- and then it
+ * arrives. The heading crosses at the same level, since it shares this curve.
  *
  * The stops have to be literal percentages -- a keyframe selector cannot take a
  * variable -- but the opacity they carry comes from a token.
