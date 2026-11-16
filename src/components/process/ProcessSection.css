@@ -295,11 +295,29 @@
  * the left travels further: the queue reads as one row entering from the right
  * rather than as five items nudging themselves into position. The stage clips
  * sideways starts, so nothing is visible before an item's own window opens.
+ *
+ * The opacity curve is the point of the arrival, not decoration. A plain 0-to-1
+ * ramp across the whole travel leaves the item faintly visible exactly while it
+ * is crossing the window's right edge, which is the one moment it should not be
+ * noticed. So it stays all but invisible through the crossing.
+ *
+ * From there the fade must run to the very end of the travel. Compressing it into
+ * the first half (reaching full at 50%) measures well and reads badly: the item
+ * materialises instead of arriving, which is the opposite of the effect this is
+ * meant to produce. Measured with the fade spread over the whole travel and the
+ * crossing dimmed: 0.05 at 10%, 0.08 at 16%, 0.1 at 20%, then a gradual climb to
+ * full as the item settles.
+ *
+ * The stops have to be literal percentages -- a keyframe selector cannot take a
+ * variable -- but the opacity they carry comes from a token.
  */
 @keyframes process-item-arrive {
   from {
     opacity: 0;
     transform: translateX(var(--process-arrive-shift));
+  }
+  20% {
+    opacity: var(--process-arrive-dim);
   }
   to {
     opacity: 1;

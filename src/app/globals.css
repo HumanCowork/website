@@ -311,6 +311,12 @@
      start reads as lag rather than as movement. It still starts at 0%, the moment
      the pin begins. */
   --process-heading-run: 6.5%;
+  /* How visible an item is while it is still crossing the window's right edge.
+     Low on purpose: the eye should not catch the crossing, only the arrival
+     inside the window, close to the edge it came in through. The stops that
+     place this value on the timeline live in the keyframes, whose selectors
+     cannot take a variable. */
+  --process-arrive-dim: 0.1;
   /* The edge every arrival comes from: the right edge of the window. Named as a
      token because it is the one geometric fact the arrival depends on.
 
