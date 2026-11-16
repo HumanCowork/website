@@ -212,9 +212,10 @@
     }
 
     /*
-     * The arrival. The heading and every step own a window, each derived from
-     * its own `--i`, so adding an item to the queue is one entry in the data file
-     * and nothing else. The two share one rule so they cannot drift apart.
+     * The arrival. Every item owns a window; a step's is derived from its own
+     * `--i`, so adding one to the queue is a single entry in the data file. The
+     * timing longhands stay shared so the heading and the steps cannot drift
+     * apart -- only the range differs, because the heading's window is its own.
      *
      * `fill-mode: both` is what makes them accumulate. Before its window an item
      * holds its `from` state, which is invisible; after its window it holds its
@@ -230,8 +231,42 @@
       animation-fill-mode: both;
       animation-iteration-count: 1;
       animation-timeline: --process-timeline;
+    }
+
+    /*
+     * The heading leads the queue and is given a shorter window of its own: the
+     * reader has just pinned the section and is waiting, so a long crawl reads as
+     * lag rather than as arrival. It starts at the window's right edge and travels
+     * the whole way in.
+     */
+    .process-heading {
+      animation-range: 0% var(--process-heading-run);
+      --process-arrive-shift: calc(
+        var(--process-window-edge) - var(--process-stage-padding-inline)
+      );
+    }
+
+    /*
+     * Every step derives its window, and its arrival distance, from its own `--i`,
+     * so adding a step to the data file is the whole change. Each one begins at
+     * the window's right edge and travels to its own column, which is what makes
+     * the row read as sliding in from the right rather than as items fading up in
+     * place. A step nearer the left therefore travels further: `100%` is its own
+     * column width and the gap is the grid's, so its track position is never
+     * written out a second time and cannot drift from the grid.
+     *
+     * This cannot move to globals.css: it depends on `--i`, which only exists on
+     * the item, and a custom property declared on :root cannot see it -- the
+     * substitution would fail silently and the items would never move. Every
+     * amount it uses is a token.
+     */
+    .process-step {
       animation-range: calc(var(--i) * var(--process-reveal-pitch))
         calc(var(--i) * var(--process-reveal-pitch) + var(--process-reveal-run));
+      --process-arrive-shift: calc(
+        var(--process-window-edge) - var(--process-stage-padding-inline) -
+          (var(--i) - 1) * (100% + var(--process-column-gap))
+      );
     }
 
     /*
@@ -255,14 +290,16 @@
   }
 }
 /*
- * Arrives from the right and settles leftward into place. The distance is small
- * on purpose: enough to read as movement, not so much that the step looks like it
- * is being thrown in.
+ * Arrives from the right edge of the window and settles leftward into place. The
+ * distance is per item and comes from --process-arrive-shift, so an item nearer
+ * the left travels further: the queue reads as one row entering from the right
+ * rather than as five items nudging themselves into position. The stage clips
+ * sideways starts, so nothing is visible before an item's own window opens.
  */
 @keyframes process-item-arrive {
   from {
     opacity: 0;
-    transform: translateX(var(--process-reveal-shift));
+    transform: translateX(var(--process-arrive-shift));
   }
   to {
     opacity: 1;

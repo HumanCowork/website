@@ -306,9 +306,19 @@
    */
   --process-reveal-pitch: 17.3%; /* from one item's arrival to the next */
   --process-reveal-run: 9.1%; /* how long one item takes to arrive */
-  /* How far right a step starts. Small on purpose: a card thrown in from 48px
-     reads as a slide, 32px reads as a step settling. */
-  --process-reveal-shift: 2rem;
+  /* The heading's own window, shorter than a step's. The reader has just pinned
+     the section and is waiting for something to happen, so a slow arrival at the
+     start reads as lag rather than as movement. It still starts at 0%, the moment
+     the pin begins. */
+  --process-heading-run: 6.5%;
+  /* The edge every arrival comes from: the right edge of the window. Named as a
+     token because it is the one geometric fact the arrival depends on.
+
+     The distance itself is assembled in the component, not here, and that is not
+     a style choice: a custom property declared on :root cannot reference a
+     variable that only exists on the item, and the substitution fails silently --
+     the item would simply never move. The amounts it uses are all tokens. */
+  --process-window-edge: 100vw;
   /*
    * The scroll estate the arrivals are spread over. The stage is pinned for
    * exactly this much scrolling. The queue went from four arrivals to five when

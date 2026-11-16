@@ -1038,10 +1038,39 @@ export function DiagnosticsBeacon() {
         run: rootStyle.getPropertyValue("--process-run").trim(),
         pitch: rootStyle.getPropertyValue("--process-reveal-pitch").trim(),
         revealRun: rootStyle.getPropertyValue("--process-reveal-run").trim(),
-        shift: rootStyle.getPropertyValue("--process-reveal-shift").trim(),
+        headingRun: rootStyle.getPropertyValue("--process-heading-run").trim(),
         gap: rootStyle.getPropertyValue("--process-column-gap").trim(),
         count: rootStyle.getPropertyValue("--process-count").trim(),
       };
+
+      /* The arrival distance as the browser actually resolved it. The shift is
+         assembled per item because it needs the item's own --i, so reading a
+         shift token from :root would return an empty string and prove nothing.
+         Reading each item's resting transform does: at rest an item holds its
+         `from` state, so its tx IS the distance it will travel, and every one of
+         them should begin at the window's right edge.
+
+         `NO RESUELVE` is the telling value: an invalid translate leaves
+         `transform: none`, the item never moves, and nothing else reports an
+         error -- the items simply fade in where they stand. */
+      const arrivalOf = (el: HTMLElement) => {
+        const matrix = getComputedStyle(el).transform;
+        const tx = matrix === "none" ? null : parseFloat(matrix.split(",")[4]);
+        const box = el.getBoundingClientRect();
+        return {
+          travel: tx === null ? "NO RESUELVE" : round(tx),
+          left: round(box.left),
+          windowEdge: window.innerWidth,
+          fromEdge: tx === null ? "NO RESUELVE" : round(box.left - window.innerWidth),
+        };
+      };
+      root.setAttribute(
+        "data-process-arrivals",
+        JSON.stringify({
+          heading: headingEl ? arrivalOf(headingEl) : null,
+          steps: steps.map(arrivalOf),
+        }),
+      );
 
       /* Does the connector actually paint? A pseudo-element with a failed
          colour resolves to nothing visible and raises no error anywhere, so its
