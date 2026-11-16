@@ -263,6 +263,130 @@
   --partners-marquee-duration: 38s;
   /* How far each edge dissolves, so marks enter and leave instead of clipping. */
   --partners-fade: 8%;
+
+  /*
+   * Process steps. A pinned stage holds still while each step arrives in turn,
+   * from the right, and stays. Pure scroll-driven animation -- no JavaScript,
+   * and the same `view-timeline` contract the curtain uses.
+   *
+   * There is no travel distance to compute here, and that is the point. The old
+   * version slid one long rail and had to keep two lengths in agreement -- the
+   * distance it moved and the extra height that paid for it -- and every attempt
+   * to derive one from the other disagreed by a scrollbar's width. Steps that
+   * arrive in place need neither: the grid makes them fit and the timeline makes
+   * them appear.
+   */
+  /* How many steps there are. The grid builds one column per step, so the count
+     is what guarantees they all fit; a step added to the data file needs this
+     raised to match and nothing else. */
+  --process-count: 4;
+  /*
+   * The reveal rhythm.
+   *
+   * Two rules, and the second one was learned the hard way. First: the hold has
+   * to be at least as long as the transition, or the reader never gets a settled
+   * step to look at before the next one moves.
+   *
+   * Second: the transition is measured in scroll, and a wheel notch is about
+   * 120px. An arrival shorter than that finishes inside a single flick, so the
+   * step reads as a jump rather than as a movement -- it was 193px, barely one
+   * notch and a half, and every step after the first seemed to come from
+   * nowhere. It is now about 420px, three or four notches, so a step is still
+   * arriving while the reader is still scrolling toward it.
+   *
+   * The first item never drew this complaint: it begins arriving the instant the
+   * section pins, while attention is on the section landing. Everything after it
+   * arrives with the reader already watching, which is why only those felt abrupt.
+   *
+   * The budget is fixed and small: five arrivals + four holds + one final hold
+   * have to fit inside the pinned run, and the run is therefore not an
+   * independent choice but the sum of the other two. Both figures are
+   * percentages of the timeline, so changing --process-run stretches the whole
+   * rhythm without altering its shape.
+   */
+  --process-reveal-pitch: 17.3%; /* from one item's arrival to the next */
+  --process-reveal-run: 9.1%; /* how long one item takes to arrive */
+  /* The heading's own window, shorter than a step's. The reader has just pinned
+     the section and is waiting for something to happen, so a slow arrival at the
+     start reads as lag rather than as movement. It still starts at 0%, the moment
+     the pin begins. */
+  --process-heading-run: 6.5%;
+  /* How visible an item is while it is still crossing the window's right edge.
+     Zero, and that is the whole requirement: until an item has cleared the edge it
+     must not be visible at all, not faintly. A few percent of a large heading is
+     still a grey smudge the eye catches, and that crossing is the one moment the
+     reader should notice nothing.
+
+     The flat phase therefore has to outlast the crossing of the slowest column:
+     each item travels a different distance to its track, and the shortest travel
+     (the rightmost column) clears the edge at 16.3% of its own range. That is why
+     the keyframe holds this value until 20%. The stops that place it on the
+     timeline live in the keyframes, whose selectors cannot take a variable. */
+  --process-arrive-dim: 0;
+  /* The edge every arrival comes from: the right edge of the window. Named as a
+     token because it is the one geometric fact the arrival depends on.
+
+     The distance itself is assembled in the component, not here, and that is not
+     a style choice: a custom property declared on :root cannot reference a
+     variable that only exists on the item, and the substitution fails silently --
+     the item would simply never move. The amounts it uses are all tokens. */
+  --process-window-edge: 100vw;
+  /*
+   * The scroll estate the arrivals are spread over. The stage is pinned for
+   * exactly this much scrolling. The queue went from four arrivals to five when
+   * the heading joined it, and five slower arrivals need more run than four did:
+   * that is the whole reason this number moved. The reveals finish at 78% of the
+   * timeline, so the last 8% of the pin -- about 500px -- holds everything still
+   * before the section releases.
+   *
+   * The published guidance suggests reserving closer to 30% of the pin for that
+   * final hold. Five arrivals at a readable pace leave about 10%, and that is the
+   * compromise this section makes: a longer settle at the end would cost two more
+   * screens of scroll on top of the six and a half it already takes.
+   *
+   * Four arrivals at a readable pace need a long pin: that is the price of the
+   * steps settling instead of jumping. Shortening this is what makes the whole
+   * section feel like it is rushing under the reader.
+   */
+  --process-run: 650vh;
+  /* Wide enough for the connector that lives in it, and for the dashes to read
+     as dashes rather than as a solid rule. */
+  --process-column-gap: clamp(1.5rem, 2.5vw, 2.25rem);
+  --process-stage-padding-inline: clamp(1.5rem, 5vw, 4rem);
+  /* Wider than the partners band: four steps side by side need the room, and
+     this is the one section whose content runs the width of the page. */
+  --process-max-width: 88rem;
+  --process-padding-block: clamp(4rem, 9vw, 7rem);
+  /*
+   * The step number. Large and pale: it labels without competing with the step
+   * it introduces. A number is used instead of an icon on purpose -- a generic
+   * lit bulb or handshake adds decoration and no information, and makes the
+   * section read like any template.
+   */
+  --process-number-size: clamp(2rem, 3.5vw, 2.75rem);
+  --process-number-colour: color-mix(in oklab, var(--brand-celeste) 22%, transparent);
+  --process-step-title-size: clamp(1.25rem, 1.7vw, 1.5rem);
+  /* The step text follows the page's own body voice (text-lg, 18px) instead of
+     the smaller size this section started with. That size was the whole reason
+     the section read as a different type treatment: it was the only place on the
+     site that shrank the body copy. */
+  --process-step-body-size: 1.125rem;
+  --process-step-body-colour: var(--muted-foreground);
+  --process-heading-size: clamp(1.75rem, 4vw, 2.5rem);
+  --process-heading-gap: clamp(2.5rem, 6vw, 4rem);
+  --process-card-padding: clamp(1.25rem, 2vw, 1.75rem);
+  --process-card-radius: 1.25rem;
+  --process-card-background: var(--card);
+  --process-card-border: var(--border);
+  /*
+   * The connector between one step and the next. Celeste, and stronger than the
+   * pale number: the number labels a step, the arrow moves the eye along to the
+   * next one. It is drawn, not imported -- a dashed rule and a chevron -- so
+   * there is no icon dependency here either.
+   */
+  --process-arrow-colour: color-mix(in oklab, var(--brand-celeste) 55%, transparent);
+  --process-arrow-dash: 5px;
+  --process-arrow-gap: 6px;
   --about-grid-gap: 1.25rem;
   --about-subcolumn-gap: 1.25rem;
   --about-subcolumn-offset: 3rem;

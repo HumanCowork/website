@@ -939,6 +939,264 @@ export function DiagnosticsBeacon() {
     return () => window.clearTimeout(panTimer);
   }, []);
 
+  /*
+   * Process arrival probe.
+   *
+   * Verifies the one thing this section promises: the steps arrive one at a
+   * time, in order, and stay. It samples across the pinned stretch and reports
+   * every step's opacity and horizontal offset at each stop, so a reader can
+   * see step one alone, then one and two, then three, then all four -- without
+   * needing to look at the page.
+   */
+  useEffect(() => {
+    const root = document.querySelector<HTMLElement>(".process-root");
+    if (!root) return;
+
+    const probe = async () => {
+      const stage = root.querySelector<HTMLElement>(".process-stage");
+      const run = root.querySelector<HTMLElement>(".process-run");
+      const steps = Array.from(root.querySelectorAll<HTMLElement>(".process-step"));
+      const wait = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms));
+      const round = (n: number) => Math.round(n * 10) / 10;
+
+      if (!stage || !run || steps.length === 0) {
+        document.documentElement.setAttribute(
+          "data-process-probe",
+          JSON.stringify({ error: "elements missing", stage: !!stage, run: !!run, steps: steps.length }),
+        );
+        return;
+      }
+
+      /* Walk up from the stage: any ancestor with overflow other than visible
+         anchors the pin to a box that never scrolls, silently. */
+      const overflowOffenders: string[] = [];
+      let el: HTMLElement | null = stage.parentElement;
+      while (el) {
+        const cs = getComputedStyle(el);
+        if (cs.overflowX !== "visible" || cs.overflowY !== "visible") {
+          overflowOffenders.push(`${el.tagName.toLowerCase()}.${el.className || "(no class)"}: ${cs.overflowX}/${cs.overflowY}`);
+        }
+        el = el.parentElement;
+      }
+
+      const readTx = (s: HTMLElement) => {
+        const m = getComputedStyle(s).transform;
+        if (m === "none") return 0;
+        const parts = m.match(/matrix\(([^)]+)\)/);
+        return parts ? round(Number(parts[1].split(",")[4])) : "unparsed";
+      };
+
+      /*
+       * The reveal windows, read from computed style. These resolve without a
+       * rendering frame, which matters: this environment cannot update a
+       * scroll-driven timeline at all -- the curtain, which works in a real
+       * browser, reports a frozen timeline here too. So the windows are checked
+       * as values rather than as motion.
+       */
+      const windows = steps.map((s) => {
+        const cs = getComputedStyle(s);
+        return {
+          name: cs.animationName,
+          fill: cs.animationFillMode,
+          duration: cs.animationDuration,
+          from: cs.getPropertyValue("animation-range-start"),
+          to: cs.getPropertyValue("animation-range-end"),
+          timeline: cs.getPropertyValue("animation-timeline"),
+        };
+      });
+
+      /* The heading is the first item in the queue, so it has its own window. */
+      const headingEl = root.querySelector<HTMLElement>(".process-heading");
+      const headingWindow = headingEl
+        ? {
+            name: getComputedStyle(headingEl).animationName,
+            from: getComputedStyle(headingEl).getPropertyValue("animation-range-start"),
+            to: getComputedStyle(headingEl).getPropertyValue("animation-range-end"),
+            opacity: Number(getComputedStyle(headingEl).opacity),
+          }
+        : null;
+
+      /* The connectors, read the same way: one fewer than the steps, and each
+         one's window should be the next step's. */
+      const arrowWindows = Array.from(
+        root.querySelectorAll<HTMLElement>(".process-arrow"),
+      ).map((a) => {
+        const cs = getComputedStyle(a);
+        return {
+          display: cs.display,
+          width: round(a.getBoundingClientRect().width),
+          from: cs.getPropertyValue("animation-range-start"),
+          to: cs.getPropertyValue("animation-range-end"),
+        };
+      });
+
+      /* The tokens as the browser resolved them, not as the file spells them.
+         A stale stylesheet is invisible otherwise: every measurement agrees with
+         itself and disagrees with the source, which is a hard thing to notice. */
+      const rootStyle = getComputedStyle(root);
+      const tokens = {
+        run: rootStyle.getPropertyValue("--process-run").trim(),
+        pitch: rootStyle.getPropertyValue("--process-reveal-pitch").trim(),
+        revealRun: rootStyle.getPropertyValue("--process-reveal-run").trim(),
+        headingRun: rootStyle.getPropertyValue("--process-heading-run").trim(),
+        gap: rootStyle.getPropertyValue("--process-column-gap").trim(),
+        count: rootStyle.getPropertyValue("--process-count").trim(),
+      };
+
+      /* The arrival distance as the browser actually resolved it. The shift is
+         assembled per item because it needs the item's own --i, so reading a
+         shift token from :root would return an empty string and prove nothing.
+         Reading each item's resting transform does: at rest an item holds its
+         `from` state, so its tx IS the distance it will travel, and every one of
+         them should begin at the window's right edge.
+
+         `NO RESUELVE` is the telling value: an invalid translate leaves
+         `transform: none`, the item never moves, and nothing else reports an
+         error -- the items simply fade in where they stand. */
+      const arrivalOf = (el: HTMLElement) => {
+        const matrix = getComputedStyle(el).transform;
+        const tx = matrix === "none" ? null : parseFloat(matrix.split(",")[4]);
+        const box = el.getBoundingClientRect();
+        return {
+          travel: tx === null ? "NO RESUELVE" : round(tx),
+          left: round(box.left),
+          windowEdge: window.innerWidth,
+          fromEdge: tx === null ? "NO RESUELVE" : round(box.left - window.innerWidth),
+        };
+      };
+      root.setAttribute(
+        "data-process-arrivals",
+        JSON.stringify({
+          heading: headingEl ? arrivalOf(headingEl) : null,
+          steps: steps.map(arrivalOf),
+        }),
+      );
+
+      /* Does the connector actually paint? A pseudo-element with a failed
+         colour resolves to nothing visible and raises no error anywhere, so its
+         computed style is the only way to know short of looking. */
+      const firstArrow = root.querySelector<HTMLElement>(".process-arrow");
+      const paint = firstArrow
+        ? {
+            colour: getComputedStyle(firstArrow).color,
+            rule: getComputedStyle(firstArrow, "::before").backgroundImage,
+            headTop: getComputedStyle(firstArrow, "::after").borderBlockStartWidth,
+            headSide: getComputedStyle(firstArrow, "::after").borderInlineEndWidth,
+            headSize: getComputedStyle(firstArrow, "::after").inlineSize,
+            headRotation: getComputedStyle(firstArrow, "::after").rotate,
+          }
+        : null;
+
+      /* And where does it sit? It should begin exactly where its card ends and
+         be vertically centred with it. */
+      const firstCard = steps[0].getBoundingClientRect();
+      const arrowBox = firstArrow?.getBoundingClientRect();
+      const geometry = arrowBox
+        ? {
+            cardRight: round(firstCard.right),
+            arrowStart: round(arrowBox.left),
+            offsetFromCardEdge: round(arrowBox.left - firstCard.right),
+            cardCentreY: round(firstCard.top + firstCard.height / 2),
+            arrowCentreY: round(arrowBox.top + arrowBox.height / 2),
+            verticalOffset: round(
+              arrowBox.top + arrowBox.height / 2 - (firstCard.top + firstCard.height / 2),
+            ),
+          }
+        : null;
+
+      const readAt = async (y: number) => {
+        window.scrollTo(0, y);
+        await wait(260);
+        const stageRect = stage.getBoundingClientRect();
+        return {
+          y,
+          actualScrollY: Math.round(window.scrollY),
+          stageTop: round(stageRect.top),
+          timelineTime: String(steps[0].getAnimations()[0]?.timeline?.currentTime ?? "null"),
+          steps: steps.map((s) => ({
+            opacity: Number(getComputedStyle(s).opacity),
+            tx: readTx(s),
+          })),
+        };
+      };
+
+      /* The pin lasts from when the section reaches the top of the viewport
+         until its bottom does. Sampling inside that window is the whole test. */
+      const rootTop = Math.round(root.getBoundingClientRect().top + window.scrollY);
+      const rootHeight = root.offsetHeight;
+      const pinStart = rootTop;
+      const pinEnd = Math.round(rootTop + Math.max(0, rootHeight - window.innerHeight));
+      const stops = [0, 0.15, 0.3, 0.45, 0.6, 0.75, 1].map((f) => Math.round(pinStart + (pinEnd - pinStart) * f));
+
+      const points: Array<Record<string, unknown>> = [];
+      for (const y of stops) {
+        points.push(await readAt(y));
+        document.documentElement.setAttribute("data-process-probe-partial", JSON.stringify(points));
+      }
+
+      /* Did each step cross into view, and in which order? */
+      const arrivalOrder: number[] = [];
+      for (let i = 0; i < steps.length; i += 1) {
+        const firstVisible = points.findIndex((p) => Number((p.steps as Array<{ opacity: number }>)[i].opacity) > 0.5);
+        arrivalOrder.push(firstVisible);
+      }
+
+      const firstPoint = points[1] as { steps: Array<{ opacity: number }> };
+      const lastPoint = points[points.length - 1] as { steps: Array<{ opacity: number }> };
+      const visibleAtFirst = firstPoint.steps.filter((s) => s.opacity > 0.5).length;
+      const visibleAtLast = lastPoint.steps.filter((s) => s.opacity > 0.9).length;
+
+      window.scrollTo(0, 0);
+      await wait(200);
+
+      const verdict = {
+        timelineSupported: CSS.supports("animation-timeline", "view()"),
+        reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+        stagePosition: getComputedStyle(stage).position,
+        runHeight: run.offsetHeight,
+        runHeightInViewports: round(run.offsetHeight / window.innerHeight),
+        rootHeight,
+        documentHeight: document.documentElement.scrollHeight,
+        overflowOffenders,
+        tokens,
+        paint,
+        geometry,
+        windows,
+        headingWindow,
+        arrowWindows,
+        stepCount: steps.length,
+        stepWidths: steps.map((s) => round(s.getBoundingClientRect().width)),
+        /* The widest card against the stage, not the sum of all of them: a
+           stacked column sums to something meaningless, and reporting it as a
+           failure sends the next reader after a bug that is not there. */
+        widestStepFitsStage:
+          round(Math.max(...steps.map((s) => s.getBoundingClientRect().width))) <=
+          stage.clientWidth,
+        columnsOfRail: getComputedStyle(root.querySelector(".process-rail") as HTMLElement).gridTemplateColumns,
+        pinStart,
+        pinEnd,
+        /* The promise: one alone, then two, then three, then four. */
+        visibleAtFirstStop: visibleAtFirst,
+        visibleAtLastStop: visibleAtLast,
+        arrivalOrder, /* [0,1,2,3] means each step appeared after the previous */
+        arrivalsInOrder: arrivalOrder.every((v, i) => v >= 0 && (i === 0 || v >= (arrivalOrder[i - 1] as number))),
+        allArrive: arrivalOrder.every((v) => v >= 0),
+        allArriveAndStay: visibleAtLast === steps.length,
+        points,
+      };
+      document.documentElement.setAttribute("data-process-probe", JSON.stringify(verdict));
+
+      void fetch("/api/diag", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phase: "process-probe", url: location.href, verdict }),
+      }).catch(() => {});
+    };
+
+    const timer = window.setTimeout(() => void probe(), 9000);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     const samples: Sample[] = [];
     let rafTicks = 0;
