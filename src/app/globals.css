@@ -281,29 +281,44 @@
      raised to match and nothing else. */
   --process-count: 4;
   /*
-   * The reveal rhythm. The rule that matters is hold >= transition, and these
-   * numbers give the hold twice the transition. The first version had it
-   * inverted -- 13% arriving and only 4% holding -- which is exactly why the
-   * steps felt piled on one another: the reader was never given a settled step
-   * to look at before the next one moved. In scroll distance each arrival now
-   * takes about 180px and then sits still for about 360px.
+   * The reveal rhythm.
+   *
+   * Two rules, and the second one was learned the hard way. First: the hold has
+   * to be at least as long as the transition, or the reader never gets a settled
+   * step to look at before the next one moves.
+   *
+   * Second: the transition is measured in scroll, and a wheel notch is about
+   * 120px. An arrival shorter than that finishes inside a single flick, so the
+   * step reads as a jump rather than as a movement -- it was 193px, barely one
+   * notch and a half, and every step after the first seemed to come from
+   * nowhere. It is now about 420px, three or four notches, so a step is still
+   * arriving while the reader is still scrolling toward it.
+   *
+   * The first step never drew this complaint: it begins arriving the instant the
+   * section pins, while attention is on the section landing. Steps 2 to 4 arrive
+   * with the reader already watching, which is why only they felt abrupt.
    *
    * Both figures are percentages of the timeline, so changing --process-run
    * stretches the whole rhythm without altering its shape.
    */
-  --process-reveal-pitch: 17%; /* from one step's arrival to the next */
-  --process-reveal-run: 6%; /* how long one step takes to arrive */
+  --process-reveal-pitch: 19.5%; /* from one step's arrival to the next */
+  --process-reveal-run: 9%; /* how long one step takes to arrive */
   /* How far right a step starts. Small on purpose: a card thrown in from 48px
      reads as a slide, 32px reads as a step settling. */
   --process-reveal-shift: 2rem;
   /*
    * The scroll estate the arrivals are spread over. The stage is pinned for
-   * exactly this much scrolling. The reveals finish at 57% of the timeline, so
-   * the last quarter of the pin holds all four steps still before the section
-   * releases -- the published guidance is to reserve about 30% of the pin as
-   * that final hold, so the last step is not yanked away the moment it lands.
+   * exactly this much scrolling. The reveals finish at 67.5% of the timeline, so
+   * the last 15% of the pin -- about 700px -- holds all four steps still before
+   * the section releases. The published guidance is to reserve roughly 30% of
+   * the pin as that final hold, so the last step is not yanked away the instant
+   * it lands.
+   *
+   * Four arrivals at a readable pace need a long pin: that is the price of the
+   * steps settling instead of jumping. Shortening this is what makes the whole
+   * section feel like it is rushing under the reader.
    */
-  --process-run: 300vh;
+  --process-run: 480vh;
   /* Wide enough for the connector that lives in it, and for the dashes to read
      as dashes rather than as a solid rule. */
   --process-column-gap: clamp(1.5rem, 2.5vw, 2.25rem);
