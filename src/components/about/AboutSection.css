@@ -1,0 +1,232 @@
+/*
+ * The about section. Every measurable value comes from an --about-* token in
+ * globals.css; this file only arranges it. Aspect ratios, the column offset and the
+ * tablet/mobile collapses read better here than as long utility strings in markup.
+ */
+
+.about-section {
+  padding-block: var(--about-padding-block);
+}
+
+.about-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--about-column-gap);
+  margin-inline: auto;
+  max-width: var(--about-max-width);
+}
+
+.about-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--about-grid-gap);
+  min-width: 0;
+}
+
+.about-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--about-text-gap);
+}
+
+.about-heading {
+  color: var(--about-heading-color);
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+/*
+ * Both headings read at the same size, from a single token on purpose: the owner
+ * asked for them equal, and two near-identical tokens is how they drifted apart.
+ */
+.about-heading--2,
+.about-heading--3 {
+  font-size: var(--about-heading-size);
+}
+
+.about-paragraph {
+  color: var(--about-body-color);
+  font-size: var(--about-body-size);
+  line-height: var(--about-body-leading);
+  text-wrap: pretty;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--about-grid-gap);
+}
+
+.about-subcolumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--about-subcolumn-gap);
+}
+
+/* The second sub-column drops, which is what makes each grid read as staggered. */
+.about-subcolumn:nth-child(2) {
+  margin-block-start: var(--about-subcolumn-offset);
+}
+
+/*
+ * The two text blocks point away from their own columns' outer edges: the left one
+ * hugs the right of its block, the right one hugs the left of its. The section's
+ * parent centres by default, so each block states this for itself.
+ */
+.about-text--right {
+  text-align: right;
+}
+
+.about-text--left {
+  text-align: left;
+}
+
+/*
+ * The right column's grid is its first child, so this pushes its three photographs
+ * down from the column's own top edge. The text below them follows in the flow.
+ */
+.about-column--offset .about-grid {
+  margin-block-start: var(--about-right-photos-offset);
+}
+
+.about-photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--about-photo-radius);
+  box-shadow: var(--about-photo-shadow);
+  background-color: var(--muted);
+}
+
+.about-photo--portrait {
+  aspect-ratio: var(--about-aspect-portrait);
+}
+
+.about-photo--square {
+  aspect-ratio: var(--about-aspect-square);
+}
+
+.about-photo--landscape {
+  aspect-ratio: var(--about-aspect-landscape);
+}
+
+/* The source files are square: the frame crops, the image never distorts. */
+.about-photo-image {
+  object-fit: cover;
+}
+
+/* Tablet and up: the two columns sit side by side and the right one drops. */
+@media (min-width: 768px) {
+  .about-inner {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .about-column {
+    flex: 1 1 0;
+  }
+
+  .about-column--offset {
+    margin-block-start: calc(
+      var(--about-column-offset) - var(--about-right-column-lift)
+    );
+  }
+
+  /*
+   * The left column drops. A margin, not a transform: the transform reached the
+   * browser — chunk served with both the rule and the token — and still did not
+   * move the block inside the curtain's phase-two slot, so this reuses the
+   * mechanism already proven there, the same one the right column's offset uses.
+   */
+  .about-column--lowered {
+    margin-block-start: var(--about-left-offset);
+    /*
+     * The column holds exactly two children — text then grid — so its gap IS the
+     * text-to-photographs space. Setting it here replaces the base gap instead of
+     * adding to it.
+     */
+    gap: var(--about-left-text-gap);
+  }
+
+  /*
+   * "centered": the single photograph in the first sub-column sits in the middle
+   * of the taller one. The second sub-column's stagger has to go, or the centring
+   * would measure the margin box instead of the two photographs.
+   */
+  .about-grid--centered {
+    align-items: center;
+  }
+
+  .about-grid--centered .about-subcolumn:nth-child(2) {
+    margin-block-start: 0;
+  }
+}
+
+/* Phones: the columns are already stacked, and the grids finally go to one. */
+@media (max-width: 639px) {
+  .about-section {
+    padding-block: var(--about-padding-block-sm);
+  }
+
+  .about-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .about-subcolumn:nth-child(2) {
+    margin-block-start: 0;
+  }
+}
+
+/*
+ * Phone reading sequence, in the owner's order: the story, its three photos, the
+ * second text, its three photos. The two columns keep their own contents, so the
+ * change stays contained — the page already leads with the left column, which is
+ * `story → photos`; only the right column has to lead with its text.
+ *
+ * `768px` is the exact complement of the two-column layout above, so below it
+ * there is no band where the desktop rules and these two disagree.
+ */
+@media (max-width: 767px) {
+  .about-inner {
+    gap: var(--about-mobile-gap);
+  }
+
+  /*
+   * One photo per row, full width. The subcolumns stop being boxes: every card
+   * becomes a row of the grid instead of sharing one of its tracks with a
+   * sibling, which is what kept two photos side by side on a phone.
+   */
+  .about-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--about-grid-gap);
+  }
+
+  .about-subcolumn {
+    display: contents;
+  }
+
+  /* Neither the desktop offsets nor the staggered subcolumn survive the stack. */
+  .about-subcolumn,
+  .about-column,
+  .about-column--lowered,
+  .about-column--offset,
+  .about-column--offset .about-grid {
+    margin-block-start: 0;
+  }
+
+  /* The right column leads with its text; its photos come after. */
+  .about-column--offset .about-text {
+    order: 0;
+  }
+
+  .about-column--offset .about-grid {
+    order: 1;
+  }
+
+  /* A phone reads from the left edge, whichever side the desktop copy faced. */
+  .about-text--right {
+    text-align: left;
+  }
+}
