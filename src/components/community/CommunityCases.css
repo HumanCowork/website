@@ -1,0 +1,192 @@
+/*
+ * Community cases: three columns of white cards on the band's pale surface, two
+ * on a tablet and one on a phone.
+ *
+ * The band is the middle step of a staircase -- stages #ffffff, cases #f8fafc,
+ * partners #eef2f7 -- so this section separates the two neighbours without
+ * introducing a colour.
+ *
+ * Three rules hold the layout, and each one was a decision rather than a default:
+ *
+ * 1. The card's padding is larger than the gap between cards. Equal values make
+ *    the cards' outlines read as one wide grid rather than as separate objects;
+ *    the padding has to win, so the boundary is visible inside the card.
+ * 2. Equal heights are never forced with a min-height. Cards in a row stretch to
+ *    the grid's row height on their own, and a card whose copy runs long simply
+ *    makes its whole row taller. A fixed height would clip that copy or leave a
+ *    hole where it was not needed.
+ * 3. Nothing here relies on colour alone: every mark, title and label is text,
+ *    and the tinted square only decorates a name that is already written out.
+ *
+ * Every length comes from a token in `globals.css`; no numbers live here.
+ */
+
+.community-band {
+  position: relative;
+  z-index: 20; /* over the pinned stages, under the navbar */
+  padding-block: var(--community-padding-block);
+  background: var(--community-band);
+}
+
+.community-inner {
+  max-width: var(--community-max-width);
+  margin-inline: auto;
+  padding-inline: var(--community-padding-inline);
+}
+
+.community-heading {
+  font-size: var(--community-heading-size);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--heading);
+  margin: 0;
+  margin-block-end: var(--community-heading-gap);
+  text-wrap: balance;
+}
+
+/*
+ * Two rows of three on a desktop. The columns are equal because the cards are:
+ * a case has no rank, so no card may be wider than another.
+ */
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--community-grid-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * A card is a column, not a row: mark, name, what it does, what the community
+ * did, and the label. The gap between children is smaller than the band's own
+ * padding, so the air inside a card always reads as thinner than the air
+ * between cards.
+ */
+.community-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--community-card-gap);
+  padding: var(--community-card-padding);
+  border: 1px solid var(--community-card-border);
+  border-radius: var(--community-card-radius);
+  background: var(--community-card-background);
+}
+
+/*
+ * The wordmark, in CSS and from the initials. A tinted square with the case's
+ * initials in the brand celeste, sized in em so it tracks the type it sits with.
+ * There is no image behind this and none is loaded.
+ */
+.community-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--community-mark-size);
+  block-size: var(--community-mark-size);
+  border-radius: var(--community-mark-radius);
+  background: var(--community-mark-background);
+  color: var(--community-mark-colour);
+  font-size: var(--community-mark-font-size);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.community-card-title {
+  font-size: var(--community-card-title-size);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--heading);
+  margin: 0;
+}
+
+/*
+ * The body copy is the page's own voice at 18px, same as the process steps: a
+ * smaller size here is what once made a sibling section read as a different type
+ * treatment. The measure is held by the grid rather than by a `ch` cap, so the
+ * three columns stay equal.
+ */
+.community-card-summary {
+  font-size: var(--community-card-body-size);
+  line-height: 1.55;
+  color: var(--community-card-body-colour);
+  margin: 0;
+}
+
+/*
+ * What the community did for it. Same size as the summary -- this is the point
+ * of the section, not a footnote -- and separated by a rule instead of by a
+ * size, so the two lines read as two statements rather than as a hierarchy.
+ */
+.community-card-contribution {
+  font-size: var(--community-card-body-size);
+  line-height: 1.55;
+  color: var(--community-card-body-colour);
+  margin: 0;
+  padding-block-start: var(--community-card-divider-gap);
+  border-block-start: 1px solid var(--community-card-divider);
+}
+
+/*
+ * The "in the community since" label. Muted and small -- a contextual label, not
+ * a headline -- and pushed to the foot of the card so the labels line up across a
+ * row whatever the copy above them does.
+ */
+.community-card-meta {
+  font-size: var(--community-card-meta-size);
+  color: var(--community-card-meta-colour);
+  margin: 0;
+  margin-block-start: auto;
+}
+
+.community-card-link {
+  font-size: var(--community-card-meta-size);
+  font-weight: 600;
+  color: var(--community-card-link-colour);
+  text-decoration: none;
+}
+
+.community-card-link:hover {
+  text-decoration: underline;
+}
+
+
+/*
+ * Tablet. Two columns: three at this width leave each card too narrow for the
+ * 45-75 character measure the copy needs.
+ */
+@media (max-width: 1023px) {
+  .community-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/*
+ * Phone. One column, the tighter gap, and the band's own padding reduced. This
+ * section gets a real mobile treatment: the cards stack and stay readable
+ * without the desktop grid's air.
+ */
+@media (max-width: 639px) {
+  .community-grid {
+    grid-template-columns: 1fr;
+    gap: var(--community-grid-gap-mobile);
+  }
+
+  .community-band {
+    padding-block: var(--community-padding-block-mobile);
+  }
+
+  .community-inner {
+    padding-inline: var(--community-padding-inline-mobile);
+  }
+
+  .community-heading {
+    margin-block-end: var(--community-heading-gap-mobile);
+  }
+
+  .community-card {
+    padding: var(--community-card-padding-mobile);
+  }
+}

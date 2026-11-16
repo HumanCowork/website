@@ -2,6 +2,7 @@ import { Navbar } from "@/components/navbar/Navbar";
 import { Hero } from "@/components/hero/Hero";
 import { FeaturesCurtain } from "@/components/features/FeaturesCurtain";
 import { ProcessSection } from "@/components/process/ProcessSection";
+import { CommunityCases } from "@/components/community/CommunityCases";
 import { PartnersSection } from "@/components/partners/PartnersSection";
 import { DiagnosticsBeacon } from "@/components/DiagnosticsBeacon";
 
@@ -20,6 +21,8 @@ export default function Home() {
       <FeaturesCurtain />
       {/* Etapas del proceso: escenario pinneado, riel que viaja al costado */}
       <ProcessSection />
+      {/* Casos de la comunidad: banda propia entre las etapas y los partners */}
+      <CommunityCases />
       {/* Banda de partners: superficie propia, fuera de la cortina */}
       <PartnersSection />
     </div>

@@ -387,6 +387,74 @@
   --process-arrow-colour: color-mix(in oklab, var(--brand-celeste) 55%, transparent);
   --process-arrow-dash: 5px;
   --process-arrow-gap: 6px;
+
+  /*
+   * Community cases. The band between the process stages and the partners row,
+   * showing the projects that started or grew inside the community.
+   *
+   * The band is the middle step of a staircase of surfaces. Stages sit on
+   * #ffffff and partners on #eef2f7; this band takes #f8fafc -- the site's own
+   * secondary surface -- so the three read as three steps rather than as one
+   * long block with a seam in it. Nothing new is invented: the tone already
+   * exists here as --muted.
+   *
+   * Rejected, and recorded so it is not proposed again: a 4% brand-celeste tint
+   * (reads as a mistake beside the partners band, which is also cool and pale),
+   * a dark band (the first dark section on a site with no dark mode, and every
+   * published example found is light), and plain white (merges with the stages
+   * band above it).
+   */
+  --community-band: #f8fafc;
+  --community-max-width: 80rem; /* 1280px: the content cap the research settles on */
+  /*
+   * Section padding, and the largest space in the section. The rule is that the
+   * pause between sections has to be bigger than any pause inside one; desktop
+   * sits in the 96-128px band the research names, and a phone gets 64px -- the
+   * low end, because vertical padding is the first thing a phone cannot spare.
+   */
+  --community-padding-block: clamp(6rem, 8vw, 8rem); /* 96 -> 128px */
+  --community-padding-block-mobile: 4rem; /* 64px */
+  --community-padding-inline: 1.5rem;
+  --community-padding-inline-mobile: 1.25rem;
+  /*
+   * The gap between cards is deliberately smaller than the padding inside one.
+   * When the two are equal the card outlines weaken and the row reads as one
+   * wide grid; the padding has to win, so the boundary is visible.
+   */
+  --community-grid-gap: 1.5rem; /* 24px */
+  --community-grid-gap-mobile: 1rem; /* 16px */
+  --community-card-padding: 2rem; /* 32px: over the 24px gap, as it must be */
+  --community-card-padding-mobile: 1.5rem;
+  --community-card-radius: 1rem; /* 16px, the top of the 12-16px range */
+  --community-card-background: var(--card); /* white cards on the pale band */
+  /* A 1px low-contrast border instead of a shadow: elevation would only be
+     decoration here, and the research is explicit that these cards carry none. */
+  --community-card-border: var(--border);
+  --community-card-divider: var(--border);
+  --community-card-gap: 0.75rem; /* air between a card's own lines */
+  --community-card-divider-gap: 0.75rem; /* air above the rule over the second line */
+  --community-heading-size: clamp(1.75rem, 4vw, 2.5rem);
+  --community-heading-gap: 3rem;
+  --community-heading-gap-mobile: 2rem;
+  /*
+   * The wordmark, built in CSS from the case's initials. Typographic on purpose:
+   * a real logo needs the member's written approval to publish, and an invented
+   * one risks colliding with a real company's mark.
+   */
+  --community-mark-size: 3rem;
+  --community-mark-radius: 0.75rem;
+  --community-mark-background: var(--primary-subtle);
+  --community-mark-colour: var(--brand-celeste);
+  --community-mark-font-size: 1rem;
+  --community-card-title-size: 1.25rem; /* 20px: the bottom of the 20-24px range */
+  /* The page's own body voice (text-lg, 18px), not a smaller size: a sibling
+     section once shrank this and read as a foreign type treatment on the page. */
+  --community-card-body-size: 1.125rem;
+  --community-card-body-colour: var(--muted-foreground);
+  --community-card-meta-size: 0.875rem; /* 14px, muted: a label, not a headline */
+  --community-card-meta-colour: var(--muted-foreground);
+  --community-card-link-colour: var(--brand-celeste);
+
   --about-grid-gap: 1.25rem;
   --about-subcolumn-gap: 1.25rem;
   --about-subcolumn-offset: 3rem;
