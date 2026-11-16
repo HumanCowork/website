@@ -393,18 +393,19 @@
    * showing the projects that started or grew inside the community.
    *
    * The band is the middle step of a staircase of surfaces. Stages sit on
-   * #ffffff and partners on #eef2f7; this band takes #f8fafc -- the site's own
-   * secondary surface -- so the three read as three steps rather than as one
-   * long block with a seam in it. Nothing new is invented: the tone already
-   * exists here as --muted.
+   * #ffffff and partners on #eef2f7; this band is a pale brand-celeste tint over
+   * white, so it reads unmistakably as its own colour and never as white.
    *
-   * Rejected, and recorded so it is not proposed again: a 4% brand-celeste tint
-   * (reads as a mistake beside the partners band, which is also cool and pale),
-   * a dark band (the first dark section on a site with no dark mode, and every
-   * published example found is light), and plain white (merges with the stages
-   * band above it).
+   * The tint sits at 16% of --brand-celeste over white, which mixes to about
+   * #dbe8f5. The number was chosen against the two neighbours, not in the air:
+   * 16% gives white cards a 1.24:1 boundary against the band -- clearly not
+   * white, so the cards read as separate surfaces -- while staying 1.11:1 from
+   * the partners band, so the three steps stay distinguishable. Below about 12%
+   * the band collapses back into white; above about 20% it stops being pale and
+   * crowds the partners band it sits above. The earlier 4% proposal is the one
+   * the client rejected for reading as white, and 16% is well clear of it.
    */
-  --community-band: #f8fafc;
+  --community-band: color-mix(in oklab, var(--brand-celeste) 16%, white);
   --community-max-width: 80rem; /* 1280px: the content cap the research settles on */
   /*
    * Section padding, and the largest space in the section. The rule is that the
@@ -437,21 +438,19 @@
   --community-heading-gap: 3rem;
   --community-heading-gap-mobile: 2rem;
   /*
-   * The mark beside the project name. A fictional brand mark from fakelogo.com
+   * The mark at the head of the card. A fictional brand mark from fakelogo.com
    * -- the same source and the same swap-before-publishing warning as the
-   * partners band's -- drawn small and decorative: the project name is the real
-   * text, the image repeats nothing the reader cannot already read.
+   * partners band's -- drawn small and decorative: with the invented project
+   * name gone, the mark names nothing, so it repeats nothing.
    *
    * The height is fixed and the width follows the file, so a symbol and a
    * wordmark land at the same optical weight, and the max-width is the widest
-   * aspect in the set (Lumen, 321x56) so nothing is ever clipped. The file itself
-   * is downscaled to 2x this height, not shipped at its source size: a 28px slot
-   * does not need the pixels a 726px-wide source carries.
+   * aspect in the set (a mark at 321x56) so nothing is ever clipped. The file
+   * itself is downscaled to 2x this height, not shipped at its source size: a
+   * 28px slot does not need the pixels a 726px-wide source carries.
    */
   --community-card-logo-height: 1.75rem; /* 28px */
   --community-card-logo-max-width: 10rem; /* 160px: 28px * 5.73, the widest aspect */
-  --community-card-logo-gap: 0.625rem; /* air between the mark and the name */
-  --community-card-title-size: 1.25rem; /* 20px: the bottom of the 20-24px range */
   /* The page's own body voice (text-lg, 18px), not a smaller size: a sibling
      section once shrank this and read as a foreign type treatment on the page. */
   --community-card-body-size: 1.125rem;
@@ -460,17 +459,14 @@
   --community-card-link-colour: var(--brand-celeste);
   /*
    * The portrait frame for the person behind the project. The frame owns the
-   * shape (a fixed 4:3 at full card width) so a real photograph drops in later
-   * without touching the layout. Until it exists, the placeholder is the
-   * referent's initials over a tinted surface -- drawn in CSS, no file, no
-   * stock photo, no invented face, no borrowed logo.
+   * shape (a fixed 4:3 at full card width) and the community's own 600x600
+   * photograph fills it. The background only shows while the image loads.
    */
   --community-portrait-aspect: 4 / 3;
   --community-portrait-radius: 0.75rem;
   --community-portrait-background: var(--primary-subtle);
-  --community-portrait-initials-size: clamp(2rem, 5vw, 2.75rem);
-  --community-portrait-initials-colour: var(--brand-celeste);
-  /* The referent's name and role, as a small muted caption under the frame. */
+  /* The referent's name and role, as a small muted caption under the photograph.
+     The name is the card's heading (an h3 reset to this caption size). */
   --community-referent-gap: 0.125rem;
   --community-referent-name-size: 0.9375rem; /* 15px */
   --community-referent-name-colour: var(--heading);

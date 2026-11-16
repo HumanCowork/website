@@ -4,6 +4,7 @@ import {
   COMMUNITY_CASES,
   COMMUNITY_HEADING,
   COMMUNITY_MARK_SLOT_WIDTH,
+  COMMUNITY_PHOTO_SLOT_WIDTH,
 } from "./communityCases";
 import "./CommunityCases.css";
 
@@ -11,33 +12,39 @@ import "./CommunityCases.css";
  * The community cases: the band between the process stages and the partners row,
  * showing the projects that started or grew inside the community.
  *
- * It is the middle step of a staircase of surfaces -- stages white, cases
- * #f8fafc, partners #eef2f7 -- so it never merges with either neighbour while
- * asking for no new colour.
+ * It is the middle step of a staircase of surfaces -- stages white, this band a
+ * pale celeste tint over white, partners #eef2f7 -- so it never merges with
+ * either neighbour.
  *
  * The cases are an unordered list because they are one: a peer set of projects,
  * with no order among them, and a screen reader announces how many there are.
  *
- * The mark beside each project name is a fictional brand mark from
- * fakelogo.com, exactly like the partners band's: convincing on purpose, so it
- * is swapped for the member's real, permissioned mark before publishing. It is
- * rendered small (a 28px-tall slot) and it is DECORATIVE -- the project name is
- * already real text in the same line -- so it is drawn `alt=""` and
- * `aria-hidden`, never a second announcement of the same name. The file is
- * downscaled to twice the slot, not the source size, so the browser is not made
- * to download pixels nobody sees (see the note in communityCases.ts).
+ * A card no longer carries an invented project name. The client rejected those
+ * names, so the card shows the mark, the photograph, the summary, the
+ * contribution, and the referent's name and role. The identity of a case is the
+ * neutral `id` in the data, used for the React key and rendered nowhere.
  *
- * The portrait frame is the person, not the project: a mark is not a portrait,
- * so it lives with the project name, never inside the frame.
+ * The heading outline survives the removal: the `h3` that used to hold the
+ * project name now holds the referent's name, which is the card's remaining real
+ * text identity. The section's `h2` heads a list of six `h3`s -- one per person
+ * -- with the role as plain text under each. Nothing is announced twice and no
+ * card is left headingless.
  *
- * Each card carries a portrait frame for the person behind the project. Until
- * their real, authorised photograph exists, `photo` is empty and the frame
- * shows the referent's initials over a tinted surface -- drawn in CSS, no file,
- * no stock photography, no invented face and no borrowed logo: a typographic
- * placeholder is finished on purpose and cannot 404. The name and the role are
- * always real text under the frame, so nothing the reader needs is carried by
- * the image alone. When a real photo arrives, only the `photo` field changes;
- * the layout does not move.
+ * The photograph is the community's own, from COMMUNITY_IMAGES: a 600x600 square
+ * cropped into the portrait frame with `object-cover`, exactly as AboutPhotoCard
+ * does. Its alt is empty and it is `aria-hidden`, deliberately: it shows a real
+ * person, the source says nothing about what it shows, and the referent's name
+ * is already real text right below it, so a second announcement would only
+ * repeat the heading. The initials placeholder is gone -- every card shows a
+ * photograph.
+ *
+ * The mark beside the project is a fictional brand mark from fakelogo.com,
+ * exactly like the partners band's: convincing on purpose, so it is swapped for
+ * the member's real, permissioned mark before publishing. It is rendered small
+ * (a 28px-tall slot) and it is DECORATIVE -- nothing names it -- so it is drawn
+ * `alt=""` and `aria-hidden`. The file is downscaled to twice the slot, not the
+ * source size, so the browser is not made to download pixels nobody sees (see
+ * the note in communityCases.ts).
  */
 export function CommunityCases() {
   return (
@@ -52,100 +59,74 @@ export function CommunityCases() {
         </h2>
 
         <ul className="community-grid">
-          {COMMUNITY_CASES.map((item) => {
-            const hasPhoto = item.photo !== "";
-            const referentInitials = referentInitialsFor(item.referent.name);
+          {COMMUNITY_CASES.map((item) => (
+            <li className="community-card" key={item.id}>
+              {/*
+               * The portrait frame, holding the community's own photograph of
+               * the referent. Decoration over a name that is already written out
+               * below as the card's heading, so it is empty and hidden from
+               * assistive technology.
+               */}
+              <div className="community-portrait">
+                <Image
+                  className="community-portrait-image"
+                  src={item.photo}
+                  alt=""
+                  aria-hidden="true"
+                  fill
+                  sizes={COMMUNITY_PHOTO_SLOT_WIDTH}
+                />
+              </div>
 
-            return (
-              <li className="community-card" key={item.name}>
-                {/*
-                 * The portrait frame. With a photo it holds the referent's own
-                 * image, described by the alt. Without one it holds their
-                 * initials -- decoration over a name that is already written
-                 * out below, so it is hidden from assistive technology.
-                 */}
-                <div className="community-portrait">
-                  {hasPhoto ? (
-                    <img
-                      className="community-portrait-image"
-                      src={item.photo}
-                      alt={`Retrato de ${item.referent.name}, ${item.referent.role} de ${item.name}`}
-                    />
-                  ) : (
-                    <span
-                      className="community-portrait-initials"
-                      aria-hidden="true"
-                    >
-                      {referentInitials}
-                    </span>
-                  )}
-                </div>
+              {/*
+               * The mark alone, at the head of the card's text. Decorative: the
+               * mark names nothing, and with the invented name gone there is no
+               * text to repeat it as.
+               */}
+              <div className="community-card-head">
+                <Image
+                  className="community-card-logo"
+                  src={item.logo}
+                  alt=""
+                  aria-hidden="true"
+                  width={item.logoWidth}
+                  height={item.logoHeight}
+                  sizes={COMMUNITY_MARK_SLOT_WIDTH}
+                />
+              </div>
 
-                {/*
-                 * The mark and the project name, on one line: the mark as a
-                 * small decorative image, the name as the real text. The image
-                 * is alt="" and aria-hidden because the name right beside it
-                 * already says everything it could.
-                 */}
-                <div className="community-card-head">
-                  <Image
-                    className="community-card-logo"
-                    src={item.logo}
-                    alt=""
-                    aria-hidden="true"
-                    width={item.logoWidth}
-                    height={item.logoHeight}
-                    sizes={COMMUNITY_MARK_SLOT_WIDTH}
-                  />
-                  <h3 className="community-card-title">{item.name}</h3>
-                </div>
+              <p className="community-card-summary">{item.summary}</p>
+              <p className="community-card-contribution">{item.contribution}</p>
 
-                <p className="community-card-summary">{item.summary}</p>
-                <p className="community-card-contribution">{item.contribution}</p>
-
-                {/*
-                 * The referent: name and role as plain text, last on the card.
-                 * The name is not a heading -- the project name is -- and both
-                 * lines stay present whether or not a photo exists.
-                 */}
-                <p className="community-referent">
-                  <span className="community-referent-name">
-                    {item.referent.name}
-                  </span>
-                  <span className="community-referent-role">
-                    {item.referent.role}
-                  </span>
+              {/*
+               * The referent: name as the card's heading, role as plain text
+               * under it. The name carries the heading structure now that the
+               * project name is gone, and both lines stay present whatever the
+               * photograph is.
+               */}
+              <div className="community-referent">
+                <h3 className="community-referent-name">
+                  {item.referent.name}
+                </h3>
+                <p className="community-referent-role">
+                  {item.referent.role}
                 </p>
+              </div>
 
-                {item.url !== "" && (
-                  <a
-                    className="community-card-link"
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Ver el caso
-                  </a>
-                )}
-              </li>
-            );
-          })}
+              {item.url !== "" && (
+                <a
+                  className="community-card-link"
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Ver el caso
+                </a>
+              )}
+            </li>
+          ))}
         </ul>
       </div>
     </section>
   );
-}
-
-/*
- * Up to two initials from the referent's name, for the CSS placeholder. A helper
- * rather than a second field in the data: the initials are a fact about the name
- * that is already written down, so they cannot drift out of sync with it.
- */
-function referentInitialsFor(name: string): string {
-  return name
-    .trim()
-    .split(/\s+/)
-    .map((word) => word.charAt(0).toUpperCase())
-    .join("")
-    .slice(0, 2);
 }
