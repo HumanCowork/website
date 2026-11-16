@@ -9,7 +9,7 @@ import "./ProcessSection.css";
  *
  * The structure is the curtain's, deliberately. Two siblings, in this order:
  *
- *   .process-stage   the pinned screen, holding every step
+ *   .process-stage   the pinned screen, holding the heading and every step
  *   .process-run     an empty, tall box whose only job is to define the
  *                    timeline the steps are driven by
  *
@@ -32,7 +32,17 @@ export function ProcessSection() {
     >
       <div className="process-stage">
         <div className="process-inner">
-          <h2 className="process-heading" id="process-heading">
+          {/*
+            * The heading is the first item in the queue, not a static label: it
+            * arrives from the right ahead of the first step, with the same
+            * motion. That is why it carries `--i: 0` and the steps start at 1 --
+            * one sequence, one set of numbers.
+            */}
+          <h2
+            className="process-heading"
+            id="process-heading"
+            style={{ "--i": 0 } as CSSProperties}
+          >
             {PROCESS_HEADING}
           </h2>
 
@@ -42,13 +52,15 @@ export function ProcessSection() {
                 className="process-step"
                 key={step.number}
                 /*
-                 * `--i` is the step's position, and both its own reveal window
-                 * and the connector's are derived from it in CSS. That is what
-                 * makes adding a step a single entry here: nothing else needs to
-                 * know the order or the count. The grid does need `--process-count`
-                 * raised to match, or the new step has no column.
+                 * `--i` is the position in the reveal queue, and both this
+                 * step's window and its connector's are derived from it in CSS.
+                 * It starts at 1 because the heading took 0: the queue is the
+                 * heading, then the steps. That is what makes adding a step a
+                 * single entry in the data file -- nothing else needs to know the
+                 * order or the count. The grid does need `--process-count` raised
+                 * to match, or the new step has no column.
                  */
-                style={{ "--i": index } as CSSProperties}
+                style={{ "--i": index + 1 } as CSSProperties}
               >
                 <span className="process-number" aria-hidden="true">
                   {step.number}

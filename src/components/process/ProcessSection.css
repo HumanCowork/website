@@ -212,19 +212,19 @@
     }
 
     /*
-     * The arrival. Each step owns a window, derived from its own `--i`, so adding
-     * a step is one entry in the data file and nothing else:
+     * The arrival. The heading and every step own a window, each derived from
+     * its own `--i`, so adding an item to the queue is one entry in the data file
+     * and nothing else. The two share one rule so they cannot drift apart.
      *
-     *   step 0 -> 0%  to 13%      step 2 -> 34% to 47%
-     *   step 1 -> 17% to 30%      step 3 -> 51% to 64%
-     *
-     * `fill-mode: both` is what makes them accumulate. Before its window a step
+     * `fill-mode: both` is what makes them accumulate. Before its window an item
      * holds its `from` state, which is invisible; after its window it holds its
-     * `to` state, which is in place. So the reader sees one, then two, then
-     * three, then four -- and every earlier step stays exactly where it landed.
+     * `to` state, which is in place. So the reader sees the heading, then one
+     * step, then two, then three, then four -- and every earlier item stays
+     * exactly where it landed.
      */
+    .process-heading,
     .process-step {
-      animation-name: process-step-arrive;
+      animation-name: process-item-arrive;
       animation-duration: auto; /* required: the timeline supplies the duration */
       animation-timing-function: linear;
       animation-fill-mode: both;
@@ -259,7 +259,7 @@
  * on purpose: enough to read as movement, not so much that the step looks like it
  * is being thrown in.
  */
-@keyframes process-step-arrive {
+@keyframes process-item-arrive {
   from {
     opacity: 0;
     transform: translateX(var(--process-reveal-shift));
@@ -314,6 +314,12 @@
     grid-template-columns: 1fr;
   }
 
+  /*
+   * The heading is reset here too, and it matters: without this it would keep an
+   * animation whose timeline has zero height on a phone, and it would sit
+   * invisible forever. Both are reset together so they cannot diverge.
+   */
+  .process-heading,
   .process-step {
     animation: none;
   }

@@ -294,31 +294,39 @@
    * nowhere. It is now about 420px, three or four notches, so a step is still
    * arriving while the reader is still scrolling toward it.
    *
-   * The first step never drew this complaint: it begins arriving the instant the
-   * section pins, while attention is on the section landing. Steps 2 to 4 arrive
-   * with the reader already watching, which is why only they felt abrupt.
+   * The first item never drew this complaint: it begins arriving the instant the
+   * section pins, while attention is on the section landing. Everything after it
+   * arrives with the reader already watching, which is why only those felt abrupt.
    *
-   * Both figures are percentages of the timeline, so changing --process-run
-   * stretches the whole rhythm without altering its shape.
+   * The budget is fixed and small: five arrivals + four holds + one final hold
+   * have to fit inside the pinned run, and the run is therefore not an
+   * independent choice but the sum of the other two. Both figures are
+   * percentages of the timeline, so changing --process-run stretches the whole
+   * rhythm without altering its shape.
    */
-  --process-reveal-pitch: 19.5%; /* from one step's arrival to the next */
-  --process-reveal-run: 9%; /* how long one step takes to arrive */
+  --process-reveal-pitch: 17.3%; /* from one item's arrival to the next */
+  --process-reveal-run: 9.1%; /* how long one item takes to arrive */
   /* How far right a step starts. Small on purpose: a card thrown in from 48px
      reads as a slide, 32px reads as a step settling. */
   --process-reveal-shift: 2rem;
   /*
    * The scroll estate the arrivals are spread over. The stage is pinned for
-   * exactly this much scrolling. The reveals finish at 67.5% of the timeline, so
-   * the last 15% of the pin -- about 700px -- holds all four steps still before
-   * the section releases. The published guidance is to reserve roughly 30% of
-   * the pin as that final hold, so the last step is not yanked away the instant
-   * it lands.
+   * exactly this much scrolling. The queue went from four arrivals to five when
+   * the heading joined it, and five slower arrivals need more run than four did:
+   * that is the whole reason this number moved. The reveals finish at 78% of the
+   * timeline, so the last 8% of the pin -- about 500px -- holds everything still
+   * before the section releases.
+   *
+   * The published guidance suggests reserving closer to 30% of the pin for that
+   * final hold. Five arrivals at a readable pace leave about 10%, and that is the
+   * compromise this section makes: a longer settle at the end would cost two more
+   * screens of scroll on top of the six and a half it already takes.
    *
    * Four arrivals at a readable pace need a long pin: that is the price of the
    * steps settling instead of jumping. Shortening this is what makes the whole
    * section feel like it is rushing under the reader.
    */
-  --process-run: 480vh;
+  --process-run: 650vh;
   /* Wide enough for the connector that lives in it, and for the dashes to read
      as dashes rather than as a solid rule. */
   --process-column-gap: clamp(1.5rem, 2.5vw, 2.25rem);
