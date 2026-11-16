@@ -1,0 +1,373 @@
+/*
+ * Curtain two-phase reveal
+ * ========================
+ *
+ * PHASE 1 — the curtain rises with its title and subtitle centred and still,
+ *   exactly as the section always looked. Nothing moves here. A call to action
+ *   sits under the subtitle, out of the title's flow so it never shifts the
+ *   opening composition; it holds invisible and only arrives on scroll.
+ *
+ * PHASE 2 — only once the curtain fully covers the viewport, and the reader
+ *   chooses to keep scrolling, the title and subtitle slide from centre to the
+ *   left until they are gone, and a second text arrives.
+ *
+ * The read-hold
+ *   ---------
+ * Phase 2 opens with a hold: the run's first `--curtain-hold` share moves
+ * nothing at all, so the reader can take several scroll gestures with the title
+ * and subtitle perfectly still and readable. The exit only starts past that point.
+ *
+ * Why the range offset is a LENGTH and not a percentage
+ *   -------------------------------------------------
+ * `entry` is capped at a single scrollport: MDN — "the animation attachment range
+ * is either the size of the animated element or the size of the container,
+ * whichever is smaller; if the subject is larger than the scrollport, the
+ * animation attachment range is the entire scrollport". So `entry 80%` is always
+ * ~0.8 of ONE viewport no matter how tall the run is: lengthening the run would
+ * add page length without ever lengthening the hold. Offsetting from the entry
+ * start by a real length (`entry <len>`) is what lets the hold grow with the run.
+ *
+ * The range therefore spans exactly the pinned window: `entry 0%` is the moment
+ * the sticky stage reaches the top and the pin engages, and adding the run's own
+ * length lands on the moment the pin releases.
+ *
+ * How the two phases are separated
+ * ---------------------------------
+ * The stage is `position: sticky`, so it pins to the viewport for exactly the
+ * length of the run that follows it. The animated range is therefore `entry` on
+ * the run: it starts the moment the run's top edge meets the bottom of the
+ * viewport — which is precisely when the stage pins and the curtain has finished
+ * covering the screen — and ends the moment the run is fully inside the viewport,
+ * which is precisely when the stage unpins. Both boundaries fall out of layout,
+ * so they track `--curtain-exit-run` instead of being tuned by hand.
+ *
+ * (`cover` would be wrong here: it spans the run plus one whole viewport, so the
+ * exit would only be half finished when the stage starts scrolling away.)
+ *
+ * Built on native CSS scroll-driven animations: the effect runs on the
+ * compositor thread with no scroll listeners and no requestAnimationFrame loop.
+ * Only `transform` and `opacity` are animated.
+ *
+ * Progressive enhancement: browsers without `animation-timeline` reserve no run
+ * and render both texts in normal flow, one after the other.
+ */
+
+/*
+ * A named progress timeline is only referenceable by descendants of the element
+ * that declares it. The run declares `--curtain-exit`, but the animated texts
+ * live in the stage — a sibling branch — so without this the name never
+ * resolves: `animation-timeline` finds no timeline, the animations never play,
+ * and the title simply sits still. `timeline-scope` widens the name to this
+ * common ancestor, which makes it visible to the whole subtree.
+ */
+.curtain-root {
+  timeline-scope: --curtain-exit;
+}
+
+.curtain-run {
+  block-size: 0;
+
+  /* Named view timeline; only meaningful once the run has a height. */
+  view-timeline-name: --curtain-exit;
+  view-timeline-axis: block;
+}
+
+.curtain-swap {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+
+/*
+ * The call to action is positioned against the title block rather than sitting in
+ * its flow. In flow it would occupy height from the very first paint and push the
+ * title and subtitle up, changing the opening composition; taken out of flow the
+ * title stays exactly where it was and the button lands under the subtitle.
+ */
+.curtain-title {
+  position: relative;
+}
+
+.curtain-cta {
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% + var(--curtain-cta-gap));
+  display: flex;
+  justify-content: center;
+}
+
+/* Text shadows live here because `filter` cannot carry a value through a utility. */
+.curtain-title-shadow {
+  filter: drop-shadow(var(--curtain-title-shadow));
+}
+
+.curtain-subtitle-shadow {
+  filter: drop-shadow(var(--curtain-subtitle-shadow));
+}
+
+/*
+ * The rotating word, integrated into the curtain title.
+ *
+ * These selectors belong to the component that ships them, so they are declared
+ * here unlayered: a Tailwind utility could not win against them. Two things need
+ * overriding for this position.
+ *
+ * 1. The component's root is a block-level flex container, which would push the
+ *    word onto its own line. As a word after "para" it has to be inline.
+ * 2. That root carries the title's white colour, and the word sits on its own
+ *    white highlight — invisible. The letters are painted with the brand celeste
+ *    instead, which also wins over the colour the component inherits.
+ */
+.curtain-title .text-rotate {
+  display: inline-flex;
+}
+
+.curtain-title .text-rotate-element {
+  color: var(--curtain-rotating-text);
+}
+
+/*
+ * The white block. The component paints it on the outer span with 0.1em of
+ * padding around a full line box, so the block is much taller than the letters
+ * it holds. It is sized to the ink from `globals.css` instead, and the slack of
+ * the line box — which sits almost entirely *above* the glyphs — is the part
+ * that gets clipped away, so no letter is ever cut.
+ */
+.curtain-title .text-rotate-highlight {
+  height: var(--curtain-rotating-highlight-height);
+  padding-block: var(--curtain-rotating-highlight-pad-block);
+  align-items: flex-end;
+}
+
+.curtain-title,
+.curtain-next-text,
+.curtain-cta {
+  will-change: transform, opacity;
+}
+
+@keyframes curtain-title-exit-left {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(calc(-1 * var(--curtain-exit-distance)));
+    opacity: 0;
+  }
+}
+
+@keyframes curtain-next-text-enter {
+  from {
+    transform: translateX(var(--curtain-enter-distance));
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes curtain-cta-in {
+  from {
+    transform: translateY(var(--curtain-cta-rise));
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/*
+ * Phones: the effect stays, the box goes.
+ *
+ * The stage pins to the viewport for the length of the run so the two texts can
+ * swap in place, which is also what caps everything at one screen. That is right
+ * for a title and wrong for a section read as a vertical sequence: on a phone the
+ * About is taller than the viewport by design, so it is taken out of the pinned
+ * box, and the two texts stop substituting each other and simply follow on.
+ *
+ * The curtain's own entrance is untouched: it is a view() timeline on its own
+ * element, not on this run, so it keeps playing exactly as before.
+ *
+ * The selectors carry `.curtain-root` on purpose. This block has to beat rules
+ * that are not in a media query at all, and specificity does that without
+ * relying on where this text sits in the file.
+ */
+@media (max-width: 767px) {
+  /*
+   * The curtain comes over the navbar instead of stopping below it: it is the
+   * arrival, and on a phone it should cover the screen. Raised here rather than
+   * lowered there, so the navbar keeps its own z-index and only this side moves.
+   */
+  .curtain-root {
+    z-index: 60;
+    /*
+     * Where its arrival ends: the stop that fills the screen. `scroll-snap-stop:
+     * always` is the part that refuses to be skipped by a fast swipe.
+     */
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .curtain-root .curtain-stage {
+    position: static;
+    block-size: auto;
+    height: auto;
+    overflow: visible;
+    padding-block: var(--curtain-mobile-padding-block);
+  }
+
+  /*
+   * The title is sized for a full desktop line. On a phone that becomes one word
+   * per line, so it drops to a size that lets a phrase read as a phrase.
+   */
+  .curtain-root .curtain-title h2 {
+    font-size: var(--curtain-title-size-mobile);
+  }
+
+  .curtain-root .curtain-swap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--curtain-mobile-gap);
+  }
+
+  /*
+   * The call to action belongs on this list: it carries its own entrance
+   * animation, and without the pinned scroll that animation has no length to
+   * travel through — so it stays at its starting opacity and never appears.
+   */
+  .curtain-root .curtain-title,
+  .curtain-root .curtain-next-text,
+  .curtain-root .curtain-cta {
+    grid-area: auto;
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  /*
+   * On a phone the button goes back into normal flow, and that is the whole fix.
+   *
+   * It was taken out of flow so that on a pinned desktop it would not occupy height
+   * from the first paint and push the title and subtitle up. On a phone there is no
+   * pinned composition to protect, and being absolute is what made the distance
+   * unpredictable: it is positioned against the title block's bottom edge, and that
+   * edge carries a trailing margin of its own from `space-y-6`, so the real air was
+   * the token plus 24px nobody could see.
+   *
+   * In flow there is nothing to add itself to the token. Its distance from the
+   * subtitle is the token, and the margin reset below removes the column's own
+   * trailing margin so that stays true.
+   */
+  .curtain-root .curtain-cta {
+    position: static;
+    margin-block-start: var(--curtain-cta-gap-mobile);
+  }
+
+  /* The trailing margin the title column leaves after its last text. */
+  .curtain-root .curtain-title > .curtain-subtitle-shadow {
+    margin-block-end: 0;
+  }
+
+  /* No pinned scroll to travel through, so no extra run to scroll past. */
+  .curtain-root .curtain-run {
+    block-size: 0;
+  }
+
+  /*
+   * The stage is `static` here, so there is nothing left to hold: this is just
+   * air between the About and the band. It beats the `@supports` rule below on
+   * specificity, the same way the run's own override does.
+   */
+  .curtain-root .curtain-tail {
+    block-size: var(--curtain-tail-gap);
+  }
+}
+
+/*
+ * No pinned run without the effect, so no wait to add to it either. This is also
+ * what the element gets on phones, where the rule above out-specifies it.
+ */
+.curtain-tail {
+  block-size: 0;
+}
+
+@supports (animation-timeline: view()) {
+  .curtain-run {
+    /* The second phase gets its distance to happen in. */
+    block-size: var(--curtain-exit-run);
+  }
+
+  /*
+   * The stage is still stuck at this point, so this distance is a hold: the About
+   * sits there, fully on screen, for exactly `--curtain-tail-hold` of scrolling
+   * before the pin lets go and the band comes up behind it.
+   */
+  .curtain-tail {
+    block-size: var(--curtain-tail-hold);
+  }
+
+  /* Both texts share one grid cell, so they swap in place instead of stacking. */
+  .curtain-title,
+  .curtain-next-text {
+    grid-area: 1 / 1;
+  }
+
+  .curtain-title {
+    animation-name: curtain-title-exit-left;
+    animation-duration: var(--curtain-exit-duration);
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: both;
+    /* Declared after the `animation` longhands: the shorthand resets the timeline. */
+    animation-timeline: --curtain-exit;
+    /* Everything before --curtain-hold holds the opening frame: centred and readable. */
+    animation-range:
+      entry calc(var(--curtain-exit-run) * var(--curtain-hold))
+      entry calc(var(--curtain-exit-run) * var(--curtain-exit-end));
+  }
+
+  .curtain-next-text {
+    animation-name: curtain-next-text-enter;
+    animation-duration: var(--curtain-exit-duration);
+    animation-timing-function: ease-out;
+    animation-fill-mode: both;
+    animation-timeline: --curtain-exit;
+    /* Held invisible until the title is on its way out. */
+    animation-range:
+      entry calc(var(--curtain-exit-run) * var(--curtain-enter-start))
+      entry var(--curtain-exit-run);
+  }
+
+  /*
+   * The button owns its entrance: it arrives well inside the hold, so it is fully
+   * in long before the title starts to leave at --curtain-hold. It never shares an
+   * entrance with the title, which is readable from the first frame. Once it has
+   * arrived it simply rides along with the block it lives in when phase 2 starts.
+   */
+  .curtain-cta {
+    opacity: 0;
+    animation-name: curtain-cta-in;
+    animation-duration: var(--curtain-exit-duration);
+    animation-timing-function: ease-out;
+    animation-fill-mode: both;
+    animation-timeline: --curtain-exit;
+    animation-range:
+      entry calc(var(--curtain-exit-run) * var(--curtain-cta-start))
+      entry calc(var(--curtain-exit-run) * var(--curtain-cta-end));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .curtain-title,
+  .curtain-next-text,
+  .curtain-cta {
+    animation: none;
+    animation-timeline: none;
+  }
+
+  /* Without the scroll animation the button must simply be there. */
+  .curtain-cta {
+    opacity: 1;
+  }
+}
