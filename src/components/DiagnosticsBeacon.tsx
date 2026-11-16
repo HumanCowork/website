@@ -1005,6 +1005,17 @@ export function DiagnosticsBeacon() {
         };
       });
 
+      /* The heading is the first item in the queue, so it has its own window. */
+      const headingEl = root.querySelector<HTMLElement>(".process-heading");
+      const headingWindow = headingEl
+        ? {
+            name: getComputedStyle(headingEl).animationName,
+            from: getComputedStyle(headingEl).getPropertyValue("animation-range-start"),
+            to: getComputedStyle(headingEl).getPropertyValue("animation-range-end"),
+            opacity: Number(getComputedStyle(headingEl).opacity),
+          }
+        : null;
+
       /* The connectors, read the same way: one fewer than the steps, and each
          one's window should be the next step's. */
       const arrowWindows = Array.from(
@@ -1122,6 +1133,7 @@ export function DiagnosticsBeacon() {
         paint,
         geometry,
         windows,
+        headingWindow,
         arrowWindows,
         stepCount: steps.length,
         stepWidths: steps.map((s) => round(s.getBoundingClientRect().width)),
