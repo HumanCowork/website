@@ -304,10 +304,16 @@
  * From there the fade must run to the very end of the travel. Compressing it into
  * the first half (reaching full at 50%) measures well and reads badly: the item
  * materialises instead of arriving, which is the opposite of the effect this is
- * meant to produce. So the fade runs the whole travel and the crossing carries only
- * a few hundredths of full opacity (--process-arrive-dim): at that level the item
- * is not something the eye catches, it is simply not there yet -- and then it
- * arrives. The heading crosses at the same level, since it shares this curve.
+ * meant to produce. So the item is invisible for as long as it crosses, with no
+ * vestige of it visible: --process-arrive-dim is zero, and the curve holds that
+ * zero until 20% of the item's own travel. That flat phase has to outlast the
+ * crossing of the slowest column, which is the one with the shortest travel: the
+ * items all start together at the window's right edge and travel different
+ * distances to their tracks, so the rightmost column needs 16.3% of its range to
+ * clear the edge while the leftmost needs 5.9%. 20% clears the worst case. From
+ * there the fade climbs to full as the item settles. The heading shares this
+ * curve and clears the edge much earlier (5.6% of its longer travel), so the same
+ * flat phase covers it.
  *
  * The stops have to be literal percentages -- a keyframe selector cannot take a
  * variable -- but the opacity they carry comes from a token.
