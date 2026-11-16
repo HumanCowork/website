@@ -1,0 +1,330 @@
+/*
+ * Process steps: the stage holds still while each step arrives in turn, from the
+ * right, and stays. Pure scroll-driven animation -- no scroll listener, no
+ * library, no hijacking.
+ *
+ * The structure is the curtain's, and that is not a coincidence: the curtain
+ * already solved this exact problem, so it is copied rather than reinvented.
+ *
+ *   .process-root    carries `timeline-scope`, so the name reaches both boxes
+ *   .process-stage   the pinned screen, holding every step
+ *   .process-run     an empty, tall box whose only job is to define the timeline
+ *
+ * Two traps, both measured, both paid for:
+ *
+ * 1. The timeline must live on that separate empty box, never on an ancestor of
+ *    the animated steps. Declared on the stage's parent, the timeline froze: its
+ *    currentTime sat at its scroll-0 value of -150.442% through the whole page
+ *    while an anonymous `view()` on the same element advanced normally. A
+ *    timeline whose subject has a sticky descendant inside it stops updating,
+ *    with no error anywhere. The curtain puts the subject in its own empty div
+ *    for exactly this reason.
+ * 2. `timeline-scope` on the common ancestor is what makes the name visible to
+ *    the stage's subtree, since the box declaring it is a sibling, not a parent.
+ *
+ * Every length comes from a token in `globals.css`; no numbers live here.
+ */
+
+/* ---------------------------------------------------------------------------
+   Fallback first. Without scroll-driven animation support this is all that
+   applies, and it is an honest list: every step readable, nothing hidden behind
+   an animation that will never run. Also the reduced-motion answer, verbatim.
+   --------------------------------------------------------------------------- */
+
+.process-root {
+  position: relative;
+  z-index: 10; /* above the curtain's backdrop, below the partners band */
+  background: var(--background);
+  /* Trap 2: widens the name declared on `.process-run` to this common ancestor. */
+  timeline-scope: --process-timeline;
+}
+
+.process-stage {
+  position: relative;
+  padding-block: var(--process-padding-block);
+}
+
+/*
+ * Zero height until support is known, so an unsupported browser reserves no
+ * scroll estate and never sees a pinned screen that cannot be scrolled past.
+ */
+.process-run {
+  block-size: 0;
+  /* Trap 1: an empty box, with nothing sticky inside it to confuse the subject. */
+  view-timeline-name: --process-timeline;
+  view-timeline-axis: block;
+}
+
+.process-inner {
+  max-width: var(--process-max-width);
+  margin-inline: auto;
+  padding-inline: var(--process-stage-padding-inline);
+}
+
+.process-heading {
+  font-size: var(--process-heading-size);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--heading);
+  margin-block-end: var(--process-heading-gap);
+  text-wrap: balance;
+}
+
+/*
+ * One column per step. This is what makes them all fit, and it is why there is
+ * no width arithmetic anywhere in this section: the grid divides the available
+ * width by the count, so the last step can never be stranded off screen.
+ */
+.process-rail {
+  display: grid;
+  grid-template-columns: repeat(var(--process-count), minmax(0, 1fr));
+  gap: var(--process-column-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.process-step {
+  /* The connector positions itself against the card, so the card is the anchor. */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: var(--process-card-padding);
+  border: 1px solid var(--process-card-border);
+  border-radius: var(--process-card-radius);
+  background: var(--process-card-background);
+}
+
+.process-number {
+  display: block;
+  font-size: var(--process-number-size);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--process-number-colour);
+  font-variant-numeric: tabular-nums;
+  margin-block-end: 0.75rem;
+}
+
+.process-step-title {
+  font-size: var(--process-step-title-size);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--heading);
+  margin-block-end: 0.5rem;
+}
+
+/*
+ * The trailing margin is zeroed deliberately. A parent that offsets a child
+ * against its own bottom edge inherits whatever margin the last child leaves
+ * behind, and `margin-block-end` on a flex child does not collapse away. That
+ * exact bug cost 24 invisible pixels under the curtain's call to action.
+ */
+.process-step-body {
+  font-size: var(--process-step-body-size);
+  line-height: 1.55;
+  color: var(--process-step-body-colour);
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   The connector to the next step.
+
+   It sits in the gap on the right, anchored to the card rather than to a grid
+   cell of its own: the grid stretches every card in a row to the same height, so
+   anchoring it here means its position cannot drift when one card's copy runs
+   longer than another's -- which is the failure this pattern usually has.
+
+   It is drawn, not imported. A dashed rule plus a chevron gives the connector
+   without an icon set, and a chevron is not a brand mark that has to be licensed.
+   It is decorative -- the list is ordered and every card is numbered -- so it is
+   hidden from assistive technology.
+   --------------------------------------------------------------------------- */
+
+.process-arrow {
+  position: absolute;
+  inset-inline-start: 100%; /* begins where the card ends, so it fills the gap */
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  inline-size: var(--process-column-gap);
+  padding-inline: 0.25rem;
+  display: flex;
+  align-items: center;
+  color: var(--process-arrow-colour);
+  /* Decoration must never swallow a click or a tap meant for the page. */
+  pointer-events: none;
+}
+
+/*
+ * The rule. Dashes rather than a solid line, so it reads as "continues to"
+ * instead of "equals". The dash rhythm is set here rather than left to a
+ * `dashed` border, because a browser draws those about twice this size and the
+ * connector stops reading as a connector.
+ */
+.process-arrow::before {
+  content: "";
+  flex: 1;
+  block-size: 1px;
+  background-image: repeating-linear-gradient(
+    to right,
+    currentColor 0 var(--process-arrow-dash),
+    transparent var(--process-arrow-dash)
+      calc(var(--process-arrow-dash) + var(--process-arrow-gap))
+  );
+}
+
+/*
+ * The head: two borders on a square, turned 45 degrees. It inherits the
+ * connector's colour instead of hardcoding one, so the two always match.
+ */
+.process-arrow::after {
+  content: "";
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-block-start: 1px solid currentColor;
+  border-inline-end: 1px solid currentColor;
+  rotate: 45deg;
+}
+
+/* ---------------------------------------------------------------------------
+   The pinned arrival. Gated on real support, so every other browser -- and every
+   browser with reduced motion -- keeps the plain list above untouched.
+   --------------------------------------------------------------------------- */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* The scroll estate. The stage is pinned for exactly this much scrolling. */
+    .process-run {
+      block-size: var(--process-run);
+    }
+
+    .process-stage {
+      position: sticky;
+      inset-block-start: 0;
+      block-size: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-block: 0;
+      /* Matches the curtain. An ancestor clip would break the pin; the pin's own
+         clip is fine, and it keeps a step's sideways start from showing. */
+      overflow: hidden;
+    }
+
+    /*
+     * The arrival. Each step owns a window, derived from its own `--i`, so adding
+     * a step is one entry in the data file and nothing else:
+     *
+     *   step 0 -> 0%  to 13%      step 2 -> 34% to 47%
+     *   step 1 -> 17% to 30%      step 3 -> 51% to 64%
+     *
+     * `fill-mode: both` is what makes them accumulate. Before its window a step
+     * holds its `from` state, which is invisible; after its window it holds its
+     * `to` state, which is in place. So the reader sees one, then two, then
+     * three, then four -- and every earlier step stays exactly where it landed.
+     */
+    .process-step {
+      animation-name: process-step-arrive;
+      animation-duration: auto; /* required: the timeline supplies the duration */
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-iteration-count: 1;
+      animation-timeline: --process-timeline;
+      animation-range: calc(var(--i) * var(--process-reveal-pitch))
+        calc(var(--i) * var(--process-reveal-pitch) + var(--process-reveal-run));
+    }
+
+    /*
+     * The connector draws itself toward the step it points at, and its window is
+     * that step's own -- the same pitch, one index along. Deriving it from the
+     * same numbers is what keeps the arrow from arriving before or after the card
+     * it belongs to when the rhythm is retuned.
+     */
+    .process-arrow {
+      animation-name: process-arrow-draw;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-iteration-count: 1;
+      animation-timeline: --process-timeline;
+      animation-range: calc((var(--i) + 1) * var(--process-reveal-pitch))
+        calc(
+          (var(--i) + 1) * var(--process-reveal-pitch) + var(--process-reveal-run)
+        );
+    }
+  }
+}
+/*
+ * Arrives from the right and settles leftward into place. The distance is small
+ * on purpose: enough to read as movement, not so much that the step looks like it
+ * is being thrown in.
+ */
+@keyframes process-step-arrive {
+  from {
+    opacity: 0;
+    transform: translateX(var(--process-reveal-shift));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/*
+ * A wipe from the left edge, not a fade: the rule is drawn toward the step it
+ * points at, so the arrow reads as the path being laid down rather than as
+ * another object appearing. The chevron is clipped with it, which is what makes
+ * it land last -- the arrow arrives at the next step, in order.
+ */
+@keyframes process-arrow-draw {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Phone. Not a narrower version of the effect: no pinning at all.
+   --------------------------------------------------------------------------- */
+
+/*
+ * Four steps side by side on a phone would be four columns of unreadable text, so
+ * they stack. The pinned arrival is dropped with them: holding two and a half
+ * screens of a phone to watch cards fade in one at a time is not worth the
+ * scrolling it costs. Identical content; only the transport changes.
+ */
+@media (max-width: 767px) {
+  .process-run {
+    block-size: 0;
+  }
+
+  .process-stage {
+    position: static;
+    block-size: auto;
+    display: block;
+    overflow: visible;
+    padding-block: var(--process-padding-block);
+  }
+
+  .process-rail {
+    grid-template-columns: 1fr;
+  }
+
+  .process-step {
+    animation: none;
+  }
+
+  /*
+   * The connectors go, not just shrink. A horizontal arrow between stacked cards
+   * points at nothing: it would need turning a quarter turn and repointing, and
+   * the list already reads as a sequence without it. Every published horizontal
+   * flow does the same thing, and it is what keeps 320px clean.
+   */
+  .process-arrow {
+    display: none;
+  }
+}

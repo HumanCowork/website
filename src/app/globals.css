@@ -263,6 +263,81 @@
   --partners-marquee-duration: 38s;
   /* How far each edge dissolves, so marks enter and leave instead of clipping. */
   --partners-fade: 8%;
+
+  /*
+   * Process steps. A pinned stage holds still while each step arrives in turn,
+   * from the right, and stays. Pure scroll-driven animation -- no JavaScript,
+   * and the same `view-timeline` contract the curtain uses.
+   *
+   * There is no travel distance to compute here, and that is the point. The old
+   * version slid one long rail and had to keep two lengths in agreement -- the
+   * distance it moved and the extra height that paid for it -- and every attempt
+   * to derive one from the other disagreed by a scrollbar's width. Steps that
+   * arrive in place need neither: the grid makes them fit and the timeline makes
+   * them appear.
+   */
+  /* How many steps there are. The grid builds one column per step, so the count
+     is what guarantees they all fit; a step added to the data file needs this
+     raised to match and nothing else. */
+  --process-count: 4;
+  /*
+   * The reveal rhythm. The rule that matters is hold >= transition, and these
+   * numbers give the hold twice the transition. The first version had it
+   * inverted -- 13% arriving and only 4% holding -- which is exactly why the
+   * steps felt piled on one another: the reader was never given a settled step
+   * to look at before the next one moved. In scroll distance each arrival now
+   * takes about 180px and then sits still for about 360px.
+   *
+   * Both figures are percentages of the timeline, so changing --process-run
+   * stretches the whole rhythm without altering its shape.
+   */
+  --process-reveal-pitch: 17%; /* from one step's arrival to the next */
+  --process-reveal-run: 6%; /* how long one step takes to arrive */
+  /* How far right a step starts. Small on purpose: a card thrown in from 48px
+     reads as a slide, 32px reads as a step settling. */
+  --process-reveal-shift: 2rem;
+  /*
+   * The scroll estate the arrivals are spread over. The stage is pinned for
+   * exactly this much scrolling. The reveals finish at 57% of the timeline, so
+   * the last quarter of the pin holds all four steps still before the section
+   * releases -- the published guidance is to reserve about 30% of the pin as
+   * that final hold, so the last step is not yanked away the moment it lands.
+   */
+  --process-run: 300vh;
+  /* Wide enough for the connector that lives in it, and for the dashes to read
+     as dashes rather than as a solid rule. */
+  --process-column-gap: clamp(1.5rem, 2.5vw, 2.25rem);
+  --process-stage-padding-inline: clamp(1.5rem, 5vw, 4rem);
+  /* Wider than the partners band: four steps side by side need the room, and
+     this is the one section whose content runs the width of the page. */
+  --process-max-width: 78rem;
+  --process-padding-block: clamp(4rem, 9vw, 7rem);
+  /*
+   * The step number. Large and pale: it labels without competing with the step
+   * it introduces. A number is used instead of an icon on purpose -- a generic
+   * lit bulb or handshake adds decoration and no information, and makes the
+   * section read like any template.
+   */
+  --process-number-size: clamp(2rem, 3.5vw, 2.75rem);
+  --process-number-colour: color-mix(in oklab, var(--brand-celeste) 22%, transparent);
+  --process-step-title-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  --process-step-body-size: 0.9375rem;
+  --process-step-body-colour: var(--muted-foreground);
+  --process-heading-size: clamp(1.75rem, 4vw, 2.5rem);
+  --process-heading-gap: clamp(2.5rem, 6vw, 4rem);
+  --process-card-padding: clamp(1.25rem, 2vw, 1.75rem);
+  --process-card-radius: 1.25rem;
+  --process-card-background: var(--card);
+  --process-card-border: var(--border);
+  /*
+   * The connector between one step and the next. Celeste, and stronger than the
+   * pale number: the number labels a step, the arrow moves the eye along to the
+   * next one. It is drawn, not imported -- a dashed rule and a chevron -- so
+   * there is no icon dependency here either.
+   */
+  --process-arrow-colour: color-mix(in oklab, var(--brand-celeste) 55%, transparent);
+  --process-arrow-dash: 5px;
+  --process-arrow-gap: 6px;
   --about-grid-gap: 1.25rem;
   --about-subcolumn-gap: 1.25rem;
   --about-subcolumn-offset: 3rem;
