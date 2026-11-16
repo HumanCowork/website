@@ -52,8 +52,8 @@ export const PROCESS_STEPS: ProcessStep[] = [
   },
   {
     number: "02",
-    title: "Validación con pares",
-    body: "La mirada técnica de otras personas que construyen devuelve preguntas y riesgos que solo se ven desde afuera. Una intuición se convierte en un plan defendible.",
+    title: "Mirada técnica",
+    body: "Otras personas que construyen devuelven preguntas y riesgos que solo se ven desde afuera del proyecto. Una intuición se convierte en un plan defendible.",
   },
   {
     number: "03",
