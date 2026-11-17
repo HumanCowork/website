@@ -516,6 +516,12 @@
    */
   --testimonial-card-padding: var(--community-card-padding);
   --testimonial-card-radius: var(--community-card-radius);
+  /*
+   * A floor for card height. Without it a one-line opinion produces a stubby card
+   * next to a four-line one and the row looks broken, which is the only case
+   * where three cards of differing copy look mismatched.
+   */
+  --testimonial-card-min-height: 20rem;
   --testimonial-card-surface: var(--card);
   --testimonial-card-border: var(--border);
   --testimonial-card-spotlight: var(--brand-celeste);
