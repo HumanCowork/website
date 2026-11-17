@@ -112,7 +112,11 @@ export type CommunityCase = {
   url: string;
 };
 
-export const COMMUNITY_HEADING = "Proyectos que empezaron acá";
+/*
+ * Nombra el origen y no el resultado: lo que la comunidad puede reclamar es de
+ * donde salieron estos proyectos, no que hayan triunfado.
+ */
+export const COMMUNITY_HEADING = "Proyectos que empezaron en Human Cowork";
 
 /*
  * The widest a mark is ever drawn: the tallest a mark goes (28px, the top of
