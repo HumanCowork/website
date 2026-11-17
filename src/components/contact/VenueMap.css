@@ -1,0 +1,72 @@
+/*
+ * The venue block, under the cards and on the same celeste.
+ *
+ * Every value comes from --contact-* in globals.css. Grep that prefix.
+ */
+
+.venue {
+  display: flex;
+  flex-direction: column;
+  /*
+   * No `align-items`, so every child spans the container. Centring them instead would
+   * shrink the heading and the link to the width of their own text and centre them,
+   * which is the opposite of the start-aligned heading this block matches.
+   *
+   * No `gap` either, because the three children do not share one distance.
+   * The heading and the frame are separated by the same measure the section already
+   * uses between its own heading and its cards, and the link sits close under the
+   * frame. Declaring those on the children keeps each distance visible where it
+   * applies instead of hiding the exception in a margin.
+   */
+  margin-block-start: var(--contact-map-gap);
+}
+
+/*
+ * The frame is what carries the proportion, not the iframe. An iframe is a replaced
+ * element: giving it `height: 100%` inside an aspect-ratio box is what makes it fill
+ * the box at every width, instead of holding whatever height it was given once.
+ */
+.venue__frame {
+  /* Same measure the section's own heading keeps from its cards. */
+  margin-block-start: var(--contact-heading-gap);
+  width: 100%;
+  aspect-ratio: var(--contact-map-aspect);
+  border-radius: var(--contact-map-radius);
+  /*
+   * The ring lives here and not on the iframe: a border on the frame itself would sit
+   * under the iframe's own painting and never be seen. `overflow: hidden` is what
+   * lets the frame round off the iframe's corners.
+   */
+  border: 1px solid var(--contact-map-border);
+  overflow: hidden;
+}
+
+.venue__map {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.venue__heading {
+  margin: 0;
+  font-size: var(--contact-map-heading-size);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--contact-heading-colour);
+  /* Start-aligned, matching the heading above the cards. That heading declares no
+     alignment at all, so it sits at the start of its container; this one matches it
+     rather than centring, which is what it did before. */
+  text-align: start;
+  text-wrap: balance;
+}
+
+/*
+ * On a narrow screen a 16/9 band is a letterbox that shows a couple of streets. The
+ * frame squares up so the pin has some neighbourhood around it.
+ */
+@media (max-width: 767px) {
+  .venue__frame {
+    aspect-ratio: var(--contact-map-aspect-narrow);
+  }
+}
