@@ -683,7 +683,6 @@
    * transparent button. The celeste button beside it deliberately has no label
    * shadow — its surface already carries contrast.
    */
-  --hero-outline-label-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
 }
 
 /*

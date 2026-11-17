@@ -20,6 +20,3 @@
  * transparent box and its white border as well as the letters; `text-shadow`
  * only touches the glyphs, which is what was asked for.
  */
-.hero-outline-label-shadow {
-  text-shadow: var(--hero-outline-label-shadow);
-}
