@@ -39,7 +39,7 @@
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -0.02em;
-  color: var(--community-heading-colour);
+  color: var(--community-band-foreground);
   margin: 0;
   margin-block-end: var(--community-heading-gap);
   text-wrap: balance;
