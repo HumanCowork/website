@@ -508,39 +508,54 @@
   --carousel-control-opacity-disabled: 0.35;
   --carousel-control-transition: 160ms ease;
 
-  --testimonial-photo-size: clamp(5rem, 9vw, 6rem);
-  --testimonial-photo-ring: 3px;
-  --testimonial-photo-ring-colour: var(--brand-celeste);
-  --testimonial-name-size: 1.25rem;
-  --testimonial-name-colour: var(--heading);
-  --testimonial-role-size: 0.9375rem; /* 15px */
-  --testimonial-role-colour: var(--muted-foreground);
+  /*
+   * The testimonial row: a square photograph on the left, a celeste panel on the
+   * right, both vertically centred so the photograph sits level with a quote of
+   * any length. One testimonial per view, so the split is 50/50 with the text
+   * side taking slightly more room.
+   */
+  --testimonial-split: 0.5;
+  --testimonial-column-gap: clamp(1.5rem, 4vw, 3rem);
+  --testimonial-row-radius: 1.5rem;
+  --testimonial-row-max-width: 64rem;
 
-  --testimonial-badges-gap: 0.5rem;
-  --testimonial-badge-size: 0.8125rem; /* 13px */
-  --testimonial-badge-padding-block: 0.25rem;
-  --testimonial-badge-padding-inline: 0.625rem;
-  --testimonial-badge-radius: 62rem; /* pill */
-  --testimonial-badge-background: var(--primary-subtle);
-  --testimonial-badge-colour: var(--brand-celeste);
-  --testimonial-badge-border: color-mix(in oklab, var(--brand-celeste) 22%, transparent);
+  /* The photograph: a square, so the subject's face is not cropped by the frame. */
+  --testimonial-photo-radius: var(--testimonial-row-radius);
+  --testimonial-photo-background: var(--primary-subtle);
+  --testimonial-photo-aspect: 1;
 
+  /*
+   * The panel: the official celeste, with its own text colours. Absolute values
+   * rather than theme tokens, for the same reason --cta-inverted-* exist: the
+   * panel is always brand blue, whatever the page around it does.
+   */
+  --testimonial-panel-background: var(--brand-celeste);
+  --testimonial-panel-padding: clamp(1.5rem, 3.5vw, 3rem);
+  --testimonial-panel-radius: var(--testimonial-row-radius);
+
+  /* The title: the person's name. */
+  --testimonial-name-size: clamp(1.5rem, 2.4vw, 2rem);
+  --testimonial-name-colour: #ffffff;
+  --testimonial-name-line: 1.2;
+
+  /*
+   * The subtitle: company or project, then the role after a colon. Same size and
+   * face as the title but not the same weight, so it reads as one line with it.
+   */
+  --testimonial-role-size: clamp(1rem, 1.4vw, 1.125rem);
+  --testimonial-role-colour: color-mix(in oklab, #ffffff 82%, transparent);
+  --testimonial-role-gap: 0.5rem;
+
+  /*
+   * The testimonial body. The lead is its first sentence and carries the weight;
+   * the rest follows at the same size, the same face and the same colour, which
+   * is what makes the pair read as one paragraph rather than a heading and text.
+   */
   --testimonial-quote-size: 1.125rem; /* 18px, the page's body voice */
-  --testimonial-quote-colour: var(--muted-foreground);
-  --testimonial-quote-gap: 0.875rem;
-  /* One line of the opinion. Fuller than body copy, so the words feel spoken. */
-  --testimonial-quote-line: 1.6;
-
-  --testimonial-gaps: 1.5rem;
-  --testimonial-block-gap: 2rem;
-  --testimonial-action-size: 1rem; /* 16px, the site's button voice */
-  --testimonial-action-padding-block: 0.75rem;
-  --testimonial-action-padding-inline: 1.5rem;
-  --testimonial-action-radius: 62rem;
-  --testimonial-action-background: var(--brand-celeste);
-  --testimonial-action-background-hover: color-mix(in oklab, var(--brand-celeste) 86%, black);
-  --testimonial-action-colour: #ffffff;
-  --testimonial-action-transition: 160ms ease;
+  --testimonial-quote-colour: color-mix(in oklab, #ffffff 92%, transparent);
+  --testimonial-quote-line: 1.65;
+  --testimonial-quote-gap: 1.75rem;
+  --testimonial-lead-weight: 600;
 
   --about-grid-gap: 1.25rem;
   --about-subcolumn-gap: 1.25rem;
