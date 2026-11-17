@@ -513,6 +513,10 @@
    * Spotlight card. The light itself is drawn by the component; these are the
    * surface it floats over. The celeste is the default light colour, so a card
    * left alone still reads as this site's card.
+   *
+   * --testimonial-card-spotlight, -intensity, -size and -softness are read by
+   * SpotlightCard.tsx (as the default of its props and of the gradient it
+   * builds), not by the stylesheet, so no CSS file greps for them.
    */
   --testimonial-card-padding: var(--community-card-padding);
   --testimonial-card-radius: var(--community-card-radius);

@@ -3,6 +3,7 @@ import { Hero } from "@/components/hero/Hero";
 import { FeaturesCurtain } from "@/components/features/FeaturesCurtain";
 import { ProcessSection } from "@/components/process/ProcessSection";
 import { CommunityCases } from "@/components/community/CommunityCases";
+import { TestimonialsSection } from "@/components/testimonials/TestimonialsSection";
 import { PartnersSection } from "@/components/partners/PartnersSection";
 import { DiagnosticsBeacon } from "@/components/DiagnosticsBeacon";
 
@@ -23,6 +24,8 @@ export default function Home() {
       <ProcessSection />
       {/* Casos de la comunidad: banda propia entre las etapas y los partners */}
       <CommunityCases />
+      {/* Testimonios: las opiniones de quienes pasaron por la comunidad */}
+      <TestimonialsSection />
       {/* Banda de partners: superficie propia, fuera de la cortina */}
       <PartnersSection />
     </div>
