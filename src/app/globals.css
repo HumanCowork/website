@@ -373,6 +373,7 @@
   --process-step-body-size: 1.125rem;
   --process-step-body-colour: var(--muted-foreground);
   --process-heading-size: clamp(1.75rem, 4vw, 2.5rem);
+  --process-heading-colour: var(--brand-celeste);
   --process-heading-gap: clamp(2.5rem, 6vw, 4rem);
   --process-card-padding: clamp(1.25rem, 2vw, 1.75rem);
   --process-card-radius: 1.25rem;
@@ -436,6 +437,7 @@
   --community-card-gap: 0.75rem; /* air between a card's own lines */
   --community-card-divider-gap: 0.75rem; /* air above the rule over the second line */
   --community-heading-size: clamp(1.75rem, 4vw, 2.5rem);
+  --community-heading-colour: var(--brand-celeste);
   --community-heading-gap: 3rem;
   --community-heading-gap-mobile: 2rem;
   /*
@@ -484,7 +486,7 @@
   --testimonials-max-width: 88rem;
   --testimonials-padding-inline: clamp(1.5rem, 5vw, 4rem);
   --testimonials-heading-size: clamp(1.75rem, 4vw, 2.5rem);
-  --testimonials-heading-colour: var(--heading);
+  --testimonials-heading-colour: var(--brand-celeste);
   --testimonials-heading-gap: clamp(2.5rem, 6vw, 4rem);
 
   /*
@@ -498,8 +500,6 @@
   --carousel-arrow-size: 0.5rem;
   --carousel-arrow-stroke: 2px;
   --carousel-controls-gap: 1.5rem;
-  --carousel-controls-gap-mobile: 2rem;
-  --carousel-controls-row-gap: 1rem;
   --carousel-control-background: var(--card);
   --carousel-control-background-hover: var(--primary-subtle);
   --carousel-control-colour: var(--brand-celeste);
@@ -526,6 +526,13 @@
    * where three cards of differing copy look mismatched.
    */
   --testimonial-card-min-height: 20rem;
+  /*
+   * How wide one opinion is allowed to get. With a single card per view on a
+   * desktop, an unconstrained card would stretch across the whole 88rem section
+   * and run to well over 100 characters per line. This is the ceiling that keeps
+   * the line readable while still letting the card be big.
+   */
+  --testimonial-card-max-width: 48rem;
   --testimonial-card-surface: var(--card);
   --testimonial-card-border: var(--border);
   --testimonial-card-spotlight: var(--brand-celeste);

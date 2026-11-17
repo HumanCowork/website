@@ -37,29 +37,51 @@
   margin-block-end: var(--testimonials-heading-gap);
 }
 
-/* The decorative layer of each card is a pointer effect; nothing else. */
+/*
+ * One card per view, at every width.
+ *
+ * The client wants one opinion on screen at a time: a testimonial is read, not
+ * scanned, and a row of three invites skimming instead. So the item takes the
+ * whole track and the carousel becomes a pager. What changes across breakpoints
+ * is how much room the card gets around it, not how many cards fit.
+ *
+ * The card itself is therefore wide -- up to --testimonial-card-max-width -- and
+ * centred inside the track, rather than stretched to the full 88rem: across a
+ * desktop an opinion stretched edge to edge would run to well over 100 characters
+ * per line, and the eye loses the start of the next line.
+ */
 .testimonials-carousel {
-  /*
-   * The controls sit outside the track, so the section has to leave room for
-   * them; without this the right-hand one lands under the page edge on a laptop.
-   */
-  --carousel-item-size: calc(33.333% - var(--carousel-item-gap) * 2 / 3);
+  --carousel-item-size: 100%;
 }
 
+/* --- the card ------------------------------------------------------------ */
+
+.testimonial-card {
+  max-width: var(--testimonial-card-max-width);
+  margin-inline: auto;
+}
+
+/*
+ * The room the card needs on each side at each size. The controls sit outside the
+ * track, so the section has to leave space for them: without this the right-hand
+ * arrow lands under the page edge on a laptop. On a phone there is no room
+ * outside the track at all, so --testimonial-card-max-width keeps the card away
+ * from the arrows and the arrows stay where the client wants them: at the sides.
+ */
 @media (max-width: 1023px) {
   .testimonials-carousel {
-    --carousel-item-size: calc(50% - var(--carousel-item-gap) / 2);
+    --testimonial-card-max-width: 40rem;
   }
 }
 
 @media (max-width: 767px) {
   .testimonials-carousel {
-    /* One card per view: a phone shows one opinion, whole. */
-    --carousel-item-size: 100%;
+    --testimonial-card-max-width: 22rem;
+    /* Narrow gaps: at 360px wide, every pixel the card gives up hurts. */
+    --carousel-controls-gap: 0.5rem;
+    --carousel-item-gap: 0.5rem;
   }
 }
-
-/* --- the card ------------------------------------------------------------ */
 
 .testimonial-card__head {
   display: flex;

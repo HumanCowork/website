@@ -56,11 +56,20 @@ export interface SpotlightCardProps
    * the --testimonial-card-spotlight token.
    */
   spotlightColor?: string
-  /** Brightness of the light on the surface, 0 to 1. */
+  /**
+   * Brightness of the light on the surface, 0 to 1. Defaults to the
+   * --testimonial-card-spotlight-intensity token.
+   */
   intensity?: number
-  /** Radius of the light in px. */
+  /**
+   * Radius of the light in px. Defaults to the --testimonial-card-spotlight-size
+   * token.
+   */
   spotlightSize?: number
-  /** How gradually the light fades out: 0 is a crisp disc, 1 a wide glow. */
+  /**
+   * How gradually the light fades out: 0 is a crisp disc, 1 a wide glow.
+   * Defaults to the --testimonial-card-spotlight-softness token.
+   */
   softness?: number
   /** How much the card's edge catches the light near the pointer, 0 to 1. */
   borderGlow?: number
@@ -68,6 +77,56 @@ export interface SpotlightCardProps
   proximity?: number
   /** How far the light floats behind the pointer. 0 sticks to it. */
   smoothing?: number
+}
+
+/*
+ * The four settings that describe the light itself -- as opposed to its
+ * behaviour -- read their defaults from CSS custom properties rather than from a
+ * number written here. That keeps the promise the rest of the site makes: the
+ * look is decided in globals.css, and this component names no colour, no radius
+ * and no intensity of its own.
+ *
+ * The fallback after the comma is what applies if a token is ever missing, so a
+ * card rendered outside this project's globals still lights up.
+ */
+const tokenNumber = (name: string, fallback: number) => {
+  if (typeof window === "undefined") return fallback
+
+  const raw = getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim()
+
+  const parsed = Number.parseFloat(raw)
+
+  return Number.isFinite(parsed) ? parsed : fallback
+}
+
+/*
+ * Read once per mount and kept in a ref-like module value, because a pointer
+ * interaction must not trigger a style recalculation of the document. The tokens
+ * do not change at runtime in this project (there is no theme switch), so
+ * re-reading them per render would be pure cost.
+ */
+const DEFAULTS = {
+  intensity: 0.15,
+  spotlightSize: 240,
+  softness: 0.7,
+  borderGlow: 0.6,
+}
+
+function useTokenDefaults() {
+  const [resolved, setResolved] = React.useState(DEFAULTS)
+
+  React.useEffect(() => {
+    setResolved({
+      intensity: tokenNumber("--testimonial-card-spotlight-intensity", DEFAULTS.intensity),
+      spotlightSize: tokenNumber("--testimonial-card-spotlight-size", DEFAULTS.spotlightSize),
+      softness: tokenNumber("--testimonial-card-spotlight-softness", DEFAULTS.softness),
+      borderGlow: tokenNumber("--testimonial-card-spotlight-intensity", DEFAULTS.borderGlow),
+    })
+  }, [])
+
+  return resolved
 }
 
 /*
@@ -100,14 +159,20 @@ export function SpotlightCard({
   children,
   className,
   spotlightColor,
-  intensity = 0.15,
-  spotlightSize = 240,
-  softness = 0.7,
-  borderGlow = 0.6,
+  intensity,
+  spotlightSize,
+  softness,
+  borderGlow,
   proximity = DEFAULT_PROXIMITY,
   smoothing = 0.3,
   ...rest
 }: SpotlightCardProps) {
+  const defaults = useTokenDefaults()
+  const resolvedIntensity = intensity ?? defaults.intensity
+  const resolvedSize = spotlightSize ?? defaults.spotlightSize
+  const resolvedSoftness = softness ?? defaults.softness
+  const resolvedBorderGlow = borderGlow ?? defaults.borderGlow
+
   const rootRef = React.useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = React.useState(false)
 
@@ -140,10 +205,10 @@ export function SpotlightCard({
   const presence = useMotionValue(0)
   const lit = useSpring(presence, { stiffness: 190, damping: 30, mass: 0.5 })
 
-  const fill = falloffStops(spotlightColor ?? "var(--testimonial-card-spotlight)", softness)
+  const fill = falloffStops(spotlightColor ?? "var(--testimonial-card-spotlight)", resolvedSoftness)
   const rim = falloffStops(spotlightColor ?? "var(--testimonial-card-spotlight)", 1)
 
-  const size = Math.max(20, spotlightSize)
+  const size = Math.max(20, resolvedSize)
 
   /*
    * The gradient is assembled by the library and only touches the DOM when one
@@ -153,8 +218,8 @@ export function SpotlightCard({
   const surface = useMotionTemplate`radial-gradient(circle ${size}px at calc(var(--spotlight-x)) calc(var(--spotlight-y)), ${fill})`
   const edge = useMotionTemplate`radial-gradient(circle ${size * 0.6}px at calc(var(--spotlight-x)) calc(var(--spotlight-y)), ${rim})`
 
-  const surfaceOpacity = useMotionValue(intensity)
-  const edgeOpacity = useMotionValue(borderGlow)
+  const surfaceOpacity = useMotionValue(resolvedIntensity)
+  const edgeOpacity = useMotionValue(resolvedBorderGlow)
 
   React.useEffect(() => {
     const root = rootRef.current
@@ -221,12 +286,12 @@ export function SpotlightCard({
    */
   React.useEffect(() => {
     const unsubPresence = lit.on("change", (value) => {
-      surfaceOpacity.set(value * intensity)
-      edgeOpacity.set(value * borderGlow)
+      surfaceOpacity.set(value * resolvedIntensity)
+      edgeOpacity.set(value * resolvedBorderGlow)
     })
 
     return unsubPresence
-  }, [lit, surfaceOpacity, edgeOpacity, intensity, borderGlow])
+  }, [lit, surfaceOpacity, edgeOpacity, resolvedIntensity, resolvedBorderGlow])
 
   /*
    * The coordinates the templates read. Exposed as CSS custom properties on the

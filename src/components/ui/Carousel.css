@@ -129,8 +129,7 @@
 /*
  * The label is for screen readers only. Not display:none -- that removes it
  * from the accessibility tree, which is the whole point of having it.
- */
-.carousel-control__label {
+ */.carousel-control__label {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -140,28 +139,4 @@
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
-}
-
-/*
- * Stacked layout: on a narrow screen the controls go below the track and
- * side by side in the middle, where a thumb reaches them without covering the
- * card it is reading.
- */
-@media (max-width: 639px) {
-  .carousel {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--carousel-controls-gap-mobile);
-  }
-
-  .carousel-control {
-    /* Below the track the controls must not stretch to full width. */
-    align-self: center;
-  }
-
-  .carousel-controls-row {
-    display: flex;
-    justify-content: center;
-    gap: var(--carousel-controls-row-gap);
-  }
 }
