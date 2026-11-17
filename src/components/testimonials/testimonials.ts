@@ -9,8 +9,10 @@
  * for this exact use, in writing.
  *
  * What a real replacement needs, per person:
- *   - the quote in their own words. Its first sentence becomes the lead and is
- *     rendered heavier, so write it as a sentence that carries the rest;
+ *   - the quote in their own words, as plain prose;
+ *   - `emphasise`: a few short passages copied out of that quote, word for word,
+ *     to be picked out inside it. Three or four words each is the useful size;
+ *     the whole sentence in bold is the same as nothing in bold;
  *   - their name;
  *   - the company or project they belong to, and their role in it, kept apart so
  *     the panel can join them with a colon;
@@ -34,10 +36,20 @@ export type TestimonialPerson = {
   /** Their role there. Joined to the company with a colon when rendered. */
   role: string
   /**
-   * The testimonial, as plain prose. Its first sentence is the lead and the rest
-   * follows at the same size without the weight. Do not put markup in here.
+   * The testimonial, as plain prose. Its first sentence becomes the lead and is
+   * rendered on its own line, heavier; the rest follows as a paragraph.
+   *
+   * Do not put markup in here. The weight lives in the stylesheet and the passages
+   * to pick out live in `emphasise`, so this stays a sentence a search index can
+   * read and a screen reader can speak.
    */
   quote: string
+  /**
+   * Passages of `quote` to render heavier inside the rest of it, copied exactly as
+   * they appear there. A passage that does not match is dropped rather than
+   * approximated; see markEmphasis.ts.
+   */
+  emphasise: string[]
   /** Square portrait. */
   photo: string
 }
@@ -58,6 +70,7 @@ export const TESTIMONIALS: TestimonialPerson[] = [
     role: "Fundadora",
     quote:
       "Human Cowork tiene una comunidad muy atractiva. Llegué con una idea que no lograba bajar a tierra y lo que cambió no fue una herramienta: fue tener a alguien enfrente que me hiciera las preguntas incómodas en el momento justo. Hoy el proyecto está en pie y facturando, y sigo viniendo porque acá se trabaja distinto.",
+    emphasise: ["en pie y facturando", "se trabaja distinto"],
     photo: PORTRAITS[0],
   },
   {
@@ -67,6 +80,7 @@ export const TESTIMONIALS: TestimonialPerson[] = [
     role: "Desarrollador",
     quote:
       "Vengo de trabajar solo durante años y acá encontré lo que me faltaba. Gente que discute decisiones técnicas en serio, sin competir, y que te devuelve una pregunta mejor de la que hiciste. Con el tiempo, dos de esas conversaciones se convirtieron en clientes.",
+    emphasise: ["discute decisiones técnicas en serio", "se convirtieron en clientes"],
     photo: PORTRAITS[1],
   },
   {
@@ -76,6 +90,7 @@ export const TESTIMONIALS: TestimonialPerson[] = [
     role: "Cofundadora",
     quote:
       "Lo que más me sirvió fue el grupo. No estás sola tomando decisiones que después te cuesta caro sostener, y eso cambia el ánimo con el que encarás la semana. Pasé de tener un prototipo a tener pacientes reales, y en el medio hubo manos que ayudaron.",
+    emphasise: ["pacientes reales"],
     photo: PORTRAITS[2],
   },
 ]

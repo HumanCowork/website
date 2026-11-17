@@ -515,7 +515,12 @@
    * side taking slightly more room.
    */
   --testimonial-split: 0.5;
-  --testimonial-column-gap: clamp(1.5rem, 4vw, 3rem);
+  /*
+   * How far the panel rides over the photograph's right edge. Small on purpose:
+   * this is two cards resting on each other, not one covering the other. Above
+   * roughly 3rem the panel starts to eat the photograph's subject.
+   */
+  --testimonial-overlap: clamp(1.25rem, 2.5vw, 2.5rem);
   --testimonial-row-radius: 1.5rem;
   --testimonial-row-max-width: 64rem;
 
@@ -555,7 +560,18 @@
   --testimonial-quote-colour: color-mix(in oklab, #ffffff 92%, transparent);
   --testimonial-quote-line: 1.65;
   --testimonial-quote-gap: 1.75rem;
+  /* Space between the lead and the paragraph under it. A hair more than a line
+     break, because they are two paragraphs and not two lines. */
+  --testimonial-quote-paragraph-gap: 0.75rem;
   --testimonial-lead-weight: 600;
+
+  /*
+   * The words picked out inside the rest of the testimonial. The colour is the
+   * same as the text around them -- what marks them is the weight, not a
+   * highlighter. On a celeste panel a brighter or coloured word reads as a link
+   * or as a mistake, so the emphasis is weight and nothing else.
+   */
+  --testimonial-emphasis-weight: 600;
 
   --about-grid-gap: 1.25rem;
   --about-subcolumn-gap: 1.25rem;
