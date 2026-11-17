@@ -1,0 +1,182 @@
+/*
+ * The testimonials band: one testimonial per view, a square photograph on the
+ * left and a celeste panel on the right.
+ *
+ * Everything numeric comes from --testimonials-* (the band) or --testimonial-*
+ * (the row and its two blocks) in globals.css. Grep either prefix to find every
+ * value that shapes this section. The only literals here are structural: 1px
+ * borders, percentages, and the breakpoint, which matches the rest of the site.
+ *
+ * The one rule worth reading twice is the responsive one. On a desktop the row is
+ * two columns with the text side taking a little more room; on a phone the two
+ * stack, photograph first, because a 50/50 split at 360px leaves neither half
+ * readable.
+ */
+
+.testimonials-band {
+  position: relative;
+  /* Over the pinned stages, under the navbar; same layering as the cases band. */
+  z-index: 20;
+  padding-block: var(--testimonials-padding-block);
+  background: var(--testimonials-band);
+}
+
+.testimonials-inner {
+  max-width: var(--testimonials-max-width);
+  margin-inline: auto;
+  padding-inline: var(--testimonials-padding-inline);
+}
+
+.testimonials-heading {
+  font-size: var(--testimonials-heading-size);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--testimonials-heading-colour);
+  text-wrap: balance;
+  margin: 0;
+  margin-block-end: var(--testimonials-heading-gap);
+}
+
+/* One testimonial per view, at every width. */
+.testimonials-carousel {
+  --carousel-item-size: 100%;
+}
+
+/* --- the row ------------------------------------------------------------- */
+
+/*
+ * Two columns, vertically centred, overlapping by a fixed amount.
+ *
+ * On the overlap: the panel rides over the photograph's right edge by
+ * --testimonial-overlap, and only there. The photograph keeps the full square and
+ * the panel keeps its own left edge, so what the reader sees is two cards where
+ * one rests on the other rather than one covering it. `margin-inline-start` on the
+ * panel is what pulls it back over the photograph; the panel is later in the DOM,
+ * so it paints on top without needing a z-index.
+ *
+ * Centring is what keeps the photograph level with a panel whose height depends on
+ * how long the testimonial happens to be.
+ */
+.testimonial-row {
+  display: grid;
+  grid-template-columns: calc(var(--testimonial-split) * 100%) 1fr;
+  align-items: center;
+  max-width: var(--testimonial-row-max-width);
+  margin-inline: auto;
+}
+
+/* --- the photograph ------------------------------------------------------ */
+
+/*
+ * The square. `aspect-ratio` gives the box its shape and `fill` lets the image
+ * take it, which is what makes a replacement portrait of any size land without
+ * changing this file.
+ */
+.testimonial-portrait {
+  position: relative;
+  aspect-ratio: var(--testimonial-photo-aspect);
+  border-radius: var(--testimonial-photo-radius);
+  overflow: hidden;
+  background: var(--testimonial-photo-background);
+}
+
+.testimonial-portrait__image {
+  object-fit: cover;
+}
+
+/* --- the panel ----------------------------------------------------------- */
+
+.testimonial-panel {
+  background: var(--testimonial-panel-background);
+  border-radius: var(--testimonial-panel-radius);
+  padding: var(--testimonial-panel-padding);
+  /* Pulled left over the photograph. Never more than half the overlap, or the
+     panel's own text would start over the photograph's subject. */
+  margin-inline-start: calc(var(--testimonial-overlap) * -1);
+  /* The panel is on top. It comes later in the DOM, which would be enough, but
+     saying it out loud stops a future z-index elsewhere from changing the order
+     by accident. */
+  position: relative;
+  z-index: 1;
+  /* The photograph's own background must not show through the panel's rounded
+     corner where they overlap. */
+  isolation: isolate;
+}
+
+/* The title: the person's name. */
+.testimonial-panel__name {
+  font-size: var(--testimonial-name-size);
+  font-weight: 600;
+  line-height: var(--testimonial-name-line);
+  color: var(--testimonial-name-colour);
+  margin: 0;
+}
+
+/*
+ * The subtitle: company, colon, role. One line of text, so the colon is typed by
+ * the panel and not stored in the data.
+ */
+.testimonial-panel__role {
+  font-size: var(--testimonial-role-size);
+  line-height: 1.4;
+  color: var(--testimonial-role-colour);
+  margin: 0;
+  margin-block-start: var(--testimonial-role-gap);
+}
+
+/*
+ * The testimonial. The lead sits on its own line, heavier; the rest follows as a
+ * paragraph at the same size and the same face, which is what keeps the two
+ * reading as one testimonial rather than as a heading and some text under it.
+ */
+.testimonial-panel__quote {
+  font-size: var(--testimonial-quote-size);
+  line-height: var(--testimonial-quote-line);
+  color: var(--testimonial-quote-colour);
+  margin: 0;
+  margin-block-start: var(--testimonial-quote-gap);
+}
+
+/* The title of the testimonial: the first sentence, alone on its line. */
+.testimonial-panel__lead {
+  font-weight: var(--testimonial-lead-weight);
+  margin: 0;
+}
+
+/* The rest, in its own paragraph under the lead. */
+.testimonial-panel__rest {
+  margin: 0;
+  margin-block-start: var(--testimonial-quote-paragraph-gap);
+}
+
+/*
+ * The words picked out inside the rest. Same colour and same size as the text
+ * around them: what marks them is the weight. See --testimonial-emphasis-weight.
+ */
+.testimonial-panel__marked {
+  font-weight: var(--testimonial-emphasis-weight);
+}
+
+/* --- below the breakpoint ------------------------------------------------ */
+
+/*
+ * Stacked: photograph on top, panel below, both full width. The photograph keeps
+ * its square, so at 360px it is a 328px square -- large, but it is the only
+ * picture in the section and it carries the person.
+ */
+@media (max-width: 767px) {
+  .testimonial-row {
+    grid-template-columns: 1fr;
+  }
+
+  /*
+   * Stacked, the overlap moves to the top edge: the panel rides over the
+   * photograph's bottom the same small distance, which keeps the "two cards resting
+   * on each other" reading when the row becomes a column.
+   */
+  .testimonial-panel {
+    margin-inline-start: 0;
+    margin-block-start: calc(var(--testimonial-overlap) * -1);
+  }
+}

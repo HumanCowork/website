@@ -1,0 +1,142 @@
+/*
+ * Carousel primitive styles.
+ *
+ * Two jobs: make the track scroll and snap on its own (Embla only drives the
+ * index, the browser does the moving), and give the two controls a real hit
+ * area.
+ *
+ * On sizing: an item's width is set by the consumer through --carousel-item-size,
+ * not here. The section decides how much of the viewport one card takes, and it
+ * differs between a phone and a desktop; baking a width in would force the
+ * section to fight this file.
+ *
+ * On the arrows: they are built in CSS rather than pulled from an icon package,
+ * which this project does not have. They sit on a 44x44 target -- the minimum a
+ * finger can hit -- which is why the visible chevron is small but the button is
+ * not. That difference is deliberate, not an oversight.
+ */
+
+.carousel {
+  position: relative;
+  /* The controls are siblings of the viewport, so the viewport must not clip
+     them; overflow lives on .carousel-viewport instead. */
+  display: flex;
+  align-items: center;
+  gap: var(--carousel-controls-gap);
+}
+
+.carousel-viewport {
+  /* The one element that clips: Embla measures this box. */
+  overflow: hidden;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.carousel-container {
+  display: flex;
+  /* Embla reads this: the negative margin cancels the per-item padding so the
+     gap belongs to the item and the first card sits flush with the edge. */
+  margin-inline-start: calc(var(--carousel-item-gap) * -1);
+}
+
+.carousel-container--vertical {
+  flex-direction: column;
+  margin-inline-start: 0;
+  margin-block-start: calc(var(--carousel-item-gap) * -1);
+}
+
+.carousel-item {
+  flex: 0 0 auto;
+  /* The one knob the section turns. 100% means one card per view. */
+  width: var(--carousel-item-size, 100%);
+  padding-inline-start: var(--carousel-item-gap);
+}
+
+.carousel-item--vertical {
+  width: auto;
+  padding-inline-start: 0;
+  padding-block-start: var(--carousel-item-gap);
+}
+
+/* --- controls ------------------------------------------------------------ */
+
+.carousel-control {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: var(--carousel-control-size);
+  height: var(--carousel-control-size);
+  padding: 0;
+  border: 1px solid var(--carousel-control-border);
+  border-radius: 50%;
+  background: var(--carousel-control-background);
+  color: var(--carousel-control-colour);
+  cursor: pointer;
+  transition:
+    background-color var(--carousel-control-transition),
+    border-color var(--carousel-control-transition),
+    opacity var(--carousel-control-transition);
+}
+
+.carousel-control:hover:not(:disabled) {
+  background: var(--carousel-control-background-hover);
+  border-color: var(--carousel-control-border-hover);
+}
+
+.carousel-control:focus-visible {
+  outline: 2px solid var(--carousel-control-focus);
+  outline-offset: 2px;
+}
+
+.carousel-control:disabled {
+  opacity: var(--carousel-control-opacity-disabled);
+  cursor: default;
+}
+
+/*
+ * The chevron: a square with two borders rotated 45 degrees. The arrow is
+ * named in text for assistive technology and hidden visually -- an unlabelled
+ * button that only says "‹" is announced as nothing useful.
+ */
+.carousel-control__arrow {
+  display: block;
+  width: var(--carousel-arrow-size);
+  height: var(--carousel-arrow-size);
+  border-top: var(--carousel-arrow-stroke) solid currentColor;
+  border-right: var(--carousel-arrow-stroke) solid currentColor;
+}
+
+.carousel-control--previous .carousel-control__arrow {
+  transform: rotate(-135deg);
+  /* The glyph reads off-centre without this: a rotated square is never
+     optically centred in its box. */
+  margin-inline-start: calc(var(--carousel-arrow-stroke) * -1);
+}
+
+.carousel-control--next .carousel-control__arrow {
+  transform: rotate(45deg);
+  margin-inline-end: calc(var(--carousel-arrow-stroke) * -1);
+}
+
+.carousel-control--vertical.carousel-control--previous .carousel-control__arrow {
+  transform: rotate(-45deg);
+}
+
+.carousel-control--vertical.carousel-control--next .carousel-control__arrow {
+  transform: rotate(135deg);
+}
+
+/*
+ * The label is for screen readers only. Not display:none -- that removes it
+ * from the accessibility tree, which is the whole point of having it.
+ */.carousel-control__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

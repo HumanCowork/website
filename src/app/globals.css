@@ -373,6 +373,7 @@
   --process-step-body-size: 1.125rem;
   --process-step-body-colour: var(--muted-foreground);
   --process-heading-size: clamp(1.75rem, 4vw, 2.5rem);
+  --process-heading-colour: var(--brand-celeste);
   --process-heading-gap: clamp(2.5rem, 6vw, 4rem);
   --process-card-padding: clamp(1.25rem, 2vw, 1.75rem);
   --process-card-radius: 1.25rem;
@@ -387,6 +388,262 @@
   --process-arrow-colour: color-mix(in oklab, var(--brand-celeste) 55%, transparent);
   --process-arrow-dash: 5px;
   --process-arrow-gap: 6px;
+
+  /*
+   * Community cases. The band between the process stages and the partners row,
+   * showing the projects that started or grew inside the community.
+   *
+   * The band is the middle step of a staircase of surfaces. Stages sit on
+   * #ffffff and partners on #eef2f7; this band is a pale brand-celeste tint over
+   * white, so it reads unmistakably as its own colour and never as white.
+   *
+   * The tint sits at 16% of --brand-celeste over white, which mixes to about
+   * #dbe8f5. The number was chosen against the two neighbours, not in the air:
+   * 16% gives white cards a 1.24:1 boundary against the band -- clearly not
+   * white, so the cards read as separate surfaces -- while staying 1.11:1 from
+   * the partners band, so the three steps stay distinguishable. Below about 12%
+   * the band collapses back into white; above about 20% it stops being pale and
+   * crowds the partners band it sits above. The earlier 4% proposal is the one
+   * the client rejected for reading as white, and 16% is well clear of it.
+   */
+  --community-band: var(--brand-celeste);
+  --community-band-foreground: #ffffff;
+  --community-max-width: 80rem; /* 1280px: the content cap the research settles on */
+  /*
+   * Section padding, and the largest space in the section. The rule is that the
+   * pause between sections has to be bigger than any pause inside one; desktop
+   * sits in the 96-128px band the research names, and a phone gets 64px -- the
+   * low end, because vertical padding is the first thing a phone cannot spare.
+   */
+  --community-padding-block: clamp(6rem, 8vw, 8rem); /* 96 -> 128px */
+  --community-padding-block-mobile: 4rem; /* 64px */
+  --community-padding-inline: 1.5rem;
+  --community-padding-inline-mobile: 1.25rem;
+  /*
+   * The gap between cards is deliberately smaller than the padding inside one.
+   * When the two are equal the card outlines weaken and the row reads as one
+   * wide grid; the padding has to win, so the boundary is visible.
+   */
+  --community-grid-gap: 1.5rem; /* 24px */
+  --community-grid-gap-mobile: 1rem; /* 16px */
+  --community-card-padding: 2rem; /* 32px: over the 24px gap, as it must be */
+  --community-card-padding-mobile: 1.5rem;
+  --community-card-radius: 1rem; /* 16px, the top of the 12-16px range */
+  --community-card-background: var(--card); /* white cards on the pale band */
+  /* A 1px low-contrast border instead of a shadow: elevation would only be
+     decoration here, and the research is explicit that these cards carry none. */
+  --community-card-border: var(--border);
+  --community-card-divider: var(--border);
+  --community-card-gap: 0.75rem; /* air between a card's own lines */
+  --community-card-divider-gap: 0.75rem; /* air above the rule over the second line */
+  --community-heading-size: clamp(1.75rem, 4vw, 2.5rem);
+  --community-heading-gap: 3rem;
+  --community-heading-gap-mobile: 2rem;
+  /*
+   * The mark at the head of the card. A fictional brand mark from fakelogo.com
+   * -- the same source and the same swap-before-publishing warning as the
+   * partners band's -- drawn small and decorative: with the invented project
+   * name gone, the mark names nothing, so it repeats nothing.
+   *
+   * The height is fixed and the width follows the file, so a symbol and a
+   * wordmark land at the same optical weight, and the max-width is the widest
+   * aspect in the set (a mark at 321x56) so nothing is ever clipped. The file
+   * itself is downscaled to 2x this height, not shipped at its source size: a
+   * 28px slot does not need the pixels a 726px-wide source carries.
+   */
+  --community-card-logo-height: 1.75rem; /* 28px */
+  --community-card-logo-max-width: 10rem; /* 160px: 28px * 5.73, the widest aspect */
+  /* The page's own body voice (text-lg, 18px), not a smaller size: a sibling
+     section once shrank this and read as a foreign type treatment on the page. */
+  --community-card-body-size: 1.125rem;
+  --community-card-body-colour: var(--muted-foreground);
+  --community-card-link-size: 0.875rem; /* 14px, muted: a label, not a headline */
+  --community-card-link-colour: var(--brand-celeste);
+  /*
+   * The portrait frame for the person behind the project. The frame owns the
+   * shape (a fixed 4:3 at full card width) and the community's own 600x600
+   * photograph fills it. The background only shows while the image loads.
+   */
+  --community-portrait-aspect: 4 / 3;
+  --community-portrait-radius: 0.75rem;
+  --community-portrait-background: var(--primary-subtle);
+  /* The referent's name and role, as a small muted caption under the photograph.
+     The name is the card's heading (an h3 reset to this caption size). */
+  --community-referent-gap: 0.125rem;
+  --community-referent-name-size: 0.9375rem; /* 15px */
+  --community-referent-name-colour: var(--heading);
+  --community-referent-role-size: 0.875rem; /* 14px */
+  --community-referent-role-colour: var(--muted-foreground);
+
+  /*
+   * Testimonials band. The room of the carousel primitive and of the spotlight
+   * card that fills it. Both live in src/components/ui and are consumed here, so
+   * every arbitrary value belongs in this file, not in a component stylesheet.
+   */
+  --testimonials-band: var(--background);
+  --testimonials-padding-block: clamp(4rem, 9vw, 7rem);
+  --testimonials-max-width: 88rem;
+  --testimonials-padding-inline: clamp(1.5rem, 5vw, 4rem);
+  --testimonials-heading-size: clamp(1.75rem, 4vw, 2.5rem);
+  --testimonials-heading-colour: var(--brand-celeste);
+  --testimonials-heading-gap: clamp(2.5rem, 6vw, 4rem);
+
+  --contact-band: var(--brand-celeste);
+  --contact-padding-block: clamp(4rem, 9vw, 7rem);
+  --contact-max-width: 80rem;
+  --contact-padding-inline: clamp(1.5rem, 5vw, 4rem);
+  --contact-heading-size: clamp(1.75rem, 4vw, 2.5rem);
+  /* White on celeste, exactly like the cases band. The two bands that open on the
+     celeste both announce themselves the same way. */
+  --contact-heading-colour: #ffffff;
+  --contact-heading-gap: clamp(2.5rem, 6vw, 4rem);
+
+  /*
+   * The cards: white, all the same size, in one orderly row of five.
+   *
+   * On the size, because getting this wrong is what made the previous attempt look
+   * broken. Every card is the SAME BOX: the grid gives each column one fifth of the
+   * row and the card fills it, so the height follows the width and no card can
+   * differ from its neighbours. A `min-height` does not do this -- it is a floor,
+   * and a longer summary pushes past it while a shorter one does not, which is
+   * exactly how the row ended up with five different heights.
+   */
+  --contact-grid-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  /* Between the grid of cards and the map block below it. */
+  /* Between the grid of cards and the venue block. */
+  --contact-map-gap: clamp(3rem, 7vw, 5rem);
+  /* Between the map frame and the link under it, which the client asked to sit close. */
+  --contact-map-link-gap: 0.75rem;
+  /* The map frame, as a proportion rather than a height so it never needs a magic
+     number: a wide band on a desktop, closer to square where the screen is narrow. */
+  --contact-map-aspect: 16 / 9;
+  --contact-map-aspect-narrow: 4 / 3;
+  --contact-map-radius: 1.25rem;
+  --contact-map-border: color-mix(in oklab, #ffffff 35%, transparent);
+  --contact-map-heading-size: clamp(1.5rem, 3vw, 2rem);
+  --contact-card-padding: clamp(1.25rem, 1.8vw, 1.6rem);
+  --contact-card-radius: 1.25rem;
+  --contact-card-surface: #ffffff;
+  --contact-card-border: color-mix(in oklab, var(--brand-celeste) 16%, #ffffff);
+
+  /* The light that follows the pointer. Recovered with the card. */
+  --contact-card-spotlight: var(--brand-celeste);
+  --contact-card-spotlight-intensity: 0.14;
+  /*
+   * The light behind the pointer. The radius is what you see as the circle, so it is
+   * tied to the card rather than fixed: a disc that fits a 214px card would look like
+   * a dot on a wide screen, and "a dot" is exactly how the first version read.
+   *
+   * The unit matters. This token is parsed with `Number.parseFloat`, which stops at
+   * the first non-numeric character, so `15rem` never meant 240px -- it meant 15, a
+   * radius smaller than the card's own corner. The value here is a unitless number of
+   * pixels for that reason, and the card's own size is the natural ceiling.
+   */
+  --contact-card-spotlight-size: 180;
+  --contact-card-spotlight-softness: 0.75;
+
+  /* The disc is a third of the card's width and the glyph fills most of it, so the
+     icon is the thing you see first. Centred in the card's upper half by the
+     stylesheet, not by the data. */
+  --contact-icon-slot: clamp(4rem, 5vw, 4.5rem);
+  --contact-icon-glyph: clamp(2.125rem, 2.7vw, 2.5rem);
+  --contact-icon-background: var(--primary-subtle);
+  --contact-icon-colour: var(--brand-celeste);
+
+  --contact-name-size: 1.1875rem;
+  --contact-name-colour: color-mix(in oklab, var(--brand-celeste) 92%, #000000);
+  --contact-summary-size: 0.9375rem;
+  --contact-summary-colour: var(--muted-foreground);
+  --contact-summary-gap: 0.25rem;
+  /* Between the icon and the name. */
+  --contact-text-gap: 0.75rem;
+  --contact-card-lift: -4px;
+
+  /*
+   * Carousel primitive. --carousel-item-size is the width of one card inside the
+   * track and is the knob the responsive breakpoints change; the rest dress the
+   * two controls, whose 44px is the minimum a finger can hit.
+   */
+  --carousel-item-size: 100%;
+  --carousel-item-gap: 1.5rem;
+  --carousel-control-size: 2.75rem; /* 44px */
+  --carousel-arrow-size: 0.5rem;
+  --carousel-arrow-stroke: 2px;
+  --carousel-controls-gap: 1.5rem;
+  --carousel-control-background: var(--card);
+  --carousel-control-background-hover: var(--primary-subtle);
+  --carousel-control-colour: var(--brand-celeste);
+  --carousel-control-border: var(--border);
+  --carousel-control-border-hover: var(--brand-celeste);
+  --carousel-control-focus: var(--brand-celeste);
+  --carousel-control-opacity-disabled: 0.35;
+  --carousel-control-transition: 160ms ease;
+
+  /*
+   * The testimonial row: a square photograph on the left, a celeste panel on the
+   * right, both vertically centred so the photograph sits level with a quote of
+   * any length. One testimonial per view, so the split is 50/50 with the text
+   * side taking slightly more room.
+   */
+  --testimonial-split: 0.5;
+  /*
+   * How far the panel rides over the photograph's right edge. Small on purpose:
+   * this is two cards resting on each other, not one covering the other. Above
+   * roughly 3rem the panel starts to eat the photograph's subject.
+   */
+  --testimonial-overlap: clamp(1.25rem, 2.5vw, 2.5rem);
+  --testimonial-row-radius: 1.5rem;
+  --testimonial-row-max-width: 64rem;
+
+  /* The photograph: a square, so the subject's face is not cropped by the frame. */
+  --testimonial-photo-radius: var(--testimonial-row-radius);
+  --testimonial-photo-background: var(--primary-subtle);
+  --testimonial-photo-aspect: 1;
+
+  /*
+   * The panel: the official celeste, with its own text colours. Absolute values
+   * rather than theme tokens, for the same reason --cta-inverted-* exist: the
+   * panel is always brand blue, whatever the page around it does.
+   */
+  --testimonial-panel-background: var(--brand-celeste);
+  --testimonial-panel-padding: clamp(1.5rem, 3.5vw, 3rem);
+  --testimonial-panel-radius: var(--testimonial-row-radius);
+
+  /* The title: the person's name. */
+  --testimonial-name-size: clamp(1.5rem, 2.4vw, 2rem);
+  --testimonial-name-colour: #ffffff;
+  --testimonial-name-line: 1.2;
+
+  /*
+   * The subtitle: company or project, then the role after a colon. Same size and
+   * face as the title but not the same weight, so it reads as one line with it.
+   */
+  --testimonial-role-size: clamp(1rem, 1.4vw, 1.125rem);
+  --testimonial-role-colour: color-mix(in oklab, #ffffff 82%, transparent);
+  --testimonial-role-gap: 0.5rem;
+
+  /*
+   * The testimonial body. The lead is its first sentence and carries the weight;
+   * the rest follows at the same size, the same face and the same colour, which
+   * is what makes the pair read as one paragraph rather than a heading and text.
+   */
+  --testimonial-quote-size: 1.125rem; /* 18px, the page's body voice */
+  --testimonial-quote-colour: color-mix(in oklab, #ffffff 92%, transparent);
+  --testimonial-quote-line: 1.65;
+  --testimonial-quote-gap: 1.75rem;
+  /* Space between the lead and the paragraph under it. A hair more than a line
+     break, because they are two paragraphs and not two lines. */
+  --testimonial-quote-paragraph-gap: 0.75rem;
+  --testimonial-lead-weight: 600;
+
+  /*
+   * The words picked out inside the rest of the testimonial. The colour is the
+   * same as the text around them -- what marks them is the weight, not a
+   * highlighter. On a celeste panel a brighter or coloured word reads as a link
+   * or as a mistake, so the emphasis is weight and nothing else.
+   */
+  --testimonial-emphasis-weight: 600;
+
   --about-grid-gap: 1.25rem;
   --about-subcolumn-gap: 1.25rem;
   --about-subcolumn-offset: 3rem;

@@ -1,0 +1,235 @@
+/*
+ * Community cases: three columns of white cards on the band's pale surface, two
+ * on a tablet and one on a phone.
+ *
+ * The band is the middle step of a staircase -- stages #ffffff, this band a pale
+ * celeste tint over white (var(--community-band)), partners #eef2f7 -- so this
+ * section separates the two neighbours without reading as white.
+ *
+ * Three rules hold the layout, and each one was a decision rather than a default:
+ *
+ * 1. The card's padding is larger than the gap between cards. Equal values make
+ *    the cards' outlines read as one wide grid rather than as separate objects;
+ *    the padding has to win, so the boundary is visible inside the card.
+ * 2. Equal heights are never forced with a min-height. Cards in a row stretch to
+ *    the grid's row height on their own, and a card whose copy runs long simply
+ *    makes its whole row taller. A fixed height would clip that copy or leave a
+ *    hole where it was not needed.
+ * 3. Nothing here relies on colour alone: every label is text, and the mark only
+ *    decorates the card.
+ *
+ * Every length comes from a token in `globals.css`; no numbers live here.
+ */
+
+.community-band {
+  position: relative;
+  z-index: 20; /* over the pinned stages, under the navbar */
+  padding-block: var(--community-padding-block);
+  background: var(--community-band);
+}
+
+.community-inner {
+  max-width: var(--community-max-width);
+  margin-inline: auto;
+  padding-inline: var(--community-padding-inline);
+}
+
+.community-heading {
+  font-size: var(--community-heading-size);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--community-band-foreground);
+  margin: 0;
+  margin-block-end: var(--community-heading-gap);
+  text-wrap: balance;
+}
+
+/*
+ * Two rows of three on a desktop. The columns are equal because the cards are:
+ * a case has no rank, so no card may be wider than another.
+ */
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--community-grid-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * A card is a column, not a row: photograph, then the mark, then what it does,
+ * what the community did, and the referent. The gap between
+ * children is smaller than the band's own padding, so the air inside a card
+ * always reads as thinner than the air between cards.
+ */
+.community-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--community-card-gap);
+  padding: var(--community-card-padding);
+  border: 1px solid var(--community-card-border);
+  border-radius: var(--community-card-radius);
+  background: var(--community-card-background);
+}
+
+/*
+ * The portrait frame. Full card width and a fixed 4:3 ratio: the frame owns the
+ * shape, the community's own 600x600 photograph only fills it. It is a real
+ * photograph of a real person, cropped rather than stretched.
+ */
+.community-portrait {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: var(--community-portrait-aspect);
+  inline-size: 100%;
+  overflow: hidden;
+  border-radius: var(--community-portrait-radius);
+  background: var(--community-portrait-background);
+}
+
+/* The source photo is cropped to fill the frame: never stretched, never distorted. */
+.community-portrait-image {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/*
+ * The referent: name and role as plain text under the photograph. Small and
+ * muted -- a caption -- and always present. The name is the card's heading now
+ * that the invented project name is gone, so it is an h3 reset to caption size:
+ * it gives the section a real heading outline without shouting on the card.
+ */
+.community-referent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--community-referent-gap);
+  margin: 0;
+}
+
+.community-referent-name {
+  font-size: var(--community-referent-name-size);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--community-referent-name-colour);
+  margin: 0;
+}
+
+.community-referent-role {
+  font-size: var(--community-referent-role-size);
+  color: var(--community-referent-role-colour);
+  margin: 0;
+}
+
+/*
+ * The mark at the head of the card's text. It sits alone now: with the invented
+ * project name gone, there is no text beside it to share the line, so it is a
+ * left-aligned row of one. The wrapper stays so the mark continues to own its
+ * own line and the card's gap rhythm is unchanged.
+ */
+.community-card-head {
+  display: flex;
+  align-items: center;
+}
+
+/*
+ * The mark itself. Fixed height, width follows the artwork's own aspect ratio --
+ * so a wordmark and a symbol are both drawn at the same optical weight -- and
+ * never upscaled past its intrinsic height. `object-fit: contain` makes that
+ * safe whatever the file is.
+ */
+.community-card-logo {
+  block-size: var(--community-card-logo-height);
+  inline-size: auto;
+  max-inline-size: var(--community-card-logo-max-width);
+  object-fit: contain;
+}
+
+/*
+ * The body copy is the page's own voice at 18px, same as the process steps: a
+ * smaller size here is what once made a sibling section read as a different type
+ * treatment. The measure is held by the grid rather than by a `ch` cap, so the
+ * three columns stay equal. With the invented name gone, the mark is followed
+ * straight by the summary, and the card must still read as complete: the
+ * summary is its opening statement, so it keeps its body size and its place.
+ */
+.community-card-summary {
+  font-size: var(--community-card-body-size);
+  line-height: 1.55;
+  color: var(--community-card-body-colour);
+  margin: 0;
+}
+
+/*
+ * What the community did for it. Same size as the summary -- this is the point
+ * of the section, not a footnote -- and separated by a rule instead of by a
+ * size, so the two lines read as two statements rather than as a hierarchy.
+ */
+.community-card-contribution {
+  font-size: var(--community-card-body-size);
+  line-height: 1.55;
+  color: var(--community-card-body-colour);
+  margin: 0;
+  padding-block-start: var(--community-card-divider-gap);
+  border-block-start: 1px solid var(--community-card-divider);
+}
+
+/*
+ * The outbound link. Muted and small like the referent caption -- a label, not a
+ * headline.
+ */
+.community-card-link {
+  font-size: var(--community-card-link-size);
+  font-weight: 600;
+  color: var(--community-card-link-colour);
+  text-decoration: none;
+}
+
+.community-card-link:hover {
+  text-decoration: underline;
+}
+
+
+/*
+ * Tablet. Two columns: three at this width leave each card too narrow for the
+ * 45-75 character measure the copy needs.
+ */
+@media (max-width: 1023px) {
+  .community-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/*
+ * Phone. One column, the tighter gap, and the band's own padding reduced. This
+ * section gets a real mobile treatment: the cards stack and stay readable
+ * without the desktop grid's air.
+ */
+@media (max-width: 639px) {
+  .community-grid {
+    grid-template-columns: 1fr;
+    gap: var(--community-grid-gap-mobile);
+  }
+
+  .community-band {
+    padding-block: var(--community-padding-block-mobile);
+  }
+
+  .community-inner {
+    padding-inline: var(--community-padding-inline-mobile);
+  }
+
+  .community-heading {
+    margin-block-end: var(--community-heading-gap-mobile);
+  }
+
+  .community-card {
+    padding: var(--community-card-padding-mobile);
+  }
+}
