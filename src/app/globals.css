@@ -405,7 +405,8 @@
    * crowds the partners band it sits above. The earlier 4% proposal is the one
    * the client rejected for reading as white, and 16% is well clear of it.
    */
-  --community-band: color-mix(in oklab, var(--brand-celeste) 16%, white);
+  --community-band: var(--brand-celeste);
+  --community-band-foreground: #ffffff;
   --community-max-width: 80rem; /* 1280px: the content cap the research settles on */
   /*
    * Section padding, and the largest space in the section. The rule is that the
