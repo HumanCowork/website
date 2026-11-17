@@ -1,0 +1,149 @@
+/*
+ * The contact band: white cards on the official celeste.
+ *
+ * Every value comes from --contact-* in globals.css. Grep that prefix to find
+ * everything that shapes this section. The only literals here are structural: the
+ * grid's column count, percentages, and the breakpoints, which match the rest of
+ * the site.
+ *
+ * The cards are white on celeste, which is the inverse of the cases band and the
+ * testimonial panel. That inversion is deliberate: it is what makes the last
+ * section read as a destination rather than as one more row of content.
+ */
+
+.contact-band {
+  position: relative;
+  /* Over the pinned stages, under the navbar; same layering as its neighbours. */
+  z-index: 20;
+  padding-block: var(--contact-padding-block);
+  background: var(--contact-band);
+}
+
+.contact-inner {
+  max-width: var(--contact-max-width);
+  margin-inline: auto;
+  padding-inline: var(--contact-padding-inline);
+}
+
+.contact-heading {
+  font-size: var(--contact-heading-size);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--contact-heading-colour);
+  text-wrap: balance;
+  margin: 0;
+  margin-block-end: var(--contact-heading-gap);
+}
+
+/*
+ * The row of cards. `auto-fit` with a minimum width means the count can change --
+ * a sixth contact tomorrow -- without touching this file: the grid fits as many as
+ * the row holds and wraps the rest. `min(100%, ...)` is what keeps a single card
+ * from overflowing on a narrow phone.
+ */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--contact-card-min-width)), 1fr));
+  gap: var(--contact-grid-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.contact-grid__item {
+  display: flex;
+}
+
+/* --- the card ------------------------------------------------------------ */
+
+.contact-card {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--contact-card-gap);
+  padding: var(--contact-card-padding);
+  background: var(--contact-card-background);
+  border: var(--contact-card-border-width) solid var(--contact-card-border);
+  border-radius: var(--contact-card-radius);
+  box-shadow: var(--contact-card-shadow);
+  text-decoration: none;
+  transition: var(--contact-card-transition);
+}
+
+/* The lift, the brighter border and the shadow that deepens. On a celeste field a
+   white card reads as raised; the shadow does the rest. */
+.contact-card:hover,
+.contact-card:focus-visible {
+  background: var(--contact-card-background-hover);
+  border-color: var(--contact-card-border-hover);
+  box-shadow: var(--contact-card-shadow-hover);
+  transform: translateY(var(--contact-card-lift));
+}
+
+.contact-card:focus-visible {
+  outline: var(--contact-card-focus-width) solid var(--contact-card-focus-colour);
+  outline-offset: var(--contact-card-focus-offset);
+}
+
+/* The icon, on a tinted disc so a white card does not read as an empty square. */
+.contact-card__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--contact-icon-slot);
+  height: var(--contact-icon-slot);
+  border-radius: 50%;
+  background: var(--contact-icon-background);
+  color: var(--contact-icon-colour);
+  transition: var(--contact-icon-transition);
+}
+
+.contact-card:hover .contact-card__icon,
+.contact-card:focus-visible .contact-card__icon {
+  background: var(--contact-icon-background-hover);
+  color: var(--contact-icon-colour-hover);
+}
+
+.contact-card__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.contact-card__name {
+  font-size: var(--contact-name-size);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--contact-name-colour);
+}
+
+/* The handle can be long (a repository path). It truncates rather than wrapping the
+   card into an odd height next to its neighbours. */
+.contact-card__handle {
+  font-size: var(--contact-handle-size);
+  line-height: 1.4;
+  color: var(--contact-handle-colour);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- reduced motion ------------------------------------------------------ */
+
+/*
+ * The lift is a transform, and a reader who has asked for less motion should not
+ * get it. The colour change stays: it carries the same feedback without moving
+ * anything.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .contact-card,
+  .contact-card__icon {
+    transition: none;
+  }
+
+  .contact-card:hover,
+  .contact-card:focus-visible {
+    transform: none;
+  }
+}

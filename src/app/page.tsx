@@ -4,6 +4,7 @@ import { FeaturesCurtain } from "@/components/features/FeaturesCurtain";
 import { ProcessSection } from "@/components/process/ProcessSection";
 import { CommunityCases } from "@/components/community/CommunityCases";
 import { TestimonialsSection } from "@/components/testimonials/TestimonialsSection";
+import { ContactSection } from "@/components/contact/ContactSection";
 import { PartnersSection } from "@/components/partners/PartnersSection";
 import { DiagnosticsBeacon } from "@/components/DiagnosticsBeacon";
 
@@ -26,6 +27,8 @@ export default function Home() {
       <CommunityCases />
       {/* Testimonios: las opiniones de quienes pasaron por la comunidad */}
       <TestimonialsSection />
+      {/* Contacto: el cierre de la pagina, sobre el celeste oficial */}
+      <ContactSection />
       {/* Banda de partners: superficie propia, fuera de la cortina */}
       <PartnersSection />
     </div>

@@ -71,10 +71,26 @@ export function TestimonialsSection() {
           className="testimonials-carousel"
           opts={{
             align: "start",
-            /* No loop: the arrows going dead at each end is the feedback that
-               tells a reader they have seen all three. */
-            loop: false,
-            containScroll: "trimSnaps",
+            /*
+             * Infinite in both directions: past the last testimonial comes the
+             * first, and before the first comes the last. The client asked for it
+             * in those words, and it is the right call for three slides -- getting
+             * stuck at an end reads as broken when there are so few.
+             *
+             * containScroll is deliberately absent. In Embla's own engine the two
+             * are mutually exclusive: `const containSnaps = !loop && !!containScroll`.
+             * Leaving trimSnaps here would have been silently ignored, and the next
+             * person would have found it and wondered which of the two was winning.
+             *
+             * Two things Embla does with loop that are worth knowing before
+             * someone reports them as bugs: it repositions slides with translateX,
+             * so a slide cannot animate its own arrival without fighting it; and it
+             * disables the fade at the leading and trailing edges, because with a
+             * loop there are no edges to fade. The arrows no longer going dead is
+             * the intended trade: they used to be the signal that you had reached
+             * the end, and now there is no end.
+             */
+            loop: true,
             /*
              * Hold the left mouse button and slide. Touch keeps its own
              * scrolling, which is already better than anything we would add.

@@ -488,6 +488,59 @@
   --testimonials-heading-colour: var(--brand-celeste);
   --testimonials-heading-gap: clamp(2.5rem, 6vw, 4rem);
 
+  --contact-band: var(--brand-celeste);
+  --contact-padding-block: clamp(4rem, 9vw, 7rem);
+  --contact-max-width: 80rem;
+  --contact-padding-inline: clamp(1.5rem, 5vw, 4rem);
+  --contact-heading-size: clamp(1.75rem, 4vw, 2.5rem);
+  /* White on celeste, exactly like the cases band. The two bands that open on the
+     celeste both announce themselves the same way. */
+  --contact-heading-colour: #ffffff;
+  --contact-heading-gap: clamp(2.5rem, 6vw, 4rem);
+
+  /*
+   * The cards. White on celeste is the inverse of every other card on the site,
+   * and that inversion is what makes the last section read as a destination
+   * instead of one more row. The minimum width sets when the row wraps: five cards
+   * fit across a desktop and fold to two and then one on the way down.
+   */
+  --contact-grid-gap: clamp(0.75rem, 1.6vw, 1.25rem);
+  --contact-card-min-width: 14rem;
+  --contact-card-padding: clamp(1rem, 2vw, 1.35rem);
+  --contact-card-gap: clamp(0.75rem, 1.4vw, 1rem);
+  --contact-card-radius: 1rem;
+  --contact-card-background: #ffffff;
+  /* Not pure white: on celeste, a white card with a white border has no edge. */
+  --contact-card-border-width: 1px;
+  --contact-card-border: color-mix(in oklab, var(--brand-celeste) 18%, #ffffff);
+  --contact-card-border-hover: color-mix(in oklab, var(--brand-celeste) 45%, #ffffff);
+  --contact-card-background-hover: #ffffff;
+  --contact-card-shadow: 0 1px 2px rgb(15 112 183 / 0.18);
+  --contact-card-shadow-hover: 0 10px 24px -8px rgb(15 112 183 / 0.45);
+  --contact-card-lift: -4px;
+  --contact-card-transition: transform 180ms ease, box-shadow 180ms ease,
+    border-color 180ms ease, background-color 180ms ease;
+  --contact-card-focus-colour: #ffffff;
+  --contact-card-focus-width: 3px;
+  --contact-card-focus-offset: 3px;
+
+  /*
+   * The icon sits on a tinted disc so a white card does not read as an empty
+   * square. It carries the card's only colour: celeste at rest, the deeper brand
+   * blue on hover, which is the whole hover effect for the icon.
+   */
+  --contact-icon-slot: 3rem;
+  --contact-icon-background: color-mix(in oklab, var(--brand-celeste) 10%, #ffffff);
+  --contact-icon-background-hover: var(--brand-celeste);
+  --contact-icon-colour: var(--brand-celeste);
+  --contact-icon-colour-hover: #ffffff;
+  --contact-icon-transition: background-color 180ms ease, color 180ms ease;
+
+  --contact-name-size: 1.0625rem;
+  --contact-name-colour: color-mix(in oklab, var(--brand-celeste) 92%, #000000);
+  --contact-handle-size: 0.875rem;
+  --contact-handle-colour: color-mix(in oklab, var(--brand-celeste) 62%, #000000);
+
   /*
    * Carousel primitive. --carousel-item-size is the width of one card inside the
    * track and is the knob the responsive breakpoints change; the rest dress the
