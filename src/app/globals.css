@@ -474,6 +474,89 @@
   --community-referent-role-size: 0.875rem; /* 14px */
   --community-referent-role-colour: var(--muted-foreground);
 
+  /*
+   * Testimonials band. The room of the carousel primitive and of the spotlight
+   * card that fills it. Both live in src/components/ui and are consumed here, so
+   * every arbitrary value belongs in this file, not in a component stylesheet.
+   */
+  --testimonials-band: var(--background);
+  --testimonials-padding-block: clamp(4rem, 9vw, 7rem);
+  --testimonials-max-width: 88rem;
+  --testimonials-padding-inline: clamp(1.5rem, 5vw, 4rem);
+  --testimonials-heading-size: clamp(1.75rem, 4vw, 2.5rem);
+  --testimonials-heading-colour: var(--heading);
+  --testimonials-heading-gap: clamp(2.5rem, 6vw, 4rem);
+
+  /*
+   * Carousel primitive. --carousel-item-size is the width of one card inside the
+   * track and is the knob the responsive breakpoints change; the rest dress the
+   * two controls, whose 44px is the minimum a finger can hit.
+   */
+  --carousel-item-size: 100%;
+  --carousel-item-gap: 1.5rem;
+  --carousel-control-size: 2.75rem; /* 44px */
+  --carousel-arrow-size: 0.5rem;
+  --carousel-arrow-stroke: 2px;
+  --carousel-controls-gap: 1.5rem;
+  --carousel-controls-gap-mobile: 2rem;
+  --carousel-controls-row-gap: 1rem;
+  --carousel-control-background: var(--card);
+  --carousel-control-background-hover: var(--primary-subtle);
+  --carousel-control-colour: var(--brand-celeste);
+  --carousel-control-border: var(--border);
+  --carousel-control-border-hover: var(--brand-celeste);
+  --carousel-control-focus: var(--brand-celeste);
+  --carousel-control-opacity-disabled: 0.35;
+  --carousel-control-transition: 160ms ease;
+
+  /*
+   * Spotlight card. The light itself is drawn by the component; these are the
+   * surface it floats over. The celeste is the default light colour, so a card
+   * left alone still reads as this site's card.
+   */
+  --testimonial-card-padding: var(--community-card-padding);
+  --testimonial-card-radius: var(--community-card-radius);
+  --testimonial-card-surface: var(--card);
+  --testimonial-card-border: var(--border);
+  --testimonial-card-spotlight: var(--brand-celeste);
+  --testimonial-card-spotlight-intensity: 0.14;
+  --testimonial-card-spotlight-size: 15rem;
+  --testimonial-card-spotlight-softness: 0.7;
+
+  --testimonial-photo-size: clamp(5rem, 9vw, 6rem);
+  --testimonial-photo-ring: 3px;
+  --testimonial-photo-ring-colour: var(--brand-celeste);
+  --testimonial-name-size: 1.25rem;
+  --testimonial-name-colour: var(--heading);
+  --testimonial-role-size: 0.9375rem; /* 15px */
+  --testimonial-role-colour: var(--muted-foreground);
+
+  --testimonial-badges-gap: 0.5rem;
+  --testimonial-badge-size: 0.8125rem; /* 13px */
+  --testimonial-badge-padding-block: 0.25rem;
+  --testimonial-badge-padding-inline: 0.625rem;
+  --testimonial-badge-radius: 62rem; /* pill */
+  --testimonial-badge-background: var(--primary-subtle);
+  --testimonial-badge-colour: var(--brand-celeste);
+  --testimonial-badge-border: color-mix(in oklab, var(--brand-celeste) 22%, transparent);
+
+  --testimonial-quote-size: 1.125rem; /* 18px, the page's body voice */
+  --testimonial-quote-colour: var(--muted-foreground);
+  --testimonial-quote-gap: 0.875rem;
+  /* One line of the opinion. Fuller than body copy, so the words feel spoken. */
+  --testimonial-quote-line: 1.6;
+
+  --testimonial-gaps: 1.5rem;
+  --testimonial-block-gap: 2rem;
+  --testimonial-action-size: 1rem; /* 16px, the site's button voice */
+  --testimonial-action-padding-block: 0.75rem;
+  --testimonial-action-padding-inline: 1.5rem;
+  --testimonial-action-radius: 62rem;
+  --testimonial-action-background: var(--brand-celeste);
+  --testimonial-action-background-hover: color-mix(in oklab, var(--brand-celeste) 86%, black);
+  --testimonial-action-colour: #ffffff;
+  --testimonial-action-transition: 160ms ease;
+
   --about-grid-gap: 1.25rem;
   --about-subcolumn-gap: 1.25rem;
   --about-subcolumn-offset: 3rem;
