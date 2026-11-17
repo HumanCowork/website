@@ -1,14 +1,29 @@
 /*
- * The contact band: white cards on the official celeste.
+ * The contact band: white spotlight cards, all exactly the same size, on the
+ * official celeste.
  *
- * Every value comes from --contact-* in globals.css. Grep that prefix to find
- * everything that shapes this section. The only literals here are structural: the
- * grid's column count, percentages, and the breakpoints, which match the rest of
- * the site.
+ * HOW THE EQUAL SIZE WORKS, because it is spread over three files and took far too
+ * long to get right. Read this before touching any flex or height rule here.
  *
- * The cards are white on celeste, which is the inverse of the cases band and the
- * testimonial panel. That inversion is deliberate: it is what makes the last
- * section read as a destination rather than as one more row of content.
+ * The chain, and every link has to hold:
+ *
+ *   .contact-grid        grid, five equal columns
+ *     .contact-grid__item  align-items: stretch  -> every cell is the row's height
+ *       .contact-card        display: flex        -> the anchor fills the cell
+ *         .contact-card__surface  display: flex, flex: 1
+ *           .spotlight-card__content  display: flex, flex: 1, column   <-- THE ONE
+ *             icon, name, summary, handle
+ *
+ * The link that was missing is the last one. The recovered card renders an extra
+ * `.spotlight-card__content` div between its surface and whatever is inside it, and
+ * nothing here styled it. It stayed a plain block sized to its own text, so each
+ * card ended up exactly as tall as its own summary -- which is why the row had five
+ * different heights no matter how many min-heights and stretches were added above
+ * it. The flex chain has to reach the element that actually holds the children.
+ *
+ * There is no min-height anywhere on purpose. A minimum is a floor, not a size: a
+ * card whose summary wrapped to three lines pushed past it while a two-line card
+ * did not. Equal height comes from the chain above and nothing else.
  */
 
 .contact-band {
@@ -37,108 +52,172 @@
 }
 
 /*
- * The row of cards. `auto-fit` with a minimum width means the count can change --
- * a sixth contact tomorrow -- without touching this file: the grid fits as many as
- * the row holds and wraps the rest. `min(100%, ...)` is what keeps a single card
- * from overflowing on a narrow phone.
+ * Five across on a desktop, which is what the client asked for: all of them
+ * visible at once, in one orderly row.
+ *
+ * The column count is explicit rather than `auto-fit`, because `auto-fit` lets the
+ * browser decide and it silently drops to four on a laptop. `minmax(0, 1fr)` is
+ * what lets a column be narrower than its content, so a long handle truncates
+ * instead of widening the row past the page.
  */
 .contact-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--contact-card-min-width)), 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--contact-grid-gap);
   list-style: none;
   margin: 0;
   padding: 0;
 }
-
+/*
+ * The cell. It has to be a flex box that stretches its child, and the child has to
+ * be allowed to fill it -- that is both halves of "all the same size".
+ *
+ * The `min-width: 0` is not cosmetic. A grid item's default minimum is its content,
+ * so without it a cell refuses to shrink below the width of its widest word and the
+ * columns stop being equal. Measured on the first attempt, the cards came out 214px
+ * to 292px wide while their cells were the same width: the cells were equal and the
+ * cards inside them were not filling them.
+ */
 .contact-grid__item {
   display: flex;
+  align-items: stretch;
+  min-width: 0;
 }
 
 /* --- the card ------------------------------------------------------------ */
 
+/* The anchor. It wraps the spotlight surface so the surface keeps measuring the
+   element it paints on, and it carries the focus ring and the lift.
+
+   `width: 100%` alongside `flex: 1` because the anchor is a flex child of a flex
+   cell: `flex: 1` grows it along the cell's main axis (horizontal, since the cell
+   is a row), which is what makes the five equal. */
 .contact-card {
   display: flex;
   flex: 1;
-  align-items: center;
-  gap: var(--contact-card-gap);
-  padding: var(--contact-card-padding);
-  background: var(--contact-card-background);
-  border: var(--contact-card-border-width) solid var(--contact-card-border);
+  width: 100%;
   border-radius: var(--contact-card-radius);
-  box-shadow: var(--contact-card-shadow);
   text-decoration: none;
-  transition: var(--contact-card-transition);
+  transition: transform 180ms ease;
 }
 
-/* The lift, the brighter border and the shadow that deepens. On a celeste field a
-   white card reads as raised; the shadow does the rest. */
 .contact-card:hover,
 .contact-card:focus-visible {
-  background: var(--contact-card-background-hover);
-  border-color: var(--contact-card-border-hover);
-  box-shadow: var(--contact-card-shadow-hover);
   transform: translateY(var(--contact-card-lift));
 }
 
 .contact-card:focus-visible {
-  outline: var(--contact-card-focus-width) solid var(--contact-card-focus-colour);
-  outline-offset: var(--contact-card-focus-offset);
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
 }
 
-/* The icon, on a tinted disc so a white card does not read as an empty square. */
+/*
+ * The surface. It stretches to the cell, and it must pass the stretch on: the
+ * recovered card renders its own "content" div inside this one, and that div is
+ * what actually holds the icon and the text. See the chain at the top of this file.
+ */
+.contact-card__surface {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+}
+
+/*
+ * The link that was missing. This is the element the recovered card puts around
+ * its children, and until it is a stretched flex column the card is only as tall as
+ * its own text -- the icon and the text never get pushed apart, and no rule further
+ * up the tree can fix it.
+ */
+.contact-card__surface .spotlight-card__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* --- what is inside ------------------------------------------------------ */
+
 .contact-card__icon {
   display: grid;
   place-items: center;
-  flex: none;
+  /* Centred across the card, in its upper half. `margin-inline: auto` is what puts
+     the disc in the middle rather than at the left edge, and the auto bottom margin
+     is what claims the rest of the upper half so the text starts at the middle. */
+  margin-inline: auto;
   width: var(--contact-icon-slot);
   height: var(--contact-icon-slot);
   border-radius: 50%;
   background: var(--contact-icon-background);
   color: var(--contact-icon-colour);
-  transition: var(--contact-icon-transition);
+  /*
+   * Pushes everything below it to the bottom of the card.
+   *
+   * This is what turns the equal height into the intended layout: the flex chain
+   * makes every card the same tall box, and this makes the icon sit at the top of it
+   * while the name, the summary and the handle sit at the bottom. Without it the
+   * three would bunch under the icon and the extra height would all be under them.
+   */
+  margin-block-end: auto;
 }
 
-.contact-card:hover .contact-card__icon,
-.contact-card:focus-visible .contact-card__icon {
-  background: var(--contact-icon-background-hover);
-  color: var(--contact-icon-colour-hover);
+/* The glyph's size comes from here and not from the SVG's own attributes, which is
+   why the icon is drawn without any. */
+.contact-card__icon svg {
+  width: var(--contact-icon-glyph);
+  height: var(--contact-icon-glyph);
 }
 
+/* Pushed to the bottom of the card, so the text sits on the same baseline across
+   all five however much air is left above it. */
 .contact-card__text {
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  /* Centred in its half of the card, both ways. The three lines are a block, and
+     the block sits in the middle of the lower half rather than against the icon. */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  /* Takes the lower half. The icon's auto bottom margin pushes this block down, and
+     `flex: 1` gives it the rest of the height so it can centre inside it. */
+  flex: 1;
 }
 
 .contact-card__name {
   font-size: var(--contact-name-size);
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.25;
   color: var(--contact-name-colour);
 }
 
-/* The handle can be long (a repository path). It truncates rather than wrapping the
-   card into an odd height next to its neighbours. */
-.contact-card__handle {
-  font-size: var(--contact-handle-size);
-  line-height: 1.4;
-  color: var(--contact-handle-colour);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.contact-card__summary {
+  font-size: var(--contact-summary-size);
+  line-height: 1.35;
+  color: var(--contact-summary-colour);
+  margin-block-start: var(--contact-summary-gap);
 }
 
-/* --- reduced motion ------------------------------------------------------ */
+
+/* --- below the desktop --------------------------------------------------- */
 
 /*
- * The lift is a transform, and a reader who has asked for less motion should not
- * get it. The colour change stays: it carries the same feedback without moving
- * anything.
+ * Three across, then one. The client asked for one per row on a phone, and the
+ * middle step exists because five columns at 900px leave each card about 150px
+ * wide, which is not a card any more.
  */
+@media (max-width: 1100px) {
+  .contact-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .contact-card,
-  .contact-card__icon {
+  .contact-card {
     transition: none;
   }
 

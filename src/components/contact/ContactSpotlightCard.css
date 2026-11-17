@@ -1,0 +1,100 @@
+/*
+ * SpotlightCard styles.
+ *
+ * The card is three stacked layers: two painted gradients (the surface light and
+ * the rim light) and the content above them. Nothing here names a colour,
+ * a radius or a size: those are --contact-card-* tokens in globals.css, so
+ * the card can be re-skinned without opening this file.
+ *
+ * Layer order matters. The light sits *behind* the content (z-index -1 inside an
+ * isolated stacking context) so text never washes out under it; the rim sits
+ * above the surface but below the content, masked to a 1px ring so it reads as
+ * the card's edge catching light rather than as a border.
+ */
+
+.spotlight-card {
+  position: relative;
+  /* Keeps the two painted layers from escaping behind the page. */
+  isolation: isolate;
+  overflow: hidden;
+  padding: var(--contact-card-padding);
+  border-radius: var(--contact-card-radius);
+  background-color: var(--contact-card-surface);
+  border: 1px solid var(--contact-card-border);
+  /*
+   * The pointer position, in card-local px. The component writes these. Declared
+   * here as 50% so a card that has never been pointed at has its light (if it is
+   * ever shown) centred rather than jammed in the top-left corner.
+   */
+  --spotlight-x: 50%;
+  --spotlight-y: 50%;
+  /*
+   * A card is as tall as its content; the row stretches them to match.
+   *
+   * There is no min-height here, and that is deliberate. Upstream had one, and on
+   * this row it produced five different heights: a minimum is a floor, not a size,
+   * so a card whose summary wrapped to three lines pushed past it while a two-line
+   * card did not. Equal height comes from the grid stretching every cell, which is
+   * the only thing that works for content of varying length.
+   */
+}
+
+.spotlight-card__light,
+.spotlight-card__edge {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Behind the text: a wash over the surface. */
+.spotlight-card__light {
+  z-index: -1;
+  opacity: 0;
+}
+
+/*
+ * The rim: a 1px ring painted by an inset gradient. The mask cuts the middle
+ * out, leaving only the ring, which is why this is not a `border` -- a border
+ * cannot carry a gradient.
+ */
+.spotlight-card__edge {
+  z-index: 0;
+  padding: 1px;
+  opacity: 0;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+}
+
+/* Above both painted layers. */
+.spotlight-card__content {
+  position: relative;
+  z-index: 1;
+}
+
+/*
+ * Touch: there is no hover, so the light would never appear. The card is lit
+ * while it is pressed instead -- enough to acknowledge the tap without asking
+ * the device to track a finger as if it were a cursor.
+ */
+@media (hover: none) {
+  .spotlight-card:active .spotlight-card__light {
+    opacity: var(--contact-card-spotlight-intensity);
+  }
+}
+
+/*
+ * A reader who asked the system for less movement still gets the light -- it
+ * tells them which card they are on -- but the component stops chasing the
+ * pointer, so what arrives here is a light that simply appears.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .spotlight-card {
+    --contact-card-spotlight-intensity: 0.1;
+  }
+}

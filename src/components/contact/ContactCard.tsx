@@ -1,22 +1,27 @@
 /*
- * One contact, as a card, on the celeste band.
+ * One contact, as a card.
  *
- * The whole card is the link: the icon, the network name and the handle are one
- * target, so there is no small word to hit and no separate "ver más". It is an
- * anchor rather than a button because it navigates, and it carries `rel` and
- * `target` because it leaves the site.
+ * The surface is the spotlight card recovered from git history -- the one the
+ * client asked for twice and the agent talked them out of. It was deleted in
+ * 6df3827 as "codigo zombie" while it was, in fact, the thing being requested. It
+ * is back, on white, doing what it always did: a soft light follows the pointer
+ * across the surface and the edge catches it.
  *
- * The effect is built for this background and is worth stating, because the card
- * this replaces did something else. That one tracked the mouse with a light spot,
- * which reads on a dark field and washes out on saturated celeste. Here the card
- * lifts, its border brightens and its icon grows slightly, all on the card's own
- * colour tokens. No JavaScript, so there is nothing to hydrate and nothing to go
- * wrong on a slow connection.
+ * The anchor WRAPS the card rather than being it, and that is deliberate. The
+ * spotlight tracks the pointer from its own root element, so the surface has to be
+ * the element it measures. Making the anchor itself the tracked element would mean
+ * rewriting how the light reads its position. Wrapping costs one div and keeps the
+ * recovered component untouched, which matters more: the client wanted THIS card,
+ * not a version of it.
  *
- * The card knows nothing about the carousel, the testimonials, or how many other
- * contacts there are. It is handed one and it draws it.
+ * On the size: the grid gives every card the same box. The four items below are
+ * laid out inside it, and the shape comes from the grid, so nothing about the
+ * length of a summary can make one card taller than another -- which is exactly
+ * what went wrong on the previous attempt, where a `min-height` acted as a floor
+ * and a longer summary pushed past it.
  */
 
+import { ContactSpotlightCard } from "./ContactSpotlightCard"
 import { ContactIcon } from "./ContactIcon"
 import type { Contact } from "./contacts"
 
@@ -31,19 +36,22 @@ export function ContactCard({ contact }: ContactCardProps) {
       href={contact.href}
       target="_blank"
       rel="noopener noreferrer"
-      /* The handle is the useful part for a screen reader user deciding where this
-         goes, and it is visible text inside, so no aria-label is needed -- one
-         would override the content rather than describe it. */
       data-contact={contact.network}
     >
-      <span className="contact-card__icon">
-        <ContactIcon network={contact.network} />
-      </span>
+      <ContactSpotlightCard className="contact-card__surface">
+        <span className="contact-card__icon">
+          <ContactIcon network={contact.network} />
+        </span>
 
-      <span className="contact-card__text">
-        <span className="contact-card__name">{contact.name}</span>
-        <span className="contact-card__handle">{contact.handle}</span>
-      </span>
+        <span className="contact-card__text">
+          <span className="contact-card__name">{contact.name}</span>
+          <span className="contact-card__summary">{contact.summary}</span>
+        </span>
+
+        {/* Decorative: it points at the same place the card already goes, and the
+            card is the link. Announcing it would only add noise. */}
+        <span className="contact-card__arrow" aria-hidden="true" />
+      </ContactSpotlightCard>
     </a>
   )
 }

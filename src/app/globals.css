@@ -499,47 +499,65 @@
   --contact-heading-gap: clamp(2.5rem, 6vw, 4rem);
 
   /*
-   * The cards. White on celeste is the inverse of every other card on the site,
-   * and that inversion is what makes the last section read as a destination
-   * instead of one more row. The minimum width sets when the row wraps: five cards
-   * fit across a desktop and fold to two and then one on the way down.
+   * The cards: white, all the same size, in one orderly row of five.
+   *
+   * On the size, because getting this wrong is what made the previous attempt look
+   * broken. Every card is the SAME BOX: the grid gives each column one fifth of the
+   * row and the card fills it, so the height follows the width and no card can
+   * differ from its neighbours. A `min-height` does not do this -- it is a floor,
+   * and a longer summary pushes past it while a shorter one does not, which is
+   * exactly how the row ended up with five different heights.
    */
-  --contact-grid-gap: clamp(0.75rem, 1.6vw, 1.25rem);
-  --contact-card-min-width: 14rem;
-  --contact-card-padding: clamp(1rem, 2vw, 1.35rem);
-  --contact-card-gap: clamp(0.75rem, 1.4vw, 1rem);
-  --contact-card-radius: 1rem;
-  --contact-card-background: #ffffff;
-  /* Not pure white: on celeste, a white card with a white border has no edge. */
-  --contact-card-border-width: 1px;
-  --contact-card-border: color-mix(in oklab, var(--brand-celeste) 18%, #ffffff);
-  --contact-card-border-hover: color-mix(in oklab, var(--brand-celeste) 45%, #ffffff);
-  --contact-card-background-hover: #ffffff;
-  --contact-card-shadow: 0 1px 2px rgb(15 112 183 / 0.18);
-  --contact-card-shadow-hover: 0 10px 24px -8px rgb(15 112 183 / 0.45);
-  --contact-card-lift: -4px;
-  --contact-card-transition: transform 180ms ease, box-shadow 180ms ease,
-    border-color 180ms ease, background-color 180ms ease;
-  --contact-card-focus-colour: #ffffff;
-  --contact-card-focus-width: 3px;
-  --contact-card-focus-offset: 3px;
+  --contact-grid-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  /* Between the grid of cards and the map block below it. */
+  /* Between the grid of cards and the venue block. */
+  --contact-map-gap: clamp(3rem, 7vw, 5rem);
+  /* Between the map frame and the link under it, which the client asked to sit close. */
+  --contact-map-link-gap: 0.75rem;
+  /* The map frame, as a proportion rather than a height so it never needs a magic
+     number: a wide band on a desktop, closer to square where the screen is narrow. */
+  --contact-map-aspect: 16 / 9;
+  --contact-map-aspect-narrow: 4 / 3;
+  --contact-map-radius: 1.25rem;
+  --contact-map-border: color-mix(in oklab, #ffffff 35%, transparent);
+  --contact-map-heading-size: clamp(1.5rem, 3vw, 2rem);
+  --contact-card-padding: clamp(1.25rem, 1.8vw, 1.6rem);
+  --contact-card-radius: 1.25rem;
+  --contact-card-surface: #ffffff;
+  --contact-card-border: color-mix(in oklab, var(--brand-celeste) 16%, #ffffff);
 
+  /* The light that follows the pointer. Recovered with the card. */
+  --contact-card-spotlight: var(--brand-celeste);
+  --contact-card-spotlight-intensity: 0.14;
   /*
-   * The icon sits on a tinted disc so a white card does not read as an empty
-   * square. It carries the card's only colour: celeste at rest, the deeper brand
-   * blue on hover, which is the whole hover effect for the icon.
+   * The light behind the pointer. The radius is what you see as the circle, so it is
+   * tied to the card rather than fixed: a disc that fits a 214px card would look like
+   * a dot on a wide screen, and "a dot" is exactly how the first version read.
+   *
+   * The unit matters. This token is parsed with `Number.parseFloat`, which stops at
+   * the first non-numeric character, so `15rem` never meant 240px -- it meant 15, a
+   * radius smaller than the card's own corner. The value here is a unitless number of
+   * pixels for that reason, and the card's own size is the natural ceiling.
    */
-  --contact-icon-slot: 3rem;
-  --contact-icon-background: color-mix(in oklab, var(--brand-celeste) 10%, #ffffff);
-  --contact-icon-background-hover: var(--brand-celeste);
-  --contact-icon-colour: var(--brand-celeste);
-  --contact-icon-colour-hover: #ffffff;
-  --contact-icon-transition: background-color 180ms ease, color 180ms ease;
+  --contact-card-spotlight-size: 180;
+  --contact-card-spotlight-softness: 0.75;
 
-  --contact-name-size: 1.0625rem;
+  /* The disc is a third of the card's width and the glyph fills most of it, so the
+     icon is the thing you see first. Centred in the card's upper half by the
+     stylesheet, not by the data. */
+  --contact-icon-slot: clamp(4rem, 5vw, 4.5rem);
+  --contact-icon-glyph: clamp(2.125rem, 2.7vw, 2.5rem);
+  --contact-icon-background: var(--primary-subtle);
+  --contact-icon-colour: var(--brand-celeste);
+
+  --contact-name-size: 1.1875rem;
   --contact-name-colour: color-mix(in oklab, var(--brand-celeste) 92%, #000000);
-  --contact-handle-size: 0.875rem;
-  --contact-handle-colour: color-mix(in oklab, var(--brand-celeste) 62%, #000000);
+  --contact-summary-size: 0.9375rem;
+  --contact-summary-colour: var(--muted-foreground);
+  --contact-summary-gap: 0.25rem;
+  /* Between the icon and the name. */
+  --contact-text-gap: 0.75rem;
+  --contact-card-lift: -4px;
 
   /*
    * Carousel primitive. --carousel-item-size is the width of one card inside the

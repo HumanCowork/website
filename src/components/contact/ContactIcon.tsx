@@ -39,15 +39,14 @@ const PATHS: Record<ContactNetwork, string> = {
 
 export interface ContactIconProps {
   network: ContactNetwork
-  /** Rendered size in px. The card passes its own token. */
-  size?: number
 }
 
-export function ContactIcon({ network, size = 24 }: ContactIconProps) {
+export function ContactIcon({ network }: ContactIconProps) {
   return (
     <svg
-      width={size}
-      height={size}
+      /* No width/height attributes: the card sets the size from its own token, and
+         an attribute here would win over the stylesheet and give one card a
+         different icon size than its neighbours. */
       viewBox="0 0 24 24"
       fill="currentColor"
       /* Decorative: the card's own text names the network, so announcing the mark

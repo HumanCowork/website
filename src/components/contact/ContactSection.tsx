@@ -14,7 +14,9 @@
 
 import { ContactCard } from "./ContactCard"
 import { CONTACTS, CONTACT_HEADING } from "./contacts"
+import { VenueMap } from "./VenueMap"
 import "./ContactSection.css"
+import "./VenueMap.css"
 
 export function ContactSection() {
   return (
@@ -35,6 +37,13 @@ export function ContactSection() {
             </li>
           ))}
         </ul>
+
+        {/*
+          The venue: the same band, one step further down. Inside this section rather
+          than beside it, so the celeste is one field rather than two that have to be
+          kept in sync.
+        */}
+        <VenueMap />
       </div>
     </section>
   )
