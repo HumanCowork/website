@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Salida del analizador de codigo (Mind Place).
+/graph-out
+
+# Documentos de trabajo del agente.
+/odd
+
+# Estado local de herramientas.
+/.atl
