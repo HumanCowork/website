@@ -43,6 +43,27 @@
   --carousel-item-size: 100%;
 }
 
+/*
+ * The carousel stacks: the row of testimonials, then the two controls under it.
+ *
+ * The primitive lays the controls out beside the viewport on a desktop, which is
+ * where they were. They now sit below, as one pair that belongs to the carousel
+ * rather than to any one testimonial -- so they hold their place while the slides
+ * move under them. The primitive keeps them as siblings of the viewport; this is
+ * the file that decides which direction "beside" runs.
+ */
+.testimonials-carousel {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.testimonials-carousel__controls {
+  display: flex;
+  justify-content: center;
+  gap: var(--carousel-controls-gap);
+  margin-block-start: var(--testimonials-controls-gap);
+}
+
 /* --- the row ------------------------------------------------------------- */
 
 /*
@@ -166,17 +187,42 @@
  * picture in the section and it carries the person.
  */
 @media (max-width: 767px) {
+  /*
+   * Edge to edge. The band's own side padding goes, and so does the row's width cap,
+   * so the photograph and the panel both take every pixel the device offers. This is
+   * a phone-specific reading, not a smaller desktop: a phone is narrow, and spending
+   * its width on margins leaves the person's portrait and their words smaller than
+   * they need to be.
+   */
+  .testimonials-inner {
+    padding-inline: var(--testimonials-padding-inline-narrow);
+  }
+
   .testimonial-row {
     grid-template-columns: 1fr;
+    max-width: none;
   }
 
   /*
-   * Stacked, the overlap moves to the top edge: the panel rides over the
-   * photograph's bottom the same small distance, which keeps the "two cards resting
-   * on each other" reading when the row becomes a column.
+   * Flush, and square. No overlap: on a desktop the panel riding over the photograph
+   * reads as two cards resting on each other, but stacked on a phone it reads as one
+   * card covering another, which is what the client asked to stop doing. And no
+   * rounded corner, because there is no edge left for one to round -- the panel
+   * already meets the screen on both sides.
    */
   .testimonial-panel {
     margin-inline-start: 0;
-    margin-block-start: calc(var(--testimonial-overlap) * -1);
+    margin-block-start: 0;
+    border-radius: 0;
+  }
+
+  /*
+   * Square corners on all four. The photograph runs edge to edge here, so every
+   * corner of it is a corner of the screen: a rounded one would leave a sliver of
+   * background showing at the side of the device, which is exactly the margin this
+   * reading is meant to remove.
+   */
+  .testimonial-portrait {
+    border-radius: 0;
   }
 }

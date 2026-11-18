@@ -102,8 +102,6 @@ export function TestimonialsSection() {
             watchDrag: (_api, event) => !("touches" in event),
           }}
         >
-          <CarouselPrevious className="testimonials-carousel__control" />
-
           <CarouselContent>
             {TESTIMONIALS.map((person, index) => (
               <CarouselItem key={person.id} className="testimonials-carousel__item">
@@ -112,7 +110,12 @@ export function TestimonialsSection() {
             ))}
           </CarouselContent>
 
-          <CarouselNext className="testimonials-carousel__control" />
+          {/* The two controls, below the row and belonging to the carousel rather than
+              to any one testimonial: they stay put while the slides move under them. */}
+          <div className="testimonials-carousel__controls">
+            <CarouselPrevious className="testimonials-carousel__control" />
+            <CarouselNext className="testimonials-carousel__control" />
+          </div>
         </Carousel>
       </div>
     </section>
