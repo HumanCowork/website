@@ -204,25 +204,58 @@
   }
 
   /*
-   * Flush, and square. No overlap: on a desktop the panel riding over the photograph
-   * reads as two cards resting on each other, but stacked on a phone it reads as one
-   * card covering another, which is what the client asked to stop doing. And no
-   * rounded corner, because there is no edge left for one to round -- the panel
-   * already meets the screen on both sides.
+   * One card per testimonial, the same skeleton as the cases band above: the
+   * photograph across the top, the text under it, one rounded surface holding both.
+   *
+   * This is the phone reading only. A desktop keeps the two blocks side by side,
+   * where the panel rides over the photograph's edge -- two cards resting on each
+   * other. Stacked, that same overlap reads as one card covering another, so the
+   * column version drops it and becomes a single card instead.
+   *
+   * The card is one surface, so the row carries the background, the radius and the
+   * padding, and the two blocks inside it are stripped back to being its contents:
+   * no background of its own, no radius, no padding, no overlap to cancel.
    */
-  .testimonial-panel {
-    margin-inline-start: 0;
-    margin-block-start: 0;
-    border-radius: 0;
+  .testimonial-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--testimonial-card-gap);
+    padding: var(--testimonial-card-padding);
+    border-radius: var(--testimonial-card-radius);
+    background: var(--testimonial-panel-background);
   }
 
   /*
-   * Square corners on all four. The photograph runs edge to edge here, so every
-   * corner of it is a corner of the screen: a rounded one would leave a sliver of
-   * background showing at the side of the device, which is exactly the margin this
-   * reading is meant to remove.
+   * The photograph fills the card's width and keeps the cases portrait's 4:3
+   * frame, so the two bands read as the same card at different colours.
+   *
+   * `inline-size: 100%` and `display: flex` are what make that work, and both are
+   * needed here rather than inherited. On a desktop this frame is a grid cell, so
+   * the grid gives it its width; as a block in a column it has none of its own, and
+   * the image inside is absolutely positioned and therefore contributes no size.
+   * Without the explicit width the frame collapses to nothing and the photograph
+   * disappears -- it measures 0x0, with the aspect ratio applied to an empty box.
    */
   .testimonial-portrait {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 100%;
+    aspect-ratio: var(--testimonial-card-photo-aspect);
+    border-radius: var(--testimonial-card-photo-radius);
+  }
+
+  .testimonial-panel {
+    background: none;
+    padding: 0;
     border-radius: 0;
+    margin-inline-start: 0;
+    margin-block-start: 0;
+  }
+
+  /* The name block and the quote are the card's two parts, so the gap between the
+     role line and the quote is the card's, not the panel's. */
+  .testimonial-panel__quote {
+    margin-block-start: var(--testimonial-card-quote-gap);
   }
 }
