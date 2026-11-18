@@ -72,23 +72,23 @@ export type Partner = {
  */
 
 export const PARTNERS_ROW_LEFT: Partner[] = [
-  { id: "partner-1", name: "Wavetrail", logo: "/images/partners/wavetrail.png", width: 510, height: 80 },
-  { id: "partner-2", name: "Stratosync", logo: "/images/partners/stratosync.png", width: 447, height: 80 },
-  { id: "partner-3", name: "Plexicore", logo: "/images/partners/plexicore.png", width: 428, height: 80 },
-  { id: "partner-4", name: "Frostfield", logo: "/images/partners/frostfield.png", width: 427, height: 80 },
-  { id: "partner-5", name: "Polystack", logo: "/images/partners/polystack.png", width: 398, height: 80 },
-  { id: "partner-6", name: "Lumivox", logo: "/images/partners/lumivox.png", width: 390, height: 80 },
-  { id: "partner-7", name: "Trionex", logo: "/images/partners/trionex.png", width: 344, height: 80 },
-  { id: "partner-8", name: "Opticflow", logo: "/images/partners/opticflow.png", width: 302, height: 80 },
+  { id: "partner-1", name: "Wavetrail", logo: "/images/partners/wavetrail.webp", width: 510, height: 80 },
+  { id: "partner-2", name: "Stratosync", logo: "/images/partners/stratosync.webp", width: 447, height: 80 },
+  { id: "partner-3", name: "Plexicore", logo: "/images/partners/plexicore.webp", width: 428, height: 80 },
+  { id: "partner-4", name: "Frostfield", logo: "/images/partners/frostfield.webp", width: 427, height: 80 },
+  { id: "partner-5", name: "Polystack", logo: "/images/partners/polystack.webp", width: 398, height: 80 },
+  { id: "partner-6", name: "Lumivox", logo: "/images/partners/lumivox.webp", width: 390, height: 80 },
+  { id: "partner-7", name: "Trionex", logo: "/images/partners/trionex.webp", width: 344, height: 80 },
+  { id: "partner-8", name: "Opticflow", logo: "/images/partners/opticflow.webp", width: 302, height: 80 },
 ];
 
 export const PARTNERS_ROW_RIGHT: Partner[] = [
-  { id: "partner-9", name: "Glintnode", logo: "/images/partners/glintnode.png", width: 487, height: 80 },
-  { id: "partner-10", name: "Cyphervault", logo: "/images/partners/cyphervault.png", width: 472, height: 80 },
-  { id: "partner-11", name: "Cruxware", logo: "/images/partners/cruxware.png", width: 427, height: 80 },
-  { id: "partner-12", name: "Driftmind", logo: "/images/partners/driftmind.png", width: 422, height: 80 },
-  { id: "partner-13", name: "Voltshift", logo: "/images/partners/voltshift.png", width: 406, height: 80 },
-  { id: "partner-14", name: "Pivotera", logo: "/images/partners/pivotera.png", width: 385, height: 80 },
-  { id: "partner-15", name: "Zeroline", logo: "/images/partners/zeroline.png", width: 369, height: 80 },
-  { id: "partner-16", name: "Phasely", logo: "/images/partners/phasely.png", width: 272, height: 80 },
+  { id: "partner-9", name: "Glintnode", logo: "/images/partners/glintnode.webp", width: 487, height: 80 },
+  { id: "partner-10", name: "Cyphervault", logo: "/images/partners/cyphervault.webp", width: 472, height: 80 },
+  { id: "partner-11", name: "Cruxware", logo: "/images/partners/cruxware.webp", width: 427, height: 80 },
+  { id: "partner-12", name: "Driftmind", logo: "/images/partners/driftmind.webp", width: 422, height: 80 },
+  { id: "partner-13", name: "Voltshift", logo: "/images/partners/voltshift.webp", width: 406, height: 80 },
+  { id: "partner-14", name: "Pivotera", logo: "/images/partners/pivotera.webp", width: 385, height: 80 },
+  { id: "partner-15", name: "Zeroline", logo: "/images/partners/zeroline.webp", width: 369, height: 80 },
+  { id: "partner-16", name: "Phasely", logo: "/images/partners/phasely.webp", width: 272, height: 80 },
 ];

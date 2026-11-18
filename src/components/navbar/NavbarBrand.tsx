@@ -15,7 +15,7 @@ export function NavbarBrand() {
       */}
       <div className="relative size-(--navbar-logo-size) flex-shrink-0">
         <Image
-          src="/images/logo.png"
+          src="/images/brand/logo.webp"
           alt="Human Cowork Logo"
           fill
           priority
@@ -25,7 +25,7 @@ export function NavbarBrand() {
       </div>
       <div className="relative h-4 sm:h-4.5 w-28 sm:w-32 flex-shrink-0">
         <Image
-          src="/images/wordmark.webp"
+          src="/images/brand/wordmark.webp"
           alt="Human Cowork"
           fill
           priority

@@ -30,9 +30,10 @@ import "./CommunityCases.css";
  * -- with the role as plain text under each. Nothing is announced twice and no
  * card is left headingless.
  *
- * The photograph is the community's own, from COMMUNITY_IMAGES: a 600x600 square
+ * The photograph is the community's own, from CASE_IMAGES: a 600x600 square
  * cropped into the portrait frame with `object-cover`, exactly as AboutPhotoCard
- * does. Its alt is empty and it is `aria-hidden`, deliberately: it shows a real
+ * does. The two read from separate lists even though the frames crop the same way,
+ * so that a picture here is not a picture there. Its alt is empty and it is `aria-hidden`, deliberately: it shows a real
  * person, the source says nothing about what it shows, and the referent's name
  * is already real text right below it, so a second announcement would only
  * repeat the heading. The initials placeholder is gone -- every card shows a

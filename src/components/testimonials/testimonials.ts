@@ -18,13 +18,13 @@
  *     the panel can join them with a colon;
  *   - a square portrait, at least 600x600, in public/images/testimonials/.
  *
- * On the photographs: the cases band above takes COMMUNITY_IMAGES.slice(0, 6),
- * which is tiles 9 to 14. These three come from the tail of the list, so no face
- * appears twice on the same page. Reading through COMMUNITY_IMAGES rather than
- * writing bare paths keeps that rule checkable in one place.
+ * On the photographs: these three come from the band's own list, TESTIMONIAL_IMAGES,
+ * and from nowhere else. They used to be the tail of a pile shared with the hero,
+ * the about cards and the cases band, which meant replacing a face here replaced it
+ * in three other sections as well. The list is local now so that a swap is local.
  */
 
-import { COMMUNITY_IMAGES } from "@/lib/communityImages"
+import { TESTIMONIAL_IMAGES } from "@/lib/testimonialImages"
 
 /** The speaker, and nothing about how they are displayed. */
 export type TestimonialPerson = {
@@ -60,7 +60,7 @@ export const TESTIMONIALS_HEADING = "Testimonios que nos avalan"
  * Chosen from the tail of the community list, the part the cases band does not
  * use, so the same face never runs twice down the page.
  */
-const PORTRAITS = COMMUNITY_IMAGES.slice(6)
+const PORTRAITS = TESTIMONIAL_IMAGES
 
 export const TESTIMONIALS: TestimonialPerson[] = [
   {
