@@ -152,7 +152,7 @@ const photo = (index: number): string => PICKED[index];
 export const COMMUNITY_CASES: CommunityCase[] = [
   {
     id: "case-1",
-    logo: "/images/community/mark-1.png",
+    logo: "/images/community/mark-1.webp",
     logoWidth: 276,
     logoHeight: 56,
     summary: "Trazabilidad de alimentos para restaurantes y proveedores.",
@@ -163,7 +163,7 @@ export const COMMUNITY_CASES: CommunityCase[] = [
   },
   {
     id: "case-2",
-    logo: "/images/community/mark-2.png",
+    logo: "/images/community/mark-2.webp",
     logoWidth: 282,
     logoHeight: 56,
     summary: "Software de gestión para estudios contables pequeños.",
@@ -174,7 +174,7 @@ export const COMMUNITY_CASES: CommunityCase[] = [
   },
   {
     id: "case-3",
-    logo: "/images/community/mark-3.png",
+    logo: "/images/community/mark-3.webp",
     logoWidth: 251,
     logoHeight: 56,
     summary: "Monitoreo satelital de cultivos con imágenes abiertas.",
@@ -185,7 +185,7 @@ export const COMMUNITY_CASES: CommunityCase[] = [
   },
   {
     id: "case-4",
-    logo: "/images/community/mark-4.png",
+    logo: "/images/community/mark-4.webp",
     logoWidth: 270,
     logoHeight: 56,
     summary: "Materiales de construcción con trazabilidad de origen.",
@@ -196,7 +196,7 @@ export const COMMUNITY_CASES: CommunityCase[] = [
   },
   {
     id: "case-5",
-    logo: "/images/community/mark-5.png",
+    logo: "/images/community/mark-5.webp",
     logoWidth: 321,
     logoHeight: 56,
     summary: "Iluminación eficiente para locales comerciales.",
@@ -207,7 +207,7 @@ export const COMMUNITY_CASES: CommunityCase[] = [
   },
   {
     id: "case-6",
-    logo: "/images/community/mark-6.png",
+    logo: "/images/community/mark-6.webp",
     logoWidth: 291,
     logoHeight: 56,
     summary: "Reservas y turnos para centros de salud.",
