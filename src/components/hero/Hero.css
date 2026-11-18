@@ -11,7 +11,43 @@
   filter: drop-shadow(var(--hero-logo-shadow));
 }
 
+
+/*
+ * The veil. It is a pseudo-element rather than a wrapper, so the markup keeps one
+ * element for one sentence.
+ *
+ * The gradient is radial and sized to the band, so the shade has no edge of its own:
+ * it is dense where the words are and gone before it reaches anything else. A solid
+ * box would draw four straight corners across the photographs, which is the version
+ * of this that looks like a panel pasted on the hero.
+ *
+ * `z-index: -1` puts it behind the glyphs and above the tiles, and `isolation` on the
+ * parent is what keeps that negative index from falling all the way behind the
+ * background: without it the veil would disappear under the photographs.
+ */
+.hero-subtitle-shadow::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--hero-subtitle-veil-block) * -1)
+    calc(var(--hero-subtitle-veil-inline) * -1);
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    var(--hero-subtitle-veil) 0%,
+    color-mix(in oklab, var(--hero-subtitle-veil) 45%, transparent) 55%,
+    transparent 78%
+  );
+  filter: blur(var(--hero-subtitle-veil-blur));
+}
+
 .hero-subtitle-shadow {
+  position: relative;
+  /*
+   * `isolation` keeps the veil behind the glyphs instead of letting its negative
+   * z-index fall all the way behind the hero's background.
+   */
+  isolation: isolate;
   filter: drop-shadow(var(--hero-subtitle-shadow));
 }
 
@@ -20,6 +56,3 @@
  * transparent box and its white border as well as the letters; `text-shadow`
  * only touches the glyphs, which is what was asked for.
  */
-.hero-outline-label-shadow {
-  text-shadow: var(--hero-outline-label-shadow);
-}

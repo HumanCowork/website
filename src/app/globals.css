@@ -484,6 +484,11 @@
   --testimonials-padding-block: clamp(4rem, 9vw, 7rem);
   --testimonials-max-width: 88rem;
   --testimonials-padding-inline: clamp(1.5rem, 5vw, 4rem);
+  /* Between the row of testimonials and the pair of controls under it. */
+  --testimonials-controls-gap: clamp(1.5rem, 3vw, 2.25rem);
+  /* On a phone the band goes edge to edge: the photograph and the panel both take
+     the full width, which is what fills the screen the device is giving us. */
+  --testimonials-padding-inline-narrow: 0;
   --testimonials-heading-size: clamp(1.75rem, 4vw, 2.5rem);
   --testimonials-heading-colour: var(--brand-celeste);
   --testimonials-heading-gap: clamp(2.5rem, 6vw, 4rem);
@@ -675,7 +680,21 @@
   --hero-logo-size-lg: 32rem;
   --hero-logo-size-xl: 36rem;
   --hero-logo-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-  --hero-subtitle-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+  --hero-subtitle-shadow: 0 1px 2px rgba(0, 0, 0, 0.98);
+  /*
+   * The veil behind the subtitle: a band of shade the width of the sentence, fading
+   * out at both ends and above and below, so it reads as a pool of shadow under the
+   * words rather than a panel with edges.
+   *
+   * This is the half a text shadow cannot do. A shadow darkens the glyphs; a moving
+   * photograph can still sit behind them at full brightness, and white type over a
+   * pale tile loses the fight. Washing the pixels the words actually sit on is the
+   * only thing that stops depending on which photograph is passing.
+   */
+  --hero-subtitle-veil: rgba(2, 8, 20, 0.55);
+  --hero-subtitle-veil-blur: 1.25rem;
+  --hero-subtitle-veil-inline: 4rem;
+  --hero-subtitle-veil-block: 1rem;
   /*
    * Text shadow for the label of the outlined hero button only. It is a
    * `text-shadow`, not a box shadow: it darkens the glyphs themselves so the
@@ -683,7 +702,6 @@
    * transparent button. The celeste button beside it deliberately has no label
    * shadow — its surface already carries contrast.
    */
-  --hero-outline-label-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
 }
 
 /*
