@@ -8,19 +8,23 @@
  * nothing about each other; this file is the one place that knows they sit
  * together, and the one place that knows a carousel moves them.
  *
- * On dragging: the client wants to hold the left mouse button and slide sideways
- * to reach the other two testimonials. Embla already does exactly that -- the drag
+ * On dragging: the client wants to reach the other two testimonials by sliding
+ * sideways, with a mouse and with a finger. Embla does that on its own -- the drag
  * is on by default -- so this is configuration, not an event handler. `watchDrag`
- * takes a function, and it returns true only for a mouse, which leaves touch
- * alone: a finger already scrolls the row natively with its own momentum, and
- * hijacking that is how carousels end up feeling worse on a phone than in a
- * browser.
+ * is deliberately left at its default rather than filtered: it used to return true
+ * for a mouse and false for a touch, and that turned the carousel off on every
+ * phone. The reasoning behind it was that a finger already scrolls a row natively,
+ * which is true of a row that overflows and false of this one -- one slide fills
+ * the viewport, so there was nothing for the finger to scroll and nothing for the
+ * drag to compete with. Embla's own code is what makes the old filter terminal:
+ * the only gesture it will not start a drag from is the one where `watchDrag`
+ * declines it.
  *
- * The cost of that choice, recorded so it is not discovered later as a bug: with
- * the drag active Embla prevents the default action on mousedown and mousemove,
- * so a mouse user cannot select the testimonial text to copy it. If that turns
- * out to matter more than the drag, the fix is to move the drag to the photograph
- * only -- one line here, changing which element the pointer must start on.
+ * The cost of the drag being active, recorded so it is not discovered later as a
+ * bug: Embla prevents the default action on mousedown and mousemove, so a mouse
+ * user cannot select the testimonial text to copy it. If that turns out to matter
+ * more than the drag, the fix is to move the drag to the photograph only -- one
+ * line here, changing which element the pointer must start on.
  */
 
 import {
@@ -92,14 +96,13 @@ export function TestimonialsSection() {
              */
             loop: true,
             /*
-             * Hold the left mouse button and slide. Touch keeps its own
-             * scrolling, which is already better than anything we would add.
-             *
-             * The event here is a TouchEvent or a MouseEvent, not a PointerEvent:
-             * that is Embla's own type, so there is no pointerType to read and
-             * the discriminator is 'touches'.
+             * Slide with the mouse and with a finger. This is Embla's default and
+             * the line is here only to say so, because it was once the opposite:
+             * a filter that allowed a mouse and refused a touch, which left the
+             * carousel unreachable on a phone. Removing a default is silent; the
+             * default itself is worth naming.
              */
-            watchDrag: (_api, event) => !("touches" in event),
+            watchDrag: true,
           }}
         >
           <CarouselContent>
