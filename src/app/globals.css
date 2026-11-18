@@ -489,6 +489,26 @@
   /* On a phone the band goes edge to edge: the photograph and the panel both take
      the full width, which is what fills the screen the device is giving us. */
   --testimonials-padding-inline-narrow: 0;
+  /*
+   * On a phone each testimonial becomes a card, the same skeleton as the cases
+   * band above: a photograph across the top, the text under it, one rounded
+   * surface with its own padding. The difference is the colour -- this card is
+   * celeste with white text, as the panel has always been.
+   *
+   * The card's width is the screen's: --testimonials-padding-inline-narrow is 0
+   * on a phone, so the card meets both edges the way a cases card does.
+   *
+   * There is no rule over the role line and no mark: a testimonial has no logo
+   * and no second statement to separate. The card holds what the section
+   * actually has.
+   */
+  --testimonial-card-radius: var(--community-card-radius);
+  --testimonial-card-padding: var(--community-card-padding-mobile);
+  --testimonial-card-gap: var(--community-card-gap);
+  --testimonial-card-photo-aspect: var(--community-portrait-aspect);
+  --testimonial-card-photo-radius: var(--community-portrait-radius);
+  /* Air between the name block and the quote inside the card. */
+  --testimonial-card-quote-gap: var(--community-card-divider-gap);
   --testimonials-heading-size: clamp(1.75rem, 4vw, 2.5rem);
   --testimonials-heading-colour: var(--brand-celeste);
   --testimonials-heading-gap: clamp(2.5rem, 6vw, 4rem);
