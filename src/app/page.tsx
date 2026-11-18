@@ -6,12 +6,10 @@ import { CommunityCases } from "@/components/community/CommunityCases";
 import { TestimonialsSection } from "@/components/testimonials/TestimonialsSection";
 import { ContactSection } from "@/components/contact/ContactSection";
 import { PartnersSection } from "@/components/partners/PartnersSection";
-import { DiagnosticsBeacon } from "@/components/DiagnosticsBeacon";
 
 export default function Home() {
   return (
     <div className="relative min-h-screen bg-transparent text-slate-900">
-      <DiagnosticsBeacon />
       <Navbar />
       {/* Contenedor del Hero con altura de pista para el efecto cortina */}
       <div className="relative h-screen w-full">
