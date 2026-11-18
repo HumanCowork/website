@@ -1,4 +1,4 @@
-import { COMMUNITY_IMAGES } from "@/lib/communityImages";
+import { CASE_IMAGES } from "@/lib/caseImages";
 
 /**
  * The community cases, as data.
@@ -45,10 +45,15 @@ import { COMMUNITY_IMAGES } from "@/lib/communityImages";
  *      `href="#"` placeholder, ever.
  *
  * The photographs are the community's own, from `public/images/community/`, read
- * through src/lib/communityImages.ts -- the same files the hero tiles and the
- * about cards use. Each card takes a distinct one and the initials placeholder
- * is gone. They are 600x600 squares; the portrait frame crops with `object-cover`
+ * through src/lib/caseImages.ts -- the band's own list, next to the project marks
+ * that live in the same folder. Each card takes a distinct one and the initials
+ * placeholder is gone. They are 600x600 squares; the frame crops with `object-cover`
  * rather than stretching them.
+ *
+ * They used to come from a pile shared with the hero, the about cards and the
+ * testimonials, sliced by index. That made this band and the about cards show the
+ * same six files -- both did `slice(0, 6)` -- so a new picture in a case changed the
+ * about section too, and deleting one shifted every section after it.
  *
  * The marks themselves are fictional brand marks from fakelogo.com -- the same
  * source as the partners band's, and the same warning applies: they are
@@ -101,7 +106,7 @@ export type CommunityCase = {
     role: string;
   };
   /**
-   * The referent's photograph, from COMMUNITY_IMAGES, never a bare path, and
+   * The referent's photograph, from CASE_IMAGES, never a bare path, and
    * never empty: every card shows a photograph. It fills the portrait frame and
    * carries an empty alt -- these are photographs of real people and nothing in
    * the source can describe what they show, and the referent is already named as
@@ -140,7 +145,7 @@ export const COMMUNITY_PHOTO_SLOT_WIDTH =
   "(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 92vw";
 
 /* Six of the ten community photographs, taken in the list's own order. */
-const PICKED = COMMUNITY_IMAGES.slice(0, 6);
+const PICKED = CASE_IMAGES;
 
 const photo = (index: number): string => PICKED[index];
 

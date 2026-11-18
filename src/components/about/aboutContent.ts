@@ -1,9 +1,9 @@
-import { COMMUNITY_IMAGES } from "@/lib/communityImages";
+import { ABOUT_IMAGES } from "@/lib/aboutImages";
 
 /*
  * Content for the about section: the words, and which photograph goes in which
  * frame. Data only. How it looks is AboutSection.css; which files exist is
- * src/lib/communityImages.ts.
+ * src/lib/aboutImages.ts, the section's own list.
  */
 
 /*
@@ -17,7 +17,7 @@ const COMMUNITY_SENTENCE =
 export type AboutAspect = "portrait" | "square" | "landscape";
 
 export type AboutPhoto = {
-  /** Comes from COMMUNITY_IMAGES, never a bare path. */
+  /** Comes from ABOUT_IMAGES, never a bare path. */
   src: string;
   /**
    * Empty on purpose. These are photographs of real people and nothing here can
@@ -31,7 +31,7 @@ export type AboutPhoto = {
 export type AboutSubcolumns = readonly (readonly AboutPhoto[])[];
 
 /* Six of the ten community photographs, taken in the list's own order. */
-const PICKED = COMMUNITY_IMAGES.slice(0, 6);
+const PICKED = ABOUT_IMAGES;
 
 const photo = (index: number, aspect: AboutAspect): AboutPhoto => ({
   src: PICKED[index],

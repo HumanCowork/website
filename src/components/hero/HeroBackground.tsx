@@ -1,7 +1,7 @@
 "use client";
 
 import { TiltedTiles } from "@/components/ui/tilted-tiles";
-import { COMMUNITY_IMAGES } from "@/lib/communityImages";
+import { HERO_IMAGES } from "@/lib/heroImages";
 
 export function HeroBackground() {
   return (
@@ -10,7 +10,7 @@ export function HeroBackground() {
       className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
     >
       <TiltedTiles
-        images={COMMUNITY_IMAGES}
+        images={HERO_IMAGES}
         columns={13}
         tilesPerColumn={6}
         rowGap={5}
